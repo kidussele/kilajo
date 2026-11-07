@@ -20,6 +20,14 @@ import {
   Calendar,
   Sparkles,
   Award,
+  Trophy,
+  Zap,
+  DollarSign,
+  Shield,
+  Settings,
+  ShieldCheck,
+  TrendingUp,
+  Lock,
 } from 'lucide-react'
 
 export default function PropFirmPage() {
@@ -71,26 +79,28 @@ export default function PropFirmPage() {
         {/* Page Hero Banner */}
         <PageHeroBanner
           title="Prop Firm Challenge Tracker"
-          subtitle="Live monitoring of evaluation targets, daily loss guardrails, and maximum drawdown buffers"
-          icon={ShieldAlert}
+          subtitle="Live monitoring of evaluation targets, daily loss guards, and maximum drawdown buffers"
+          icon={Trophy}
           quote="Protect your capital first; profits will follow."
         />
 
-        {/* Prop Firm Overview Cards */}
+        {/* Prop Firm Overview Cards with Action Arrows */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard
             title="Active Challenges"
             value={propAccounts.length.toString()}
-            subtitle="Under evaluation"
-            icon={ShieldAlert}
-            color="amber"
+            subtitle="Track your active challenges"
+            icon={Zap}
+            color="emerald"
+            actionArrow
           />
           <MetricCard
             title="Total Challenge Capital"
             value={formatCurrency(totalPropCapital, 'USD')}
-            subtitle="Combined starting balances"
-            icon={Award}
-            color="emerald"
+            subtitle="Combined starting balance"
+            icon={DollarSign}
+            color="teal"
+            actionArrow
           />
           <MetricCard
             title="Phase 1 Targets"
@@ -98,32 +108,151 @@ export default function PropFirmPage() {
             subtitle="Standard profit milestone"
             icon={Target}
             color="blue"
+            actionArrow
           />
           <MetricCard
             title="Max Drawdown Cap"
             value="10.0%"
             subtitle="Hard breach boundary"
-            icon={Flame}
-            color="indigo"
+            icon={Shield}
+            color="purple"
+            actionArrow
           />
         </div>
 
         {propAccounts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 mb-3 text-amber-600">
-              <ShieldAlert className="h-7 w-7 stroke-[2]" />
+          <div className="space-y-5">
+            {/* Main Empty State Container */}
+            <div className="relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-300/80 bg-gradient-to-b from-emerald-50/50 via-teal-50/20 to-emerald-50/50 p-10 sm:p-14 flex flex-col items-center justify-center text-center shadow-xs">
+              {/* Soft wave decorations at the bottom */}
+              <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40">
+                <svg className="w-full h-full" viewBox="0 0 600 60" preserveAspectRatio="none">
+                  <path d="M0,40 C150,15 350,60 600,30 L600,60 L0,60 Z" fill="#10b981" fillOpacity="0.12" />
+                  <path d="M0,50 C200,30 400,65 600,45 L600,60 L0,60 Z" fill="#059669" fillOpacity="0.18" />
+                </svg>
+              </div>
+
+              {/* Golden Trophy with Laurel Leaves Illustration */}
+              <div className="relative mb-3 flex items-center justify-center">
+                {/* Soft Candlestick Watermark Behind Trophy */}
+                <svg
+                  className="absolute -top-4 h-28 w-72 pointer-events-none opacity-25 text-emerald-500"
+                  viewBox="0 0 200 80"
+                  fill="currentColor"
+                >
+                  <rect x="20" y="30" width="4" height="25" rx="1" />
+                  <line x1="22" y1="20" x2="22" y2="60" stroke="currentColor" strokeWidth="1" />
+                  <rect x="40" y="20" width="4" height="35" rx="1" />
+                  <line x1="42" y1="10" x2="42" y2="65" stroke="currentColor" strokeWidth="1" />
+                  <rect x="60" y="35" width="4" height="20" rx="1" />
+                  <line x1="62" y1="25" x2="62" y2="60" stroke="currentColor" strokeWidth="1" />
+                  <rect x="140" y="25" width="4" height="30" rx="1" />
+                  <line x1="142" y1="15" x2="142" y2="65" stroke="currentColor" strokeWidth="1" />
+                  <rect x="160" y="15" width="4" height="40" rx="1" />
+                  <line x1="162" y1="5" x2="162" y2="70" stroke="currentColor" strokeWidth="1" />
+                  <rect x="180" y="30" width="4" height="25" rx="1" />
+                  <line x1="182" y1="20" x2="182" y2="65" stroke="currentColor" strokeWidth="1" />
+                </svg>
+
+                {/* Laurel Leaves + Trophy */}
+                <div className="relative flex items-center justify-center">
+                  {/* Left Laurel Leaves */}
+                  <svg className="h-20 w-12 text-emerald-600 -mr-2" viewBox="0 0 40 80" fill="currentColor">
+                    <path d="M35 70 C20 60 10 40 15 15 C12 25 10 38 15 50 C18 58 25 66 35 70 Z" />
+                    <path d="M12 20 C6 22 2 28 4 33 C6 38 12 36 14 30 Z" />
+                    <path d="M14 34 C8 37 5 44 8 48 C11 52 17 50 17 43 Z" />
+                    <path d="M18 48 C14 52 12 60 16 63 C20 66 24 62 23 55 Z" />
+                    <path d="M16 12 C13 7 7 6 5 10 C3 14 8 18 13 18 Z" />
+                  </svg>
+
+                  {/* Golden Trophy */}
+                  <div className="relative flex flex-col items-center">
+                    <svg className="h-24 w-24 drop-shadow-md" viewBox="0 0 80 80" fill="none">
+                      <path d="M22 26 C12 26 12 42 24 45" stroke="#f59e0b" strokeWidth="4" strokeLinecap="round" />
+                      <path d="M58 26 C68 26 68 42 56 45" stroke="#f59e0b" strokeWidth="4" strokeLinecap="round" />
+                      <path d="M22 20 H58 V36 C58 46 50 54 40 54 C30 54 22 46 22 36 V20 Z" fill="#fbbf24" stroke="#f59e0b" strokeWidth="2.5" />
+                      <path d="M40 28 L42 33 L47 33.5 L43 37 L44.5 42 L40 39 L35.5 42 L37 37 L33 33.5 L38 33 Z" fill="#fef3c7" />
+                      <path d="M36 54 H44 V62 H36 Z" fill="#f59e0b" />
+                      <rect x="28" y="62" width="24" height="6" rx="2" fill="#047857" stroke="#065f46" strokeWidth="1.5" />
+                      <rect x="32" y="65" width="16" height="2" rx="0.5" fill="#34d399" />
+                    </svg>
+                  </div>
+
+                  {/* Right Laurel Leaves */}
+                  <svg className="h-20 w-12 text-emerald-600 -ml-2" viewBox="0 0 40 80" fill="currentColor">
+                    <path d="M5 70 C20 60 30 40 25 15 C28 25 30 38 25 50 C22 58 15 66 5 70 Z" />
+                    <path d="M28 20 C34 22 38 28 36 33 C34 38 28 36 26 30 Z" />
+                    <path d="M26 34 C32 37 35 44 32 48 C29 52 23 50 23 43 Z" />
+                    <path d="M22 48 C26 52 28 60 24 63 C20 66 16 62 17 55 Z" />
+                    <path d="M24 12 C27 7 33 6 35 10 C37 14 32 18 27 18 Z" />
+                  </svg>
+                </div>
+              </div>
+
+              <h3 className="text-lg sm:text-xl font-bold font-serif text-slate-900 tracking-tight">
+                No active prop firm challenges
+              </h3>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-md font-medium leading-relaxed">
+                Create an account with your Prop Firm Challenge, flag enabled to track your evaluation rules.
+              </p>
+
+              <button
+                onClick={() => (window.location.href = '/accounts')}
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-6 py-2.5 text-xs sm:text-sm font-semibold shadow-md shadow-emerald-950/20 transition-all hover:scale-105"
+              >
+                <Settings className="h-4 w-4" />
+                <span>Configure Account</span>
+                <span className="font-bold">&gt;</span>
+              </button>
             </div>
-            <h3 className="text-base font-bold text-slate-800">No active prop firm challenges</h3>
-            <p className="text-xs mt-1 max-w-sm text-slate-400">
-              Create an account with the "Prop Firm Challenge" flag enabled to track your evaluation rules.
-            </p>
-            <button
-              onClick={() => (window.location.href = '/accounts')}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
-            >
-              <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
-              <span>Configure Account</span>
-            </button>
+
+            {/* Bottom Feature Strip */}
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 p-4 shadow-xs select-none">
+              {/* Ascending Bar Chart Watermark */}
+              <svg
+                className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 text-emerald-600"
+                viewBox="0 0 120 60"
+                fill="currentColor"
+              >
+                <rect x="10" y="35" width="12" height="25" rx="2" />
+                <rect x="30" y="25" width="12" height="35" rx="2" />
+                <rect x="50" y="15" width="12" height="45" rx="2" />
+                <rect x="70" y="5" width="12" height="55" rx="2" />
+                <rect x="90" y="0" width="12" height="60" rx="2" />
+              </svg>
+
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 gap-3 sm:gap-0">
+                <div className="flex items-center gap-3 sm:px-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                    <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Stay on Track</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Monitor your challenge rules in real-time</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                    <TrendingUp className="h-4 w-4 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Track Performance</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Analyze your progress and results</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                    <Lock className="h-4 w-4 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Trade with Confidence</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Follow the rules. Achieve your goals.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="space-y-5">

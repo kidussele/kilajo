@@ -15,6 +15,9 @@ interface MetricCardProps {
   trend?: string
   trendPositive?: boolean
   className?: string
+  infoTooltip?: boolean
+  actionArrow?: boolean
+  onActionClick?: () => void
 }
 
 export function MetricCard({
@@ -26,6 +29,9 @@ export function MetricCard({
   trend,
   trendPositive,
   className,
+  infoTooltip = false,
+  actionArrow = false,
+  onActionClick,
 }: MetricCardProps) {
   const colorMap = {
     emerald: {
@@ -74,14 +80,35 @@ export function MetricCard({
         className
       )}
     >
-      {/* Top Header: Icon Pill + Title */}
-      <div className="flex items-center gap-2.5">
-        {Icon && (
-          <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-xl', activeColor.iconBg)}>
-            <Icon className="h-4 w-4 stroke-[2.2]" />
+      {/* Top Header: Icon Pill + Title + Optional Info and Action Arrow */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          {Icon && (
+            <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-xl', activeColor.iconBg)}>
+              <Icon className="h-4 w-4 stroke-[2.2]" />
+            </div>
+          )}
+          <div className="flex items-center gap-1 min-w-0">
+            <p className="text-xs font-semibold text-slate-600 truncate">{title}</p>
+            {infoTooltip && (
+              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-slate-400 hover:text-slate-600 border border-slate-300 cursor-pointer">
+                i
+              </span>
+            )}
           </div>
+        </div>
+
+        {actionArrow && (
+          <button
+            type="button"
+            onClick={onActionClick}
+            className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors shrink-0"
+          >
+            <svg className="h-3 w-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         )}
-        <p className="text-xs font-semibold text-slate-500 truncate">{title}</p>
       </div>
 
       {/* Main Value */}

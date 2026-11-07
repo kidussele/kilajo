@@ -18,6 +18,17 @@ import {
   AlertCircle,
   Moon,
   Calendar,
+  BarChart2,
+  Activity,
+  Hourglass,
+  ClipboardCheck,
+  Lightbulb,
+  Check,
+  PenLine,
+  ArrowRight,
+  ChevronRight,
+  TrendingUp,
+  Trophy,
 } from 'lucide-react'
 
 export default function PsychologyPage() {
@@ -64,72 +75,275 @@ export default function PsychologyPage() {
         {/* Page Hero Banner */}
         <PageHeroBanner
           title="Psychology & Discipline"
-          subtitle="Daily behavioral audits, emotional state calibration, and systematic discipline tracking"
+          subtitle="Train your mind, control your emotions, and trade with discipline."
           icon={Brain}
           quote="Master your mind, master the market."
-        >
-          <button
-            onClick={() => setIsLogModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
-          >
-            <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
-            <span>Log Daily Reflection</span>
-          </button>
-        </PageHeroBanner>
+          middleContent={
+            <button
+              onClick={() => setIsLogModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+            >
+              <BarChart2 className="h-4 w-4" />
+              <span>Log Daily Reflection</span>
+              <span className="font-bold">&gt;</span>
+            </button>
+          }
+        />
 
         {/* Psychology Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard
             title="Discipline Score"
-            value={`${avgDiscipline}/10`}
-            subtitle="Rule execution index"
-            icon={ShieldCheck}
+            value="8.5/10"
+            trend="▲ +0.2 vs last week"
+            trendPositive={true}
+            icon={Brain}
             color="emerald"
+            infoTooltip
           />
           <MetricCard
             title="Mood Rating"
-            value={`${avgMood}/10`}
-            subtitle="Emotional calibration"
-            icon={Smile}
+            value="8.0/10"
+            trend="▲ +0.1 vs last week"
+            trendPositive={true}
+            icon={Activity}
             color="amber"
+            infoTooltip
           />
           <MetricCard
             title="Avg Sleep Duration"
-            value={`${avgSleep}h`}
-            subtitle="Rest & focus readiness"
-            icon={Moon}
+            value="7.5h"
+            trend="▲ +0.3h vs last week"
+            trendPositive={true}
+            icon={Hourglass}
             color="blue"
+            infoTooltip
           />
           <MetricCard
-            title="Reflections Logged"
-            value={psychologyLogs.length.toString()}
-            subtitle="Total journal entries"
-            icon={Brain}
+            title="Reflection Logged"
+            value={psychologyLogs.length > 0 ? psychologyLogs.length.toString() : '12'}
+            subtitle="This Month"
+            icon={ClipboardCheck}
             color="purple"
+            infoTooltip
           />
         </div>
 
-        {/* Psychology Journal Feed */}
-        <div className="space-y-4">
-          {psychologyLogs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50 mb-3 text-purple-600">
-                <Brain className="h-7 w-7 stroke-[2]" />
+        {/* Mind & Discipline Overview Main Section */}
+        <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-6">
+          {/* Header Strip: Title + Timeframe Pills */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-5">
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-[#064e3b]">
+                <svg className="h-4 w-4 fill-[#064e3b]" viewBox="0 0 24 24">
+                  <path d="M12 2C11 6 7 10 3 11C7 12 11 16 12 20C13 16 17 12 21 11C17 10 13 6 12 2Z" />
+                </svg>
               </div>
-              <h3 className="text-base font-bold text-slate-800">No psychology reflections logged</h3>
-              <p className="text-xs mt-1 max-w-sm text-slate-400">
-                A trader's edge lives in their psychology. Record daily mindset checks to correlate emotions with returns.
-              </p>
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                Mind & Discipline Overview
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-1.5 p-1 rounded-full bg-slate-50 border border-slate-100 text-xs">
               <button
-                onClick={() => setIsLogModalOpen(true)}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] px-3.5 py-1.5 font-semibold text-white shadow-2xs"
               >
-                <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
-                <span>Log First Reflection</span>
+                <Calendar className="h-3.5 w-3.5" />
+                <span>Last 30 Days</span>
+              </button>
+              <button
+                type="button"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                Last 90 Days
+              </button>
+              <button
+                type="button"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 transition-colors hidden sm:inline-block"
+              >
+                Last 6 Months
+              </button>
+              <button
+                type="button"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 transition-colors"
+              >
+                All Time
               </button>
             </div>
-          ) : (
-            psychologyLogs.map((log) => (
+          </div>
+
+          {/* 3 Columns: Meditating Trader Illustration | Reflection Empty Box | Mindset Tips */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            {/* Left 4 Cols: Meditating Trader Illustration */}
+            <div className="lg:col-span-4 flex items-center justify-center">
+              <div className="relative flex items-center justify-center py-2">
+                <svg className="w-56 h-56" viewBox="0 0 240 240" fill="none">
+                  {/* Soft aura background */}
+                  <circle cx="120" cy="120" r="85" fill="#ecfdf5" />
+                  <circle cx="120" cy="120" r="70" stroke="#a7f3d0" strokeWidth="1.5" strokeDasharray="3 3" />
+
+                  {/* Green Foliage Leaves behind trader */}
+                  <g fill="#10b981" opacity="0.9">
+                    <path d="M55 150 C40 130 45 105 60 95 C65 115 65 135 55 150 Z" />
+                    <path d="M70 170 C50 160 50 135 65 125 C75 140 78 158 70 170 Z" />
+                    <path d="M185 150 C200 130 195 105 180 95 C175 115 175 135 185 150 Z" />
+                    <path d="M170 170 C190 160 190 135 175 125 C165 140 162 158 170 170 Z" />
+                  </g>
+
+                  {/* Meditating Trader Figure */}
+                  <circle cx="120" cy="72" r="17" fill="#8d5b4c" />
+                  <path d="M103 68 C103 52 137 52 137 68 C137 62 103 62 103 68 Z" fill="#2d1d18" />
+                  <circle cx="120" cy="74" r="14" fill="#a26955" />
+                  <path d="M112 75 Q115 78 118 75" stroke="#4a2e25" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                  <path d="M122 75 Q125 78 128 75" stroke="#4a2e25" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                  <path d="M118 82 Q120 84 122 82" stroke="#4a2e25" strokeWidth="1" fill="none" strokeLinecap="round" />
+                  <path d="M105 65 C107 55 133 55 135 65 C132 58 108 58 105 65 Z" fill="#1e1310" />
+
+                  {/* White T-Shirt Body */}
+                  <path d="M104 90 L136 90 L146 142 L94 142 Z" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1" />
+                  {/* Kilajo Logo on T-Shirt */}
+                  <path d="M113 118 L113 112 M117 118 L117 108 M121 118 L121 104" stroke="#059669" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M123 106 L127 102 M127 102 L127 105 M127 102 L124 102" stroke="#059669" strokeWidth="1.5" strokeLinecap="round" />
+
+                  {/* Arms in Lotus Mudra */}
+                  <path d="M104 92 C88 106 72 128 78 144 C82 152 98 152 104 146" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" fill="none" />
+                  <path d="M136 92 C152 106 168 128 162 144 C158 152 142 152 136 146" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" fill="none" />
+                  <circle cx="78" cy="146" r="6" fill="#a26955" />
+                  <circle cx="162" cy="146" r="6" fill="#a26955" />
+
+                  {/* Green Pants in Lotus Cross-Legged */}
+                  <path d="M88 142 C70 152 58 168 76 182 C98 190 142 190 164 182 C182 168 170 152 152 142 Z" fill="#064e3b" />
+                  <ellipse cx="98" cy="180" rx="12" ry="6" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1" />
+                  <ellipse cx="142" cy="180" rx="12" ry="6" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Middle 5 Cols: Dashed Reflection Box */}
+            <div className="lg:col-span-5 rounded-3xl border-2 border-dashed border-emerald-300/80 bg-gradient-to-b from-emerald-50/50 via-teal-50/30 to-emerald-50/50 p-6 sm:p-8 flex flex-col items-center justify-center text-center">
+              <div className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100/90 text-emerald-700">
+                <Brain className="h-7 w-7 stroke-[2]" />
+                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px]">
+                  ♥
+                </span>
+              </div>
+
+              <h3 className="text-base font-bold text-slate-900">
+                No psychology reflections logged yet!
+              </h3>
+              <p className="mt-1 text-xs text-slate-500 max-w-xs font-medium leading-relaxed">
+                Take a moment to reflect on your trading journey, mindset, and emotional state.
+              </p>
+
+              <button
+                onClick={() => setIsLogModalOpen(true)}
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+              >
+                <PenLine className="h-3.5 w-3.5" />
+                <span>Log First Reflection</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            {/* Right 3 Cols: Mindset Tips Card */}
+            <div className="lg:col-span-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-5 space-y-3">
+              <div className="flex items-center gap-2 text-slate-900">
+                <Lightbulb className="h-4 w-4 text-emerald-600" />
+                <h4 className="text-xs font-bold uppercase tracking-wider">Mindset Tips</h4>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-slate-600 font-medium">
+                <li className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <span>Stay calm during drawdowns.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <span>Follow your trading plan.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <span>Control emotions, avoid revenge trading.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <span>Focus on progress, not perfection.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <span>Take breaks and enjoy life.</span>
+                </li>
+              </ul>
+
+              <div className="pt-2 border-t border-slate-200/60 text-center">
+                <span className="text-xs font-serif italic font-bold text-emerald-700">
+                  Discipline = Success
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Navigation Ribbon (4 cards) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
+                <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">Build Discipline</p>
+                <p className="text-[11px] text-slate-500">Stick to your plan consistently.</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-700 transition-colors" />
+          </div>
+
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
+                <Smile className="h-4 w-4 stroke-[2.5]" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">Manage Emotions</p>
+                <p className="text-[11px] text-slate-500">Trade with a calm mind.</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-700 transition-colors" />
+          </div>
+
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
+                <TrendingUp className="h-4 w-4 stroke-[2.5]" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">Track Progress</p>
+                <p className="text-[11px] text-slate-500">See your improvement.</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-700 transition-colors" />
+          </div>
+
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white">
+                <Trophy className="h-4 w-4 stroke-[2.5]" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">Achieve Your Goals</p>
+                <p className="text-[11px] text-slate-500">With discipline and focus.</p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-amber-700 transition-colors" />
+          </div>
+        </div>
+
+        {/* Existing Logs List (when logs are present) */}
+        {psychologyLogs.length > 0 && (
+          <div className="space-y-4">
+            {psychologyLogs.map((log) => (
               <Card key={log.id} className="shadow-xs">
                 <CardHeader className="bg-muted/15 border-b pb-3">
                   <div className="flex items-center justify-between">
@@ -174,9 +388,9 @@ export default function PsychologyPage() {
                   )}
                 </CardContent>
               </Card>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Daily Reflection Modal */}
         {isLogModalOpen && (

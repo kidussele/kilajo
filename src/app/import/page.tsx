@@ -18,8 +18,16 @@ import {
   RefreshCw,
   Sliders,
   Check,
+  FileText,
+  MapPin,
+  BarChart3,
+  Database,
+  Briefcase,
+  ChevronDown,
+  ShieldCheck,
+  Zap,
 } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, cn } from '@/lib/utils'
 
 export default function ImportPage() {
   const { accounts, bulkAddTrades, activeAccountId } = useTrading()
@@ -180,97 +188,260 @@ export default function ImportPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-5 max-w-5xl mx-auto">
+      <div className="space-y-5 max-w-6xl mx-auto">
         {/* Page Hero Banner */}
         <PageHeroBanner
           title="Import Center"
-          subtitle="Universal broker statement normalization, column mapping, and duplicate detection"
+          subtitle="Upload your broker statement, or import trading data from CSV files to analyze and track your performance."
           icon={UploadCloud}
           quote="Accurate analytics starts with pristine data."
-        >
-          <button
-            onClick={handleDownloadSample}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-colors"
-          >
-            <Download className="h-3.5 w-3.5" />
-            <span>Download Sample CSV</span>
-          </button>
-        </PageHeroBanner>
+          middleContent={
+            <button
+              type="button"
+              onClick={handleDownloadSample}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-5 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-all hover:border-slate-300"
+            >
+              <Download className="h-4 w-4 text-emerald-800" />
+              <span>Download Sample CSV</span>
+              <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+            </button>
+          }
+        />
 
         {/* Step Indicator */}
-        <div className="flex items-center justify-between text-xs font-semibold px-4 py-3.5 rounded-2xl border border-slate-100 bg-white shadow-xs">
-          <div className={`flex items-center gap-2 ${step >= 1 ? 'text-[#064e3b] font-bold' : 'text-slate-400'}`}>
-            <span className={`h-6 w-6 rounded-full border flex items-center justify-center text-xs ${step >= 1 ? 'bg-emerald-50 border-emerald-600 text-[#064e3b]' : 'border-slate-200'}`}>1</span>
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-3 rounded-full sm:rounded-2xl border border-slate-100 bg-white shadow-xs">
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
+              step === 1 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+            )}
+          >
+            <span
+              className={cn(
+                'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
+                step === 1 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+              )}
+            >
+              1
+            </span>
+            <FileText className="h-3.5 w-3.5" />
             <span>Upload File</span>
           </div>
-          <ArrowRight className="h-3.5 w-3.5 text-slate-300" />
-          <div className={`flex items-center gap-2 ${step >= 2 ? 'text-[#064e3b] font-bold' : 'text-slate-400'}`}>
-            <span className={`h-6 w-6 rounded-full border flex items-center justify-center text-xs ${step >= 2 ? 'bg-emerald-50 border-emerald-600 text-[#064e3b]' : 'border-slate-200'}`}>2</span>
+
+          <span className="text-slate-300 font-bold">&gt;</span>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
+              step === 2 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+            )}
+          >
+            <span
+              className={cn(
+                'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
+                step === 2 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+              )}
+            >
+              2
+            </span>
+            <MapPin className="h-3.5 w-3.5" />
             <span>Map Columns</span>
           </div>
-          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40" />
-          <div className={`flex items-center gap-2 ${step >= 3 ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
-            <span className="h-6 w-6 rounded-full border flex items-center justify-center text-xs">3</span>
+
+          <span className="text-slate-300 font-bold">&gt;</span>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
+              step === 3 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+            )}
+          >
+            <span
+              className={cn(
+                'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
+                step === 3 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+              )}
+            >
+              3
+            </span>
+            <CheckCircle2 className="h-3.5 w-3.5" />
             <span>Validate & Preview</span>
           </div>
-          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40" />
-          <div className={`flex items-center gap-2 ${step >= 4 ? 'text-emerald-600 font-bold' : 'text-muted-foreground'}`}>
-            <span className="h-6 w-6 rounded-full border flex items-center justify-center text-xs">4</span>
+
+          <span className="text-slate-300 font-bold">&gt;</span>
+
+          <div
+            className={cn(
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
+              step === 4 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+            )}
+          >
+            <span
+              className={cn(
+                'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
+                step === 4 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+              )}
+            >
+              4
+            </span>
+            <BarChart3 className="h-3.5 w-3.5" />
             <span>Import Summary</span>
           </div>
         </div>
 
         {/* STEP 1: Upload */}
         {step === 1 && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {fileError && (
-              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center gap-2">
+              <div className="p-3.5 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0" />
                 <span>{fileError}</span>
               </div>
             )}
 
-            {/* Target Account Selector */}
-            <div className="p-4 rounded-xl border bg-card space-y-2">
-              <label className="text-xs font-semibold text-foreground">Select Target Trading Account *</label>
-              <select
-                value={selectedAccountId}
-                onChange={(e) => setSelectedAccountId(e.target.value)}
-                className="w-full rounded-md border bg-background px-3 py-2 text-xs font-medium"
+            {/* Main Upload Card */}
+            <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-8 shadow-xs space-y-5">
+              {/* Target Account Selector */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Database className="h-4 w-4 text-[#064e3b] fill-[#064e3b]" />
+                  <label className="text-xs sm:text-sm font-bold text-slate-900">
+                    Select Target Trading Account *
+                  </label>
+                </div>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-700">
+                    <Briefcase className="h-4 w-4" />
+                  </div>
+                  <select
+                    value={selectedAccountId}
+                    onChange={(e) => setSelectedAccountId(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-slate-200/90 bg-white py-3 pl-11 pr-10 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs hover:border-slate-300 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 cursor-pointer"
+                  >
+                    {accounts.length === 0 ? (
+                      <option value="">No accounts available. Create an account first.</option>
+                    ) : (
+                      accounts.map((acc) => (
+                        <option key={acc.id} value={acc.id}>
+                          {acc.name} ({acc.broker} - {acc.currency})
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                    <ChevronDown className="h-4 w-4" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Drag & Drop Zone */}
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className="relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-300/80 bg-gradient-to-b from-emerald-50/50 via-teal-50/30 to-emerald-50/50 p-10 sm:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:border-emerald-500 hover:shadow-xs group"
               >
-                {accounts.length === 0 ? (
-                  <option value="">No accounts available. Create an account first.</option>
-                ) : (
-                  accounts.map((acc) => (
-                    <option key={acc.id} value={acc.id}>
-                      {acc.name} ({acc.broker} - {acc.currency})
-                    </option>
-                  ))
-                )}
-              </select>
+                {/* Soft wave decorations at the bottom */}
+                <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40">
+                  <svg className="w-full h-full" viewBox="0 0 600 60" preserveAspectRatio="none">
+                    <path d="M0,40 C150,15 350,60 600,30 L600,60 L0,60 Z" fill="#10b981" fillOpacity="0.12" />
+                    <path d="M0,50 C200,30 400,65 600,45 L600,60 L0,60 Z" fill="#059669" fillOpacity="0.18" />
+                  </svg>
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".csv, .tsv, .txt, .xlsx, .pdf"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {/* Upload Cloud Graphic */}
+                <div className="relative mb-3 flex h-20 w-20 items-center justify-center">
+                  <svg
+                    className="h-16 w-16 text-emerald-500"
+                    viewBox="0 0 64 64"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M16 44A14 14 0 0 1 18 16 18 18 0 0 1 48 20 14 14 0 0 1 48 44H16Z" />
+                    <polyline points="26 34 32 28 38 34" strokeWidth="3.5" />
+                    <line x1="32" y1="28" x2="32" y2="44" strokeWidth="3.5" />
+                  </svg>
+                </div>
+
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                  Click to upload or drag & drop statement
+                </h3>
+                <p className="mt-1 text-xs text-slate-500 max-w-md font-medium leading-relaxed">
+                  Supports MetaTrader 4/5 reports, cTrader statements, TradingView export, and broker CSV files.
+                </p>
+
+                {/* File Format Badges */}
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+                  {['CSV', 'TXT', 'XLSX', 'PDF'].map((fmt) => (
+                    <span
+                      key={fmt}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200/70 bg-emerald-50/80 px-3 py-1.5 text-xs font-semibold text-emerald-800 shadow-2xs"
+                    >
+                      <FileText className="h-3.5 w-3.5 text-emerald-600" />
+                      {fmt}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Drag & Drop Zone */}
-            <div
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed rounded-xl p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary/50 hover:bg-muted/10 transition-colors"
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".csv, .tsv, .txt"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center text-primary mb-3">
-                <UploadCloud className="h-6 w-6" />
+            {/* Bottom Feature Strip */}
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 p-4 shadow-xs select-none">
+              {/* Ascending Bar Chart Watermark on Right */}
+              <svg
+                className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 text-emerald-600"
+                viewBox="0 0 120 60"
+                fill="currentColor"
+              >
+                <rect x="10" y="35" width="12" height="25" rx="2" />
+                <rect x="30" y="25" width="12" height="35" rx="2" />
+                <rect x="50" y="15" width="12" height="45" rx="2" />
+                <rect x="70" y="5" width="12" height="55" rx="2" />
+                <rect x="90" y="0" width="12" height="60" rx="2" />
+              </svg>
+
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 gap-3 sm:gap-0">
+                <div className="flex items-center gap-3 sm:px-4">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                    <CheckCircle2 className="h-4 w-4 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Supported Formats</p>
+                    <p className="text-[11px] text-slate-500 font-medium">CSV, XLSX, TXT, PDF files</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                    <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Secure & Private</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Your data is safe with us</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                    <Zap className="h-4 w-4 stroke-[2.5] fill-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Fast Processing</p>
+                    <p className="text-[11px] text-slate-500 font-medium">Get insights in seconds</p>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-sm font-semibold text-foreground">Click to upload or drag & drop statement</h3>
-              <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-                Supports MetaTrader 4/5 reports, cTrader statements, TradingView export, and broker CSV files.
-              </p>
             </div>
           </div>
         )}
