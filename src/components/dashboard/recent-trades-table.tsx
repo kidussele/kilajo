@@ -107,3 +107,4 @@ export function RecentTradesTable({ trades, currency = 'USD' }: RecentTradesTabl
     </div>
   )
 }
+

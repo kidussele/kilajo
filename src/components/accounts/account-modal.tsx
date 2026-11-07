@@ -205,3 +205,4 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
     </Modal>
   )
 }
+

@@ -580,3 +580,4 @@ export function TradeModal({ isOpen, onClose, tradeToEdit }: TradeModalProps) {
     </Modal>
   )
 }
+

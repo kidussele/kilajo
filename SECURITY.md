@@ -17,3 +17,4 @@
 
 ## 4. Demo Data Boundary
 - Sample demonstration accounts are strictly tagged with `demo-` prefixes and isolated from production data storage.
+

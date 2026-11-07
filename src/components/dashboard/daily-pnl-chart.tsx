@@ -95,3 +95,4 @@ export function DailyPnlChart({ data, currency = 'USD' }: DailyPnlChartProps) {
     </div>
   )
 }
+

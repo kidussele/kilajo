@@ -76,3 +76,4 @@ export class MetaTrader5Adapter extends BaseAdapter {
     }
   }
 }
+

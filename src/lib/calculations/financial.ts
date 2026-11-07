@@ -260,3 +260,4 @@ export function buildCategoryBreakdown(trades: Trade[], keyExtractor: (trade: Tr
     }
   }).sort((a, b) => b.netPnl - a.netPnl)
 }
+

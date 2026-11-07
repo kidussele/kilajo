@@ -173,3 +173,4 @@ export class CsvAdapter extends BaseAdapter {
     }
   }
 }
+

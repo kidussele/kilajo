@@ -52,3 +52,4 @@ Drawdown is calculated chronologically from the cumulative equity progression:
 Current Drawdown = Peak Balance - Current Balance
 Drawdown % = (Current Drawdown / Peak Balance) * 100
 ```
+

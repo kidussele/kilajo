@@ -30,3 +30,4 @@ Click **Deploy**. Next.js App Router will compile all static and dynamic routes.
 3. Run the initial schema migration script located at:
    `supabase/migrations/20261107000000_initial_schema.sql`
 4. All tables, foreign key constraints, indexes, and Row Level Security policies will be established automatically.
+

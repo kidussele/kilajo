@@ -86,3 +86,4 @@ Behavioral and mindset audit logs.
 - `sleep_hours` (NUMERIC(4, 1))
 - `lessons_learned` (TEXT)
 - `notes` (TEXT)
+

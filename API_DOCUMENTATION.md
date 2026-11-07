@@ -49,3 +49,4 @@ Transmits executed trades from the KILAJO bridge Expert Advisor into the normali
   "error": "Unauthorized: Missing or invalid Bearer token"
 }
 ```
+

@@ -40,3 +40,4 @@ KILAJO strictly enforces a read-only architecture:
 2. Right-click anywhere in the history list.
 3. Select **Report → Open XML / CSV**.
 4. In KILAJO, navigate to **Import Center**, upload the file, and confirm column mapping.
+

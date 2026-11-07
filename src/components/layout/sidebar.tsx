@@ -169,3 +169,4 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
     </aside>
   )
 }
+

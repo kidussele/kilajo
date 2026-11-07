@@ -357,3 +357,4 @@ CREATE POLICY "Users can manage snapshots" ON account_snapshots
             SELECT 1 FROM trading_accounts WHERE trading_accounts.id = account_snapshots.account_id AND trading_accounts.user_id = auth.uid()
         )
     );
+

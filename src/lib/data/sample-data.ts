@@ -314,3 +314,4 @@ export const SAMPLE_GOALS: Goal[] = [
     updated_at: new Date().toISOString(),
   },
 ]
+

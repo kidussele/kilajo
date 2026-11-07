@@ -116,3 +116,4 @@ export function EquityChart({ data, currency = 'USD' }: EquityChartProps) {
     </div>
   )
 }
+

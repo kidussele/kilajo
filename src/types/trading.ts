@@ -110,3 +110,4 @@ export interface PropFirmChallengeStatus {
   status: 'ACTIVE' | 'PASSED' | 'FAILED' | 'DISQUALIFIED'
   breachReason?: string | null
 }
+

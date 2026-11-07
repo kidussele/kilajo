@@ -58,3 +58,4 @@ export abstract class BaseAdapter {
     return 'Asian'
   }
 }
+
