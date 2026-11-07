@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useTrading } from '@/context/trading-context'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -60,20 +61,18 @@ export default function SettingsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="border-b pb-4">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-            APPLICATION SETTINGS
-          </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Configure profile, currency preferences, timezone, and manage local/cloud data storage
-          </p>
-        </div>
+      <div className="space-y-5 max-w-5xl mx-auto">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Account Settings"
+          subtitle="Configure trader profile, regional preferences, bridge credentials, and data persistence"
+          icon={SettingsIcon}
+          quote="Control your environment. Master your trading."
+        />
 
         {isSaved && (
-          <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-4 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200 flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-semibold text-emerald-800 flex items-center gap-2 shadow-2xs">
+            <CheckCircle className="h-4 w-4 text-emerald-600" />
             <span>Settings saved successfully.</span>
           </div>
         )}

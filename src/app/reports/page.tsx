@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatPercent, formatDate } from '@/lib/utils'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import { Button } from '@/components/ui/button'
 import { FileSpreadsheet, Download, Printer, Calendar, FileText, CheckCircle } from 'lucide-react'
 
@@ -67,32 +67,36 @@ export default function ReportsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4 print:hidden">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              REPORTING CENTER
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Generate auditable financial statements, strategy reports, and tax-ready CSV/PDF summaries
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handleExportCsv} className="gap-1.5 text-xs">
-              <Download className="h-3.5 w-3.5" />
-              <span>Export CSV</span>
-            </Button>
-            <Button size="sm" onClick={handlePrint} className="gap-1.5 text-xs bg-primary text-primary-foreground font-semibold">
-              <Printer className="h-3.5 w-3.5" />
-              <span>Print / Save PDF</span>
-            </Button>
-          </div>
+      <div className="space-y-5 max-w-5xl mx-auto">
+        {/* Page Hero Banner */}
+        <div className="print:hidden">
+          <PageHeroBanner
+            title="Performance Reports"
+            subtitle="Generate institutional financial statements, strategy reports, and tax-ready CSV/PDF summaries"
+            icon={FileSpreadsheet}
+            quote="Audited numbers build institutional confidence."
+          >
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleExportCsv}
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-colors"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Export CSV</span>
+              </button>
+              <button
+                onClick={handlePrint}
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+              >
+                <Printer className="h-3.5 w-3.5" />
+                <span>Print / PDF</span>
+              </button>
+            </div>
+          </PageHeroBanner>
         </div>
 
         {/* Report Document Presentation */}
-        <Card className="shadow-xs p-6 print:shadow-none print:border-none">
+        <div className="rounded-3xl border border-slate-100 bg-white p-8 shadow-xs print:shadow-none print:border-none">
           {/* Statement Header */}
           <div className="flex justify-between items-start border-b pb-6">
             <div>
@@ -212,7 +216,7 @@ export default function ReportsPage() {
               </p>
             )}
           </div>
-        </Card>
+        </div>
       </div>
     </DashboardLayout>
   )

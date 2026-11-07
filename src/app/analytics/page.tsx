@@ -19,8 +19,9 @@ import {
   PieChart,
   Pie,
 } from 'recharts'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import {
-  TrendingUp,
+  LineChart as LineChartIcon,
   Award,
   Zap,
   ShieldCheck,
@@ -96,90 +97,92 @@ export default function AnalyticsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              ANALYTICS CENTER
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Deep statistical edge analysis, risk distribution, and behavioral patterns
-            </p>
-          </div>
-
+      <div className="space-y-5">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Analytics Center"
+          subtitle="Deep statistical edge analysis, risk distribution, and behavioral patterns"
+          icon={LineChartIcon}
+          quote="Know your numbers, master your probability."
+        >
           {/* Sub-view navigation tabs */}
-          <div className="flex rounded-lg border bg-card p-1 text-xs">
+          <div className="flex rounded-full border border-slate-200 bg-white/90 p-1 text-xs shadow-2xs">
             <button
               onClick={() => setActiveTab('breakdown')}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
                 activeTab === 'breakdown'
-                  ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-[#064e3b] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Performance Breakdown
+              Performance
             </button>
             <button
               onClick={() => setActiveTab('behavioral')}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
                 activeTab === 'behavioral'
-                  ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-[#064e3b] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Psychology & Mistakes
+              Psychology
             </button>
             <button
               onClick={() => setActiveTab('risk')}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
                 activeTab === 'risk'
-                  ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-[#064e3b] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Risk & Drawdown
             </button>
           </div>
-        </div>
+        </PageHeroBanner>
 
-        {/* Key Ratios Summary */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {/* Key Ratios Summary Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           <MetricCard
             title="Win Rate"
             value={`${metrics.winRate}%`}
-            subtitle={`${metrics.winningTrades} Wins / ${metrics.losingTrades} Losses`}
-            sentiment={metrics.winRate >= 50 ? 'positive' : 'warning'}
+            subtitle={`${metrics.winningTrades}W / ${metrics.losingTrades}L`}
+            icon={Award}
+            color="amber"
           />
           <MetricCard
             title="Profit Factor"
-            value={metrics.profitFactor.toString()}
-            subtitle={`Gross Win: ${formatCurrency(metrics.grossProfit, currency)}`}
-            sentiment={metrics.profitFactor >= 1.5 ? 'positive' : 'neutral'}
+            value={metrics.profitFactor > 0 ? metrics.profitFactor.toString() : '0'}
+            subtitle={metrics.profitFactor >= 1.5 ? 'Institutional Edge' : 'Developing'}
+            icon={Flame}
+            color="blue"
           />
           <MetricCard
             title="Expectancy"
             value={formatCurrency(metrics.expectancy, currency, true)}
-            subtitle="Calculated edge per trade"
-            sentiment={metrics.expectancy >= 0 ? 'positive' : 'negative'}
-          />
-          <MetricCard
-            title="Risk : Reward"
-            value={metrics.riskRewardRatio > 0 ? `1 : ${metrics.riskRewardRatio}` : '—'}
-            subtitle={`Avg Win: +${formatCurrency(metrics.averageWin, currency)}`}
-            sentiment="positive"
+            subtitle="Per trade executed"
+            icon={Zap}
+            color="emerald"
           />
           <MetricCard
             title="Max Drawdown"
             value={`-${formatCurrency(metrics.maxDrawdownAmount, currency)}`}
-            subtitle={`${metrics.maxDrawdownPercentage}% of peak balance`}
-            sentiment={metrics.maxDrawdownPercentage > 8 ? 'negative' : 'neutral'}
+            subtitle={`${metrics.maxDrawdownPercentage}%`}
+            icon={ShieldCheck}
+            color="indigo"
           />
           <MetricCard
-            title="Recovery Factor"
-            value={metrics.recoveryFactor.toString()}
-            subtitle="Net profit / Max drawdown"
-            sentiment="neutral"
+            title="Avg Win / Loss"
+            value={metrics.averageLoss > 0 ? (metrics.averageWin / metrics.averageLoss).toFixed(2) : '--'}
+            subtitle="Payoff ratio"
+            icon={Scale}
+            color="teal"
+          />
+          <MetricCard
+            title="Total Volume"
+            value={`${metrics.totalTrades} Trades`}
+            subtitle="Closed executions"
+            icon={BarChart3}
+            color="purple"
           />
         </div>
 

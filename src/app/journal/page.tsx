@@ -8,6 +8,8 @@ import { formatCurrency, formatDateTime } from '@/lib/utils'
 import { TradeModal } from '@/components/trades/trade-modal'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
+import { MetricCard } from '@/components/dashboard/metric-card'
 import {
   Search,
   PlusCircle,
@@ -23,6 +25,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Sparkles,
+  BookOpen,
+  TrendingUp,
 } from 'lucide-react'
 
 export default function JournalPage() {
@@ -143,51 +147,112 @@ export default function JournalPage() {
     }
   }
 
+  const journalMetrics = useMemo(() => {
+    const closed = processedTrades.filter((t) => t.status === 'CLOSED')
+    const netPnl = closed.reduce((sum, t) => sum + Number(t.net_pnl || 0), 0)
+    const wins = closed.filter((t) => Number(t.net_pnl || 0) > 0.0001)
+    const losses = closed.filter((t) => Number(t.net_pnl || 0) < -0.0001)
+    const winRate = wins.length + losses.length > 0 ? (wins.length / (wins.length + losses.length)) * 100 : 0
+    const grossProfit = wins.reduce((sum, t) => sum + Number(t.gross_pnl || t.net_pnl || 0), 0)
+    const grossLoss = Math.abs(losses.reduce((sum, t) => sum + Number(t.gross_pnl || t.net_pnl || 0), 0))
+    const profitFactor = grossLoss > 0 ? Number((grossProfit / grossLoss).toFixed(2)) : grossProfit > 0 ? 99 : 0
+    return {
+      total: processedTrades.length,
+      netPnl,
+      winRate: Math.round(winRate),
+      winsCount: wins.length,
+      lossesCount: losses.length,
+      profitFactor,
+      openCount: processedTrades.filter((t) => t.status === 'OPEN').length,
+    }
+  }, [processedTrades])
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header and Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              TRADING JOURNAL
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Comprehensive log of all executed trades, behavioral parameters, and review notes ({processedTrades.length} trades found)
-            </p>
-          </div>
-
+      <div className="space-y-5">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Trade Journal"
+          subtitle={`Comprehensive record of executed trades, setups, and notes (${processedTrades.length} trades recorded)`}
+          icon={BookOpen}
+          quote="Consistency is the product of disciplined execution."
+        >
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
+            <button
               onClick={handleExportCsv}
-              className="gap-1.5 text-xs font-semibold"
               disabled={processedTrades.length === 0}
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white disabled:opacity-50 transition-colors"
             >
               <Download className="h-3.5 w-3.5" />
               <span>Export CSV</span>
-            </Button>
+            </button>
 
-            <Button
-              size="sm"
+            <button
               onClick={() => {
                 setTradeToEdit(null)
                 setIsTradeModalOpen(true)
               }}
-              className="gap-1.5 text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
             >
-              <PlusCircle className="h-3.5 w-3.5" />
+              <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
               <span>Log Trade</span>
-            </Button>
+            </button>
           </div>
+        </PageHeroBanner>
+
+        {/* Quick Journal Summary Stat Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <MetricCard
+            title="Total Journaled"
+            value={journalMetrics.total.toString()}
+            subtitle={`${journalMetrics.openCount} open positions`}
+            icon={BookOpen}
+            color="emerald"
+          />
+          <MetricCard
+            title="Realized P&L"
+            value={formatCurrency(journalMetrics.netPnl, currency, true)}
+            subtitle={journalMetrics.netPnl >= 0 ? 'Net Profitable' : 'Net Drawdown'}
+            trend={journalMetrics.netPnl >= 0 ? '▲ Profit' : '▼ Loss'}
+            trendPositive={journalMetrics.netPnl >= 0}
+            icon={TrendingUp}
+            color="purple"
+          />
+          <MetricCard
+            title="Win Rate"
+            value={`${journalMetrics.winRate}%`}
+            subtitle={`${journalMetrics.winsCount}W / ${journalMetrics.lossesCount}L`}
+            icon={CheckCircle2}
+            color="amber"
+          />
+          <MetricCard
+            title="Profit Factor"
+            value={journalMetrics.profitFactor > 0 ? journalMetrics.profitFactor.toString() : '0'}
+            subtitle={journalMetrics.profitFactor >= 1.5 ? 'Excellent edge' : 'Developing'}
+            icon={Sparkles}
+            color="blue"
+          />
+          <MetricCard
+            title="Open Trades"
+            value={journalMetrics.openCount.toString()}
+            subtitle="Active market risk"
+            icon={AlertCircle}
+            color="teal"
+          />
+          <MetricCard
+            title="Avg Win/Loss"
+            value={`${journalMetrics.winsCount}:${journalMetrics.lossesCount || 1}`}
+            subtitle="Win/Loss Count"
+            icon={Filter}
+            color="indigo"
+          />
         </div>
 
         {/* Filter Toolbar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2 bg-card p-3 rounded-xl border shadow-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2.5 bg-white p-3.5 rounded-2xl border border-slate-100 shadow-xs">
           {/* Search Input */}
           <div className="relative md:col-span-2">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+            <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
             <input
               type="text"
               placeholder="Search symbol, notes, ticket..."
@@ -196,7 +261,7 @@ export default function JournalPage() {
                 setSearchQuery(e.target.value)
                 setCurrentPage(1)
               }}
-              className="w-full rounded-md border bg-background pl-8 pr-3 py-1.5 text-xs focus:ring-1 focus:ring-ring"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 py-1.5 text-xs focus:outline-hidden focus:ring-1 focus:ring-emerald-600 focus:bg-white transition-colors"
             />
           </div>
 
@@ -266,34 +331,36 @@ export default function JournalPage() {
         </div>
 
         {/* Trades Table */}
-        <div className="rounded-xl border bg-card shadow-xs overflow-hidden">
+        <div className="rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden">
           {paginatedTrades.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
-              <Filter className="h-8 w-8 text-muted-foreground/40 mb-2" />
-              <p className="text-sm font-semibold text-foreground">No trades match your criteria</p>
-              <p className="text-xs mt-1 max-w-sm">
+            <div className="flex flex-col items-center justify-center p-12 text-center text-slate-400">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-50 mb-3 text-slate-400">
+                <Filter className="h-6 w-6 stroke-[2]" />
+              </div>
+              <p className="text-sm font-bold text-slate-800">No trades match your criteria</p>
+              <p className="text-xs mt-1 max-w-sm text-slate-400">
                 Try resetting your filters or log a new trade using the button above.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b bg-muted/40 text-muted-foreground font-semibold">
+                <thead className="border-b border-slate-100 bg-slate-50/80 text-slate-500 font-bold">
                   <tr>
-                    <th className="py-3 px-3">Direction</th>
-                    <th className="py-3 px-3">Symbol</th>
-                    <th className="py-3 px-3">Lots</th>
-                    <th className="py-3 px-3">Entry Price</th>
-                    <th className="py-3 px-3">Exit Price</th>
-                    <th className="py-3 px-3">Net P&L</th>
-                    <th className="py-3 px-3">R-Multiple</th>
-                    <th className="py-3 px-3">Session</th>
-                    <th className="py-3 px-3">Discipline</th>
-                    <th className="py-3 px-3">Close Date</th>
-                    <th className="py-3 px-3 text-right">Actions</th>
+                    <th className="py-3.5 px-4">Direction</th>
+                    <th className="py-3.5 px-4">Symbol</th>
+                    <th className="py-3.5 px-4">Lots</th>
+                    <th className="py-3.5 px-4">Entry Price</th>
+                    <th className="py-3.5 px-4">Exit Price</th>
+                    <th className="py-3.5 px-4">Net P&L</th>
+                    <th className="py-3.5 px-4">R-Multiple</th>
+                    <th className="py-3.5 px-4">Session</th>
+                    <th className="py-3.5 px-4">Discipline</th>
+                    <th className="py-3.5 px-4">Close Date</th>
+                    <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-slate-100/90">
                   {paginatedTrades.map((trade) => {
                     const isBuy = trade.direction === 'BUY'
                     const net = Number(trade.net_pnl || 0)
@@ -301,13 +368,13 @@ export default function JournalPage() {
                     const isLoss = net < 0
 
                     return (
-                      <tr key={trade.id} className="hover:bg-muted/30 transition-colors group">
-                        <td className="py-3 px-3">
+                      <tr key={trade.id} className="hover:bg-slate-50/70 transition-colors group">
+                        <td className="py-3 px-4">
                           <span
-                            className={`inline-flex items-center gap-1 font-bold text-[10px] px-1.5 py-0.5 rounded ${
+                            className={`inline-flex items-center gap-1 font-bold text-[10px] px-2 py-0.5 rounded-full ${
                               isBuy
-                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-                                : 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
+                                : 'bg-rose-50 text-rose-700 border border-rose-200/50'
                             }`}
                           >
                             {isBuy ? (
@@ -318,32 +385,32 @@ export default function JournalPage() {
                             {trade.direction}
                           </span>
                         </td>
-                        <td className="py-3 px-3 font-semibold font-mono text-foreground">
+                        <td className="py-3 px-4 font-bold font-mono text-slate-900">
                           {trade.symbol}
                         </td>
-                        <td className="py-3 px-3 font-mono tabular-nums text-muted-foreground">
+                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 font-medium">
                           {trade.quantity}
                         </td>
-                        <td className="py-3 px-3 font-mono tabular-nums text-muted-foreground">
+                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 font-medium">
                           {trade.entry_price}
                         </td>
-                        <td className="py-3 px-3 font-mono tabular-nums text-muted-foreground">
+                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 font-medium">
                           {trade.exit_price ?? '—'}
                         </td>
-                        <td className="py-3 px-3 font-mono font-bold tabular-nums">
+                        <td className="py-3 px-4 font-mono font-bold tabular-nums">
                           <span
                             className={
                               trade.status === 'OPEN'
-                                ? 'text-amber-600 font-semibold'
+                                ? 'text-amber-600 font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-[11px]'
                                 : isWin
                                 ? 'text-emerald-600'
                                 : isLoss
-                                ? 'text-red-600'
-                                : 'text-muted-foreground'
+                                ? 'text-rose-600'
+                                : 'text-slate-400'
                             }
                           >
                             {trade.status === 'OPEN'
-                              ? 'OPEN POSITION'
+                              ? 'OPEN'
                               : formatCurrency(net, currency, true)}
                           </span>
                         </td>

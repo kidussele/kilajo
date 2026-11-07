@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatPercent } from '@/lib/utils'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
+import { MetricCard } from '@/components/dashboard/metric-card'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -61,39 +63,70 @@ export default function PropFirmPage() {
     setRuleModalOpen(false)
   }
 
+  const totalPropCapital = propAccounts.reduce((sum, a) => sum + Number(a.initial_balance || 0), 0)
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              PROP FIRM CHALLENGE TRACKER
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Live monitoring of evaluation targets, daily loss guardrails, and maximum drawdown buffers
-            </p>
-          </div>
+      <div className="space-y-5">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Prop Firm Challenge Tracker"
+          subtitle="Live monitoring of evaluation targets, daily loss guardrails, and maximum drawdown buffers"
+          icon={ShieldAlert}
+          quote="Protect your capital first; profits will follow."
+        />
+
+        {/* Prop Firm Overview Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MetricCard
+            title="Active Challenges"
+            value={propAccounts.length.toString()}
+            subtitle="Under evaluation"
+            icon={ShieldAlert}
+            color="amber"
+          />
+          <MetricCard
+            title="Total Challenge Capital"
+            value={formatCurrency(totalPropCapital, 'USD')}
+            subtitle="Combined starting balances"
+            icon={Award}
+            color="emerald"
+          />
+          <MetricCard
+            title="Phase 1 Targets"
+            value="10.0%"
+            subtitle="Standard profit milestone"
+            icon={Target}
+            color="blue"
+          />
+          <MetricCard
+            title="Max Drawdown Cap"
+            value="10.0%"
+            subtitle="Hard breach boundary"
+            icon={Flame}
+            color="indigo"
+          />
         </div>
 
         {propAccounts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground border border-dashed rounded-xl bg-card">
-            <ShieldAlert className="h-10 w-10 text-amber-500/50 mb-3" />
-            <h3 className="text-sm font-semibold text-foreground">No active prop firm challenges</h3>
-            <p className="text-xs mt-1 max-w-sm">
+          <div className="flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 mb-3 text-amber-600">
+              <ShieldAlert className="h-7 w-7 stroke-[2]" />
+            </div>
+            <h3 className="text-base font-bold text-slate-800">No active prop firm challenges</h3>
+            <p className="text-xs mt-1 max-w-sm text-slate-400">
               Create an account with the "Prop Firm Challenge" flag enabled to track your evaluation rules.
             </p>
-            <Button
-              size="sm"
+            <button
               onClick={() => (window.location.href = '/accounts')}
-              className="mt-4 gap-1.5 text-xs font-semibold"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
             >
-              <PlusCircle className="h-3.5 w-3.5" />
+              <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
               <span>Configure Account</span>
-            </Button>
+            </button>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {propAccounts.map((account) => {
               const rule = propRules.find((r) => r.account_id === account.id) || {
                 profit_target_pct: 10.0,

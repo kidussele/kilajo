@@ -7,6 +7,7 @@ import { CsvAdapter, ColumnMapping } from '@/lib/adapters/csv-adapter'
 import { NormalizedTrade, ValidationIssue } from '@/lib/adapters/base-adapter'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import {
   UploadCloud,
   FileSpreadsheet,
@@ -179,33 +180,32 @@ export default function ImportPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="border-b pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              IMPORT CENTER
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              5-step universal statement normalization and duplicate detection engine
-            </p>
-          </div>
-
-          <Button variant="outline" size="sm" onClick={handleDownloadSample} className="gap-1.5 text-xs">
+      <div className="space-y-5 max-w-5xl mx-auto">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Import Center"
+          subtitle="Universal broker statement normalization, column mapping, and duplicate detection"
+          icon={UploadCloud}
+          quote="Accurate analytics starts with pristine data."
+        >
+          <button
+            onClick={handleDownloadSample}
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-colors"
+          >
             <Download className="h-3.5 w-3.5" />
             <span>Download Sample CSV</span>
-          </Button>
-        </div>
+          </button>
+        </PageHeroBanner>
 
         {/* Step Indicator */}
-        <div className="flex items-center justify-between text-xs font-medium px-2 py-3 rounded-xl border bg-card">
-          <div className={`flex items-center gap-2 ${step >= 1 ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
-            <span className="h-6 w-6 rounded-full border flex items-center justify-center text-xs">1</span>
+        <div className="flex items-center justify-between text-xs font-semibold px-4 py-3.5 rounded-2xl border border-slate-100 bg-white shadow-xs">
+          <div className={`flex items-center gap-2 ${step >= 1 ? 'text-[#064e3b] font-bold' : 'text-slate-400'}`}>
+            <span className={`h-6 w-6 rounded-full border flex items-center justify-center text-xs ${step >= 1 ? 'bg-emerald-50 border-emerald-600 text-[#064e3b]' : 'border-slate-200'}`}>1</span>
             <span>Upload File</span>
           </div>
-          <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40" />
-          <div className={`flex items-center gap-2 ${step >= 2 ? 'text-primary font-bold' : 'text-muted-foreground'}`}>
-            <span className="h-6 w-6 rounded-full border flex items-center justify-center text-xs">2</span>
+          <ArrowRight className="h-3.5 w-3.5 text-slate-300" />
+          <div className={`flex items-center gap-2 ${step >= 2 ? 'text-[#064e3b] font-bold' : 'text-slate-400'}`}>
+            <span className={`h-6 w-6 rounded-full border flex items-center justify-center text-xs ${step >= 2 ? 'bg-emerald-50 border-emerald-600 text-[#064e3b]' : 'border-slate-200'}`}>2</span>
             <span>Map Columns</span>
           </div>
           <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40" />

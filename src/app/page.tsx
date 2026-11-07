@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import { MetricCard } from '@/components/dashboard/metric-card'
+import { SecondaryMetricRibbon } from '@/components/dashboard/secondary-metric-ribbon'
 import { EquityChart } from '@/components/dashboard/equity-chart'
 import { DailyPnlChart } from '@/components/dashboard/daily-pnl-chart'
-import { RecentTradesTable } from '@/components/dashboard/recent-trades-table'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatPercent } from '@/lib/utils'
 import { buildEquityCurve, buildDailyPerformance, buildCategoryBreakdown } from '@/lib/calculations/financial'
@@ -13,18 +14,20 @@ import { convertCurrency } from '@/lib/calculations/currency'
 import {
   Wallet,
   TrendingUp,
-  Award,
-  Zap,
   Percent,
-  Crosshair,
+  Trophy,
   ShieldCheck,
   BarChart3,
-  Calendar,
+  Scale,
+  Clock,
+  ArrowUpRight,
+  Target,
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Link from 'next/link'
 
 export default function DashboardPage() {
-  const { metrics, filteredTrades, activeAccount, activeAccountId, accounts, portfolioBalance } = useTrading()
+  const { metrics, filteredTrades, activeAccount, accounts, portfolioBalance } = useTrading()
+  const [activeTimeframe, setActiveTimeframe] = useState('1M')
 
   const currency = activeAccount?.currency || portfolioBalance.baseCurrency || 'USD'
 
@@ -61,207 +64,244 @@ export default function DashboardPage() {
     return buildCategoryBreakdown(filteredTrades, (t) => t.symbol).slice(0, 4)
   }, [filteredTrades])
 
+  const pnlPercent = initialBalance > 0 ? (metrics.netProfit / initialBalance) * 100 : 0
+  const isPnlPositive = metrics.netProfit >= 0
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              PORTFOLIO OVERVIEW
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {activeAccountId === 'ALL'
-                ? 'Aggregated performance across all connected trading accounts & prop challenges'
-                : `Active Account: ${activeAccount?.name} (${activeAccount?.broker})`}
-            </p>
-          </div>
+      <div className="space-y-4 sm:space-y-5">
+        {/* 1. Page Hero Banner */}
+        <PageHeroBanner
+          title="Portfolio Overview"
+          subtitle="Track your performance and stay on top of your trading journey"
+          icon={Target}
+          quote="Plan Well, Trade Smart, Grow Steady."
+        />
 
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary text-xs font-medium text-secondary-foreground">
-              <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-              <span>All-Time History</span>
-            </span>
-          </div>
-        </div>
-
-        {/* Primary Financial Metric Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {/* 2. Primary 6 Metric Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           <MetricCard
             title="Portfolio Balance"
             value={formatCurrency(totalBalance, currency)}
-            subtitle={`Initial: ${formatCurrency(initialBalance, currency)}`}
+            trend={totalBalance >= initialBalance ? `▲ +${formatCurrency(totalBalance - initialBalance, currency)} (${formatPercent(pnlPercent)})` : `▼ ${formatCurrency(totalBalance - initialBalance, currency)} (${formatPercent(pnlPercent)})`}
+            trendPositive={totalBalance >= initialBalance}
             icon={Wallet}
-            sentiment="neutral"
+            color="emerald"
           />
+
           <MetricCard
             title="Net Profit / Loss"
             value={formatCurrency(metrics.netProfit, currency, true)}
-            subtitle={`Gross: ${formatCurrency(metrics.grossProfit, currency)}`}
+            subtitle={formatPercent(pnlPercent, true)}
             icon={TrendingUp}
-            sentiment={metrics.netProfit >= 0 ? 'positive' : 'negative'}
-            trend={formatPercent(initialBalance > 0 ? (metrics.netProfit / initialBalance) * 100 : 0, true)}
+            color="purple"
           />
+
           <MetricCard
             title="Win Rate"
             value={`${metrics.winRate}%`}
-            subtitle={`${metrics.winningTrades}W / ${metrics.losingTrades}L (${metrics.breakevenTrades} BE)`}
+            subtitle={`${metrics.winningTrades}W / ${metrics.losingTrades}L`}
             icon={Percent}
-            sentiment={metrics.winRate >= 50 ? 'positive' : 'warning'}
+            color="amber"
           />
+
           <MetricCard
             title="Profit Factor"
-            value={metrics.profitFactor.toString()}
-            subtitle={`Losses: -${formatCurrency(metrics.grossLoss, currency)}`}
-            icon={Award}
-            sentiment={metrics.profitFactor >= 1.5 ? 'positive' : 'neutral'}
+            value={metrics.profitFactor > 0 ? metrics.profitFactor.toString() : '0'}
+            subtitle={metrics.profitFactor > 0 ? `${metrics.profitFactor}x` : '--'}
+            icon={Trophy}
+            color="blue"
           />
+
           <MetricCard
             title="Expectancy"
             value={formatCurrency(metrics.expectancy, currency, true)}
-            subtitle="Per executed trade"
-            icon={Zap}
-            sentiment={metrics.expectancy >= 0 ? 'positive' : 'negative'}
+            subtitle="Per Trade"
+            icon={ShieldCheck}
+            color="teal"
           />
+
           <MetricCard
             title="Max Drawdown"
             value={`-${formatCurrency(metrics.maxDrawdownAmount, currency)}`}
-            subtitle={`${metrics.maxDrawdownPercentage}% of peak equity`}
-            icon={ShieldCheck}
-            sentiment={metrics.maxDrawdownPercentage > 8 ? 'negative' : 'neutral'}
+            subtitle={`${metrics.maxDrawdownPercentage}%`}
+            icon={BarChart3}
+            color="indigo"
           />
         </div>
 
-        {/* Secondary Detailed Metrics Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 py-2 px-4 rounded-xl border bg-card/60 shadow-xs text-xs">
-          <div>
-            <span className="text-muted-foreground block text-[11px]">Total Trades</span>
-            <span className="font-mono font-bold text-foreground text-sm">{metrics.totalTrades}</span>
-          </div>
-          <div>
-            <span className="text-muted-foreground block text-[11px]">Avg Win / Avg Loss</span>
-            <span className="font-mono font-bold text-foreground text-sm">
-              <span className="text-emerald-600">+{formatCurrency(metrics.averageWin, currency)}</span> /{' '}
-              <span className="text-red-600">-{formatCurrency(metrics.averageLoss, currency)}</span>
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground block text-[11px]">Risk / Reward Ratio</span>
-            <span className="font-mono font-bold text-foreground text-sm">
-              {metrics.riskRewardRatio > 0 ? `1 : ${metrics.riskRewardRatio}` : '—'}
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground block text-[11px]">Consecutive Streaks</span>
-            <span className="font-mono font-bold text-foreground text-sm">
-              {metrics.maxConsecutiveWins}W / {metrics.maxConsecutiveLosses}L max
-            </span>
-          </div>
-          <div>
-            <span className="text-muted-foreground block text-[11px]">Recovery Factor</span>
-            <span className="font-mono font-bold text-foreground text-sm">{metrics.recoveryFactor}</span>
-          </div>
-          <div>
-            <span className="text-muted-foreground block text-[11px]">Commissions & Swap</span>
-            <span className="font-mono font-bold text-muted-foreground text-sm">
-              {formatCurrency(metrics.totalCommissions + metrics.totalSwap, currency)}
-            </span>
-          </div>
-        </div>
+        {/* 3. Secondary Detailed Metric Ribbon */}
+        <SecondaryMetricRibbon
+          totalTrades={metrics.totalTrades}
+          avgRiskReward={metrics.riskRewardRatio > 0 ? `1 : ${metrics.riskRewardRatio}` : '--'}
+          totalRewardRisk={metrics.profitFactor > 0 ? `${metrics.profitFactor}` : '--'}
+          executionDrawdown={`${metrics.winningTrades}W / ${metrics.losingTrades}L R:R`}
+          recoveryFactor={metrics.recoveryFactor || '∞'}
+          correlationSwap={formatCurrency(metrics.totalCommissions + metrics.totalSwap, currency)}
+        />
 
-        {/* Charts Grid: Equity Curve & Daily PnL */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2 shadow-xs">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono">
+        {/* 4. Main Interactive Charts Area (2/3 and 1/3) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* Left: Cumulative Equity & Balance Curve */}
+          <div className="lg:col-span-2 rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100/80">
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                  <Scale className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <h3 className="font-bold text-sm font-sans text-slate-800">
                   Cumulative Equity & Balance Curve
-                </CardTitle>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Chronological progression of realized account equity
-                </p>
+                </h3>
               </div>
-            </CardHeader>
-            <CardContent>
-              <EquityChart data={equityData} currency={currency} />
-            </CardContent>
-          </Card>
 
-          <Card className="shadow-xs">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono">
-                Daily Realized P&L
-              </CardTitle>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Net profit and loss distribution by day
-              </p>
-            </CardHeader>
-            <CardContent>
-              <DailyPnlChart data={dailyData} currency={currency} />
-            </CardContent>
-          </Card>
+              {/* Timeframe Filter Pills */}
+              <div className="flex items-center gap-1 rounded-xl bg-slate-50 p-1 border border-slate-100 text-[11px] font-semibold text-slate-500">
+                {['1D', '1W', '1M', '3M', '6M', '1Y', 'ALL'].map((tf) => (
+                  <button
+                    key={tf}
+                    onClick={() => setActiveTimeframe(tf)}
+                    className={`rounded-lg px-2.5 py-1 transition-all ${
+                      activeTimeframe === tf
+                        ? 'bg-[#064e3b] text-white shadow-xs font-bold'
+                        : 'hover:text-slate-900'
+                    }`}
+                  >
+                    {tf}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-4 flex-1">
+              <EquityChart data={equityData} currency={currency} />
+            </div>
+          </div>
+
+          {/* Right: Daily Realized P&L */}
+          <div className="lg:col-span-1">
+            <DailyPnlChart data={dailyData} currency={currency} />
+          </div>
         </div>
 
-        {/* Bottom Section: Top Instruments Breakdown + Recent Trades */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Top Instruments Card */}
-          <Card className="shadow-xs">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-primary" />
-                <span>Top Traded Instruments</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 pt-2">
+        {/* 5. Bottom Summary Cards Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Top Traded Instruments */}
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                  <TrendingUp className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                  Top Traded Instruments
+                </h3>
+              </div>
+
+              <Link
+                href="/analytics"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-colors"
+              >
+                <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
+              </Link>
+            </div>
+
+            <div className="py-5 min-h-[120px] flex items-center justify-center">
               {symbolBreakdown.length === 0 ? (
-                <p className="text-xs text-muted-foreground italic py-6 text-center">
-                  No traded instruments recorded yet.
-                </p>
+                <div className="flex items-center gap-3 text-slate-400 text-xs">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+                    📊
+                  </div>
+                  <span>No trades yet. Start trading to see your most traded pairs.</span>
+                </div>
               ) : (
-                symbolBreakdown.map((item) => (
-                  <div key={item.category} className="flex items-center justify-between border-b pb-2 last:border-b-0">
-                    <div>
-                      <span className="font-mono font-bold text-xs text-foreground">{item.category}</span>
-                      <p className="text-[10px] text-muted-foreground">
-                        {item.tradesCount} trades • {item.winRate}% win rate
-                      </p>
-                    </div>
-                    <div className="text-right">
+                <div className="w-full space-y-2.5">
+                  {symbolBreakdown.map((item) => (
+                    <div
+                      key={item.category}
+                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-800 font-mono">{item.category}</span>
+                        <span className="text-[10px] text-slate-400 font-semibold">
+                          ({item.tradesCount} trades)
+                        </span>
+                      </div>
                       <span
-                        className={`font-mono font-bold text-xs ${
-                          item.netPnl >= 0 ? 'text-emerald-600' : 'text-red-600'
+                        className={`font-mono font-bold ${
+                          item.netPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'
                         }`}
                       >
                         {formatCurrency(item.netPnl, currency, true)}
                       </span>
-                      <p className="text-[10px] text-muted-foreground">PF: {item.profitFactor}</p>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Recent Trades Table */}
-          <Card className="lg:col-span-2 shadow-xs">
-            <CardHeader className="pb-2 flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono flex items-center gap-2">
-                  <Crosshair className="h-4 w-4 text-primary" />
-                  <span>Recent Executed Trades</span>
-                </CardTitle>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Latest trading executions logged in KILAJO
-                </p>
+          {/* Recent Executed Trades */}
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
+                  <Clock className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                  Recent Executed Trades
+                </h3>
               </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              <RecentTradesTable trades={filteredTrades} currency={currency} />
-            </CardContent>
-          </Card>
+
+              <Link
+                href="/journal"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-purple-50 text-slate-500 hover:text-purple-700 transition-colors"
+              >
+                <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
+              </Link>
+            </div>
+
+            <div className="py-5 min-h-[120px] flex items-center justify-center">
+              {filteredTrades.length === 0 ? (
+                <div className="flex items-center gap-3 text-slate-400 text-xs">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+                    ⏱️
+                  </div>
+                  <span>Your latest trades will appear here once you start trading.</span>
+                </div>
+              ) : (
+                <div className="w-full space-y-2">
+                  {filteredTrades.slice(0, 3).map((t) => (
+                    <div
+                      key={t.id}
+                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                            t.direction === 'BUY'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-rose-100 text-rose-800'
+                          }`}
+                        >
+                          {t.direction}
+                        </span>
+                        <span className="font-bold text-slate-800 font-mono">{t.symbol}</span>
+                      </div>
+                      <span
+                        className={`font-mono font-bold ${
+                          Number(t.net_pnl || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                        }`}
+                      >
+                        {formatCurrency(Number(t.net_pnl || 0), currency, true)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </DashboardLayout>
   )
 }
-

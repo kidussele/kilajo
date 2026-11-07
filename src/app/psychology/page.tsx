@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useTrading } from '@/context/trading-context'
 import { formatDate } from '@/lib/utils'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
+import { MetricCard } from '@/components/dashboard/metric-card'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -52,47 +54,79 @@ export default function PsychologyPage() {
     setIsLogModalOpen(false)
   }
 
+  const avgDiscipline = psychologyLogs.length > 0 ? (psychologyLogs.reduce((s, l) => s + (l.discipline_score || 0), 0) / psychologyLogs.length).toFixed(1) : '8.5'
+  const avgMood = psychologyLogs.length > 0 ? (psychologyLogs.reduce((s, l) => s + (l.mood_score || 0), 0) / psychologyLogs.length).toFixed(1) : '8.0'
+  const avgSleep = psychologyLogs.length > 0 ? (psychologyLogs.reduce((s, l) => s + (l.sleep_hours || 0), 0) / psychologyLogs.length).toFixed(1) : '7.5'
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              PSYCHOLOGY & DISCIPLINE
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Daily behavioral audits, emotional state calibration, and systematic discipline tracking
-            </p>
-          </div>
-
-          <Button
-            size="sm"
+      <div className="space-y-5">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Psychology & Discipline"
+          subtitle="Daily behavioral audits, emotional state calibration, and systematic discipline tracking"
+          icon={Brain}
+          quote="Master your mind, master the market."
+        >
+          <button
             onClick={() => setIsLogModalOpen(true)}
-            className="gap-1.5 text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
           >
-            <PlusCircle className="h-3.5 w-3.5" />
+            <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>Log Daily Reflection</span>
-          </Button>
+          </button>
+        </PageHeroBanner>
+
+        {/* Psychology Stat Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MetricCard
+            title="Discipline Score"
+            value={`${avgDiscipline}/10`}
+            subtitle="Rule execution index"
+            icon={ShieldCheck}
+            color="emerald"
+          />
+          <MetricCard
+            title="Mood Rating"
+            value={`${avgMood}/10`}
+            subtitle="Emotional calibration"
+            icon={Smile}
+            color="amber"
+          />
+          <MetricCard
+            title="Avg Sleep Duration"
+            value={`${avgSleep}h`}
+            subtitle="Rest & focus readiness"
+            icon={Moon}
+            color="blue"
+          />
+          <MetricCard
+            title="Reflections Logged"
+            value={psychologyLogs.length.toString()}
+            subtitle="Total journal entries"
+            icon={Brain}
+            color="purple"
+          />
         </div>
 
         {/* Psychology Journal Feed */}
         <div className="space-y-4">
           {psychologyLogs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground border border-dashed rounded-xl bg-card">
-              <Brain className="h-10 w-10 text-primary/40 mb-3" />
-              <h3 className="text-sm font-semibold text-foreground">No psychology reflections logged</h3>
-              <p className="text-xs mt-1 max-w-sm">
+            <div className="flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50 mb-3 text-purple-600">
+                <Brain className="h-7 w-7 stroke-[2]" />
+              </div>
+              <h3 className="text-base font-bold text-slate-800">No psychology reflections logged</h3>
+              <p className="text-xs mt-1 max-w-sm text-slate-400">
                 A trader's edge lives in their psychology. Record daily mindset checks to correlate emotions with returns.
               </p>
-              <Button
-                size="sm"
+              <button
                 onClick={() => setIsLogModalOpen(true)}
-                className="mt-4 gap-1.5 text-xs font-semibold"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
               >
-                <PlusCircle className="h-3.5 w-3.5" />
+                <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
                 <span>Log First Reflection</span>
-              </Button>
+              </button>
             </div>
           ) : (
             psychologyLogs.map((log) => (

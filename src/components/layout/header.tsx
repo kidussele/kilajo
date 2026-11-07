@@ -3,62 +3,54 @@
 import React, { useState } from 'react'
 import {
   Menu,
-  PlusCircle,
-  Upload,
-  Moon,
-  Sun,
+  Briefcase,
+  Bell,
+  Calendar,
   ChevronDown,
-  Layers,
   Check,
+  PlusCircle,
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { useTrading } from '@/context/trading-context'
 import { TradeModal } from '@/components/trades/trade-modal'
-import { useRouter } from 'next/navigation'
 
 export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
-  const router = useRouter()
   const { accounts, activeAccountId, setActiveAccountId, activeAccount, isDemoMode } = useTrading()
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false)
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
 
-  const toggleTheme = () => {
-    const nextDark = !isDark
-    setIsDark(nextDark)
-    if (nextDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
+  // Current formatted date matching the screenshot aesthetic (e.g. "Nov 5, 2026")
+  const formattedDate = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b bg-card/90 px-4 sm:px-6 backdrop-blur-md">
-        {/* Left Section: Mobile Menu + Account Filter Selector */}
+      <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8 bg-transparent backdrop-blur-xs select-none">
+        {/* Left Section: Mobile Menu + Account Filter Selector Pill */}
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenMobileMenu}
-            className="md:hidden rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+            className="md:hidden rounded-xl p-2 text-slate-600 hover:bg-white hover:text-slate-900 border border-slate-200/60 shadow-xs"
             aria-label="Open navigation menu"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          {/* Account Selector Dropdown */}
+          {/* Account Selector Pill */}
           <div className="relative">
             <button
               onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-              className="flex items-center gap-2 rounded-lg border bg-background px-3 py-1.5 text-xs sm:text-sm font-medium shadow-xs hover:bg-accent transition-colors"
+              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-all"
             >
-              <Layers className="h-4 w-4 text-primary shrink-0" />
-              <span className="max-w-[150px] sm:max-w-[220px] truncate text-foreground font-semibold">
+              <Briefcase className="h-4 w-4 text-emerald-700 stroke-[2.2] shrink-0" />
+              <span className="max-w-[130px] sm:max-w-[200px] truncate">
                 {activeAccountId === 'ALL'
-                  ? `All Accounts (${accounts.length})`
-                  : activeAccount?.name || 'Select Account'}
+                  ? 'All Accounts'
+                  : activeAccount?.name || 'All Accounts'}
               </span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground ml-1" />
+              <ChevronDown className="h-3.5 w-3.5 text-slate-400 stroke-[2.5]" />
             </button>
 
             {isAccountDropdownOpen && (
@@ -67,8 +59,8 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                   className="fixed inset-0 z-30"
                   onClick={() => setIsAccountDropdownOpen(false)}
                 />
-                <div className="absolute left-0 top-full mt-2 w-64 rounded-xl border bg-popover p-1.5 shadow-lg z-40 animate-in fade-in zoom-in-95">
-                  <div className="px-2 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl z-40 animate-in fade-in zoom-in-95">
+                  <div className="px-2 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     Select Scope
                   </div>
                   <button
@@ -76,22 +68,22 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                       setActiveAccountId('ALL')
                       setIsAccountDropdownOpen(false)
                     }}
-                    className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs font-medium hover:bg-accent transition-colors text-left"
+                    className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 hover:bg-emerald-50/70 transition-colors text-left"
                   >
                     <div className="flex items-center gap-2">
-                      <Layers className="h-3.5 w-3.5 text-muted-foreground" />
-                      <span>All Accounts (Unified Analytics)</span>
+                      <Briefcase className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>All Accounts (Unified)</span>
                     </div>
-                    {activeAccountId === 'ALL' && <Check className="h-3.5 w-3.5 text-primary font-bold" />}
+                    {activeAccountId === 'ALL' && <Check className="h-3.5 w-3.5 text-emerald-600 font-bold" />}
                   </button>
 
-                  <div className="my-1 border-t" />
+                  <div className="my-1 border-t border-slate-100" />
 
-                  <div className="px-2 py-1.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  <div className="px-2 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     Individual Accounts
                   </div>
                   {accounts.length === 0 ? (
-                    <div className="px-2.5 py-2 text-xs text-muted-foreground italic">
+                    <div className="px-2.5 py-2 text-xs text-slate-400 italic">
                       No accounts added yet.
                     </div>
                   ) : (
@@ -102,16 +94,16 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                           setActiveAccountId(acc.id)
                           setIsAccountDropdownOpen(false)
                         }}
-                        className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs hover:bg-accent transition-colors text-left"
+                        className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium text-slate-800 hover:bg-emerald-50/70 transition-colors text-left"
                       >
                         <div className="truncate mr-2">
-                          <p className="font-medium text-foreground truncate">{acc.name}</p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="font-semibold text-slate-900 truncate">{acc.name}</p>
+                          <p className="text-[10px] text-slate-400">
                             {acc.broker} • {acc.currency}
                           </p>
                         </div>
                         {activeAccountId === acc.id && (
-                          <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                          <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 font-bold" />
                         )}
                       </button>
                     ))
@@ -122,56 +114,48 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           </div>
         </div>
 
-        {/* Right Section: Actions + Theme + Profile */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Quick Import Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push('/import')}
-            className="hidden sm:inline-flex gap-1.5 text-xs font-semibold"
-          >
-            <Upload className="h-3.5 w-3.5" />
-            <span>Import</span>
-          </Button>
-
-          {/* New Trade Primary Action */}
-          <Button
-            size="sm"
-            onClick={() => setIsTradeModalOpen(true)}
-            className="gap-1.5 text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
-          >
-            <PlusCircle className="h-3.5 w-3.5" />
-            <span className="hidden xs:inline">Log Trade</span>
-          </Button>
-
-          {/* Theme Toggle */}
+        {/* Right Section: Notification Pill + Date Pill + Log Trade Action */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Quick Log Trade Button */}
           <button
-            onClick={toggleTheme}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            aria-label="Toggle theme"
+            onClick={() => setIsTradeModalOpen(true)}
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100/70 shadow-2xs transition-colors"
           >
-            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            <PlusCircle className="h-3.5 w-3.5 text-emerald-700" />
+            <span>Log Trade</span>
           </button>
+
+          {/* Notification Bell Pill with Red Badge */}
+          <button
+            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-slate-200/80 shadow-2xs text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            title="Notifications"
+          >
+            <Bell className="h-4 w-4 stroke-[2]" />
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-xs">
+              3
+            </span>
+          </button>
+
+          {/* Date Selector Pill (in dark forest green bg-[#064e3b]) */}
+          <div className="flex items-center gap-2 rounded-xl bg-[#064e3b] text-white px-3.5 py-1.5 text-xs font-semibold shadow-xs">
+            <Calendar className="h-3.5 w-3.5 text-emerald-300 stroke-[2.2]" />
+            <span>{formattedDate}</span>
+            <ChevronDown className="h-3 w-3 text-emerald-300 stroke-[2.5]" />
+          </div>
         </div>
       </header>
 
-      {/* Demo Mode Notification Ribbon */}
+      {/* Demo Mode Notification Ribbon (soft warning if in demo mode) */}
       {isDemoMode && (
-        <div className="bg-amber-500/10 border-b border-amber-500/20 text-amber-800 dark:text-amber-300 px-4 py-1 text-xs font-medium flex items-center justify-between">
+        <div className="mx-4 sm:mx-6 lg:mx-8 mb-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 px-4 py-1.5 text-xs font-medium flex items-center justify-between shadow-2xs">
           <div className="flex items-center gap-2">
-            <span className="font-mono uppercase font-bold text-[10px] bg-amber-500/20 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 rounded">
+            <span className="font-mono uppercase font-bold text-[10px] bg-amber-500/20 text-amber-900 px-1.5 py-0.5 rounded-md">
               Demo Mode
             </span>
-            <span className="text-[11px]">Viewing isolated sample trading data. Production accounts are unaffected.</span>
+            <span className="text-[11px] font-medium text-amber-800">
+              Viewing sample trading portfolio data.
+            </span>
           </div>
-          <button
-            onClick={() => router.push('/settings')}
-            className="text-[11px] hover:underline font-semibold"
-          >
-            Manage Data
-          </button>
         </div>
       )}
 
@@ -183,4 +167,3 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
     </>
   )
 }
-

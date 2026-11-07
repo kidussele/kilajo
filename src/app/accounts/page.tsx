@@ -7,6 +7,8 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 import { AccountModal } from '@/components/accounts/account-modal'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
+import { MetricCard } from '@/components/dashboard/metric-card'
 import {
   Wallet,
   PlusCircle,
@@ -61,47 +63,78 @@ export default function AccountsPage() {
     }
   }
 
+  const totalCapital = accounts.reduce((sum, acc) => sum + Number(acc.current_balance || 0), 0)
+  const propCount = accounts.filter((a) => a.is_prop_firm).length
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              TRADING ACCOUNTS & INTEGRATIONS
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Connect and manage multiple live broker accounts, prop firm challenges, and synchronization bridges
-            </p>
-          </div>
-
-          <Button
-            size="sm"
+      <div className="space-y-5">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Trading Accounts"
+          subtitle="Connect and manage live broker accounts, prop firm challenges, and synchronization bridges"
+          icon={Wallet}
+          quote="One journal. All brokers. Unified control."
+        >
+          <button
             onClick={() => setIsAddAccountOpen(true)}
-            className="gap-1.5 text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
           >
-            <PlusCircle className="h-3.5 w-3.5" />
+            <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>Connect Account</span>
-          </Button>
+          </button>
+        </PageHeroBanner>
+
+        {/* Account Overview Metric Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MetricCard
+            title="Total Accounts"
+            value={accounts.length.toString()}
+            subtitle={`${propCount} prop firm challenges`}
+            icon={Wallet}
+            color="emerald"
+          />
+          <MetricCard
+            title="Total Portfolio Value"
+            value={formatCurrency(totalCapital, 'USD')}
+            subtitle="Combined equity"
+            icon={CheckCircle}
+            color="purple"
+          />
+          <MetricCard
+            title="Prop Challenges"
+            value={propCount.toString()}
+            subtitle="Funded & Evaluation"
+            icon={ShieldAlert}
+            color="amber"
+          />
+          <MetricCard
+            title="Active Scope"
+            value={activeAccountId === 'ALL' ? 'All Accounts' : accounts.find((a) => a.id === activeAccountId)?.name || 'Account'}
+            subtitle="Current dashboard filter"
+            icon={Radio}
+            color="blue"
+          />
         </div>
 
         {/* Accounts List Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {accounts.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-muted-foreground border border-dashed rounded-xl bg-card">
-              <Wallet className="h-10 w-10 text-muted-foreground/30 mb-3" />
-              <h3 className="text-sm font-semibold text-foreground">No accounts connected yet</h3>
-              <p className="text-xs mt-1 max-w-sm">
+            <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 mb-3 text-slate-400">
+                <Wallet className="h-7 w-7 stroke-[2]" />
+              </div>
+              <h3 className="text-base font-bold text-slate-800">No accounts connected yet</h3>
+              <p className="text-xs mt-1 max-w-sm text-slate-400">
                 Add your live broker account or prop firm challenge to start tracking your performance.
               </p>
-              <Button
-                size="sm"
+              <button
                 onClick={() => setIsAddAccountOpen(true)}
-                className="mt-4 gap-1.5 text-xs font-semibold"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
               >
-                <PlusCircle className="h-3.5 w-3.5" />
+                <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
                 <span>Add Your First Account</span>
-              </Button>
+              </button>
             </div>
           ) : (
             accounts.map((acc) => {
@@ -112,8 +145,8 @@ export default function AccountsPage() {
               return (
                 <div
                   key={acc.id}
-                  className={`rounded-xl border bg-card p-5 shadow-xs transition-all relative ${
-                    isSelected ? 'ring-2 ring-primary border-primary' : 'hover:border-foreground/30'
+                  className={`rounded-3xl border bg-white p-5 shadow-xs transition-all relative ${
+                    isSelected ? 'ring-2 ring-[#064e3b] border-[#064e3b]' : 'border-slate-100 hover:shadow-md'
                   }`}
                 >
                   {/* Top line badges */}

@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency } from '@/lib/utils'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
+import { MetricCard } from '@/components/dashboard/metric-card'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Modal } from '@/components/ui/modal'
@@ -43,42 +45,77 @@ export default function GoalsPage() {
     setIsAddOpen(false)
   }
 
+  const completedCount = goals.filter((g) => g.is_completed || g.current_value >= g.target_value).length
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b pb-4">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-mono">
-              PERFORMANCE GOALS
-            </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Set clear objectives for profitability, behavioral discipline, and risk control
-            </p>
-          </div>
-
-          <Button
-            size="sm"
+      <div className="space-y-5">
+        {/* Page Hero Banner */}
+        <PageHeroBanner
+          title="Performance Goals"
+          subtitle="Set clear objectives for profitability, behavioral discipline, and capital milestones"
+          icon={Target}
+          quote="Discipline is choosing between what you want now and what you want most."
+        >
+          <button
             onClick={() => setIsAddOpen(true)}
-            className="gap-1.5 text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
           >
-            <PlusCircle className="h-3.5 w-3.5" />
+            <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>Set New Goal</span>
-          </Button>
+          </button>
+        </PageHeroBanner>
+
+        {/* Goal Overview Metric Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MetricCard
+            title="Active Goals"
+            value={goals.length.toString()}
+            subtitle="Configured milestones"
+            icon={Target}
+            color="emerald"
+          />
+          <MetricCard
+            title="Achieved"
+            value={completedCount.toString()}
+            subtitle="Completed targets"
+            icon={CheckCircle2}
+            color="purple"
+          />
+          <MetricCard
+            title="Monthly Targets"
+            value={goals.filter((g) => g.period === 'MONTHLY').length.toString()}
+            subtitle="Monthly timeframe"
+            icon={Calendar}
+            color="blue"
+          />
+          <MetricCard
+            title="Completion Rate"
+            value={goals.length > 0 ? `${Math.round((completedCount / goals.length) * 100)}%` : '0%'}
+            subtitle="Success index"
+            icon={Clock}
+            color="amber"
+          />
         </div>
 
         {/* Goals Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {goals.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-muted-foreground border border-dashed rounded-xl bg-card">
-              <Target className="h-10 w-10 text-primary/30 mb-3" />
-              <h3 className="text-sm font-semibold text-foreground">No active goals configured</h3>
-              <p className="text-xs mt-1 max-w-sm">
+            <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 mb-3 text-emerald-600">
+                <Target className="h-7 w-7 stroke-[2]" />
+              </div>
+              <h3 className="text-base font-bold text-slate-800">No active goals configured</h3>
+              <p className="text-xs mt-1 max-w-sm text-slate-400">
                 Top traders trade with intention. Establish explicit targets for your profit milestones and execution discipline.
               </p>
-              <Button size="sm" onClick={() => setIsAddOpen(true)} className="mt-4 text-xs font-semibold">
-                Set First Goal
-              </Button>
+              <button
+                onClick={() => setIsAddOpen(true)}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
+              >
+                <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
+                <span>Set First Goal</span>
+              </button>
             </div>
           ) : (
             goals.map((g) => {

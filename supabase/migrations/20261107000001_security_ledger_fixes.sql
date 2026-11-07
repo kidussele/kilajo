@@ -52,3 +52,4 @@ ALTER TABLE account_transactions ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can manage account transactions" ON account_transactions
     FOR ALL USING (auth.uid() = user_id);
+
