@@ -39,7 +39,7 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
   const [isPropFirm, setIsPropFirm] = useState(true)
   const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
@@ -54,7 +54,7 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
       return
     }
 
-    createAccount({
+    await createAccount({
       user_id: 'default-user',
       name: name.trim(),
       broker,

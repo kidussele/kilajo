@@ -1,66 +1,116 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, useMemo, ReactNode } from 'react'
-import { Trade, TradingAccount, MetricSummary, TradeFilter, PropFirmRule, Strategy, PsychologyLog, Goal } from '@/types/trading'
+import {
+  Trade,
+  TradingAccount,
+  MetricSummary,
+  TradeFilter,
+  PropFirmRule,
+  Strategy,
+  PsychologyLog,
+  Goal,
+} from '@/types/trading'
 import { calculateMetricSummary } from '@/lib/calculations/financial'
-import { SAMPLE_ACCOUNTS, SAMPLE_TRADES, SAMPLE_PROP_RULES, SAMPLE_STRATEGIES, SAMPLE_PSYCHOLOGY, SAMPLE_GOALS } from '@/lib/data/sample-data'
+import { aggregatePortfolioBalances, PortfolioBalanceSummary } from '@/lib/calculations/currency'
+import {
+  SAMPLE_ACCOUNTS,
+  SAMPLE_TRADES,
+  SAMPLE_PROP_RULES,
+  SAMPLE_STRATEGIES,
+  SAMPLE_PSYCHOLOGY,
+  SAMPLE_GOALS,
+} from '@/lib/data/sample-data'
+import { createClient as createBrowserSupabase } from '@/lib/supabase/client'
+import {
+  fetchUserAccounts,
+  createAccountDB,
+  updateAccountDB,
+  deleteAccountDB,
+  reconcileAccountBalance,
+} from '@/lib/dal/accounts'
+import {
+  fetchUserTrades,
+  addTradeDB,
+  updateTradeDB,
+  deleteTradeDB,
+  bulkAddTradesDB,
+} from '@/lib/dal/trades'
+import {
+  fetchUserStrategies,
+  addStrategyDB,
+  fetchUserPropRules,
+  updatePropRuleDB,
+  fetchUserPsychologyLogs,
+  addPsychologyLogDB,
+  fetchUserGoals,
+  addGoalDB,
+  updateGoalDB,
+} from '@/lib/dal/modules'
+import { getCurrentProfile, Profile, signOutUser } from '@/lib/dal/auth'
 
 interface TradingContextType {
-  // Mode
+  // Mode & Auth
   isDemoMode: boolean
   toggleDemoMode: (enabled: boolean) => void
+  userProfile: Profile | null
+  signOut: () => Promise<void>
+  refreshData: () => Promise<void>
 
   // Accounts
   accounts: TradingAccount[]
   activeAccountId: string | 'ALL'
   setActiveAccountId: (id: string | 'ALL') => void
   activeAccount: TradingAccount | null
-  createAccount: (account: Omit<TradingAccount, 'id' | 'created_at' | 'updated_at'>) => void
-  updateAccount: (id: string, updates: Partial<TradingAccount>) => void
-  deleteAccount: (id: string) => void
+  createAccount: (account: Omit<TradingAccount, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
+  updateAccount: (id: string, updates: Partial<TradingAccount>) => Promise<void>
+  deleteAccount: (id: string) => Promise<void>
 
   // Trades
   trades: Trade[]
   filteredTrades: Trade[]
   filter: TradeFilter
   setFilter: React.Dispatch<React.SetStateAction<TradeFilter>>
-  addTrade: (trade: Omit<Trade, 'id' | 'created_at' | 'updated_at'>) => void
-  updateTrade: (id: string, updates: Partial<Trade>) => void
-  deleteTrade: (id: string) => void
-  bulkAddTrades: (trades: Omit<Trade, 'id' | 'created_at' | 'updated_at'>[]) => { added: number; duplicates: number }
+  addTrade: (trade: Omit<Trade, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
+  updateTrade: (id: string, updates: Partial<Trade>) => Promise<void>
+  deleteTrade: (id: string) => Promise<void>
+  bulkAddTrades: (trades: Omit<Trade, 'id' | 'created_at' | 'updated_at'>[]) => Promise<{ added: number; duplicates: number }>
 
   // Prop Firm & Rules
   propRules: PropFirmRule[]
-  updatePropRule: (accountId: string, updates: Partial<PropFirmRule>) => void
+  updatePropRule: (accountId: string, updates: Partial<PropFirmRule>) => Promise<void>
 
   // Strategies & Psychology & Goals
   strategies: Strategy[]
-  addStrategy: (strategy: Omit<Strategy, 'id' | 'created_at' | 'updated_at'>) => void
+  addStrategy: (strategy: Omit<Strategy, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
   psychologyLogs: PsychologyLog[]
-  addPsychologyLog: (log: Omit<PsychologyLog, 'id' | 'created_at' | 'updated_at'>) => void
+  addPsychologyLog: (log: Omit<PsychologyLog, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
   goals: Goal[]
-  addGoal: (goal: Omit<Goal, 'id' | 'created_at' | 'updated_at'>) => void
-  updateGoal: (id: string, updates: Partial<Goal>) => void
+  addGoal: (goal: Omit<Goal, 'id' | 'created_at' | 'updated_at'>) => Promise<void>
+  updateGoal: (id: string, updates: Partial<Goal>) => Promise<void>
 
-  // Computed Metrics
+  // Computed Portfolio & Financial Metrics
   metrics: MetricSummary
+  portfolioBalance: PortfolioBalanceSummary
   isLoading: boolean
-  resetAllData: () => void
+  resetAllData: () => Promise<void>
 }
 
 const TradingContext = createContext<TradingContextType | undefined>(undefined)
 
-const STORAGE_KEY_TRADES = 'kilajo_trades_v1'
-const STORAGE_KEY_ACCOUNTS = 'kilajo_accounts_v1'
 const STORAGE_KEY_DEMO = 'kilajo_is_demo_v1'
-const STORAGE_KEY_STRATEGIES = 'kilajo_strategies_v1'
-const STORAGE_KEY_PROP = 'kilajo_prop_rules_v1'
-const STORAGE_KEY_PSYCH = 'kilajo_psych_v1'
-const STORAGE_KEY_GOALS = 'kilajo_goals_v1'
+const STORAGE_KEY_TRADES = 'kilajo_trades_offline_v1'
+const STORAGE_KEY_ACCOUNTS = 'kilajo_accounts_offline_v1'
+const STORAGE_KEY_STRATEGIES = 'kilajo_strategies_offline_v1'
+const STORAGE_KEY_PROP = 'kilajo_prop_rules_offline_v1'
+const STORAGE_KEY_PSYCH = 'kilajo_psych_offline_v1'
+const STORAGE_KEY_GOALS = 'kilajo_goals_offline_v1'
 
 export function TradingProvider({ children }: { children: ReactNode }) {
   const [isDemoMode, setIsDemoMode] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [userProfile, setUserProfile] = useState<Profile | null>(null)
+
   const [accounts, setAccounts] = useState<TradingAccount[]>([])
   const [activeAccountId, setActiveAccountId] = useState<string | 'ALL'>('ALL')
   const [trades, setTrades] = useState<Trade[]>([])
@@ -76,8 +126,18 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     sortBy: 'exit_time',
   })
 
-  // Initialize from LocalStorage or empty state
-  useEffect(() => {
+  // Detect Supabase Live configuration
+  const isSupabaseLive = useMemo(() => {
+    return (
+      typeof window !== 'undefined' &&
+      !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder-project')
+    )
+  }, [])
+
+  // Master Data Refresh Method
+  const refreshData = async () => {
+    setIsLoading(true)
     try {
       const storedDemo = localStorage.getItem(STORAGE_KEY_DEMO)
       const isDemo = storedDemo ? JSON.parse(storedDemo) : false
@@ -90,35 +150,60 @@ export function TradingProvider({ children }: { children: ReactNode }) {
         setStrategies(SAMPLE_STRATEGIES)
         setPsychologyLogs(SAMPLE_PSYCHOLOGY)
         setGoals(SAMPLE_GOALS)
-      } else {
-        const storedAccounts = localStorage.getItem(STORAGE_KEY_ACCOUNTS)
-        const storedTrades = localStorage.getItem(STORAGE_KEY_TRADES)
-        const storedStrategies = localStorage.getItem(STORAGE_KEY_STRATEGIES)
-        const storedProp = localStorage.getItem(STORAGE_KEY_PROP)
-        const storedPsych = localStorage.getItem(STORAGE_KEY_PSYCH)
-        const storedGoals = localStorage.getItem(STORAGE_KEY_GOALS)
-
-        if (storedAccounts) setAccounts(JSON.parse(storedAccounts))
-        if (storedTrades) setTrades(JSON.parse(storedTrades))
-        if (storedStrategies) setStrategies(JSON.parse(storedStrategies))
-        if (storedProp) setPropRules(JSON.parse(storedProp))
-        if (storedPsych) setPsychologyLogs(JSON.parse(storedPsych))
-        if (storedGoals) setGoals(JSON.parse(storedGoals))
+        return
       }
+
+      // Check if user is authenticated via Supabase
+      if (isSupabaseLive) {
+        const supabase = createBrowserSupabase()
+        const { data: { session } } = await supabase.auth.getSession()
+
+        if (session?.user) {
+          const [profile, accs, trds, strats, rules, psych, gls] = await Promise.all([
+            getCurrentProfile(),
+            fetchUserAccounts(),
+            fetchUserTrades(),
+            fetchUserStrategies(),
+            fetchUserPropRules(),
+            fetchUserPsychologyLogs(),
+            fetchUserGoals(),
+          ])
+
+          setUserProfile(profile)
+          setAccounts(accs)
+          setTrades(trds)
+          setStrategies(strats)
+          setPropRules(rules)
+          setPsychologyLogs(psych)
+          setGoals(gls)
+          return
+        }
+      }
+
+      // Offline / Local fallback if not authenticated
+      const storedAccounts = localStorage.getItem(STORAGE_KEY_ACCOUNTS)
+      const storedTrades = localStorage.getItem(STORAGE_KEY_TRADES)
+      const storedStrategies = localStorage.getItem(STORAGE_KEY_STRATEGIES)
+      const storedProp = localStorage.getItem(STORAGE_KEY_PROP)
+      const storedPsych = localStorage.getItem(STORAGE_KEY_PSYCH)
+      const storedGoals = localStorage.getItem(STORAGE_KEY_GOALS)
+
+      setAccounts(storedAccounts ? JSON.parse(storedAccounts) : [])
+      setTrades(storedTrades ? JSON.parse(storedTrades) : [])
+      setStrategies(storedStrategies ? JSON.parse(storedStrategies) : [])
+      setPropRules(storedProp ? JSON.parse(storedProp) : [])
+      setPsychologyLogs(storedPsych ? JSON.parse(storedPsych) : [])
+      setGoals(storedGoals ? JSON.parse(storedGoals) : [])
     } catch (e) {
-      console.error('Failed to parse local trading storage:', e)
+      console.error('Error refreshing trading data:', e)
     } finally {
       setIsLoading(false)
     }
-  }, [])
-
-  // Sync state to local storage when not in demo mode
-  const persistState = (newAccounts: TradingAccount[], newTrades: Trade[]) => {
-    if (!isDemoMode) {
-      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(newAccounts))
-      localStorage.setItem(STORAGE_KEY_TRADES, JSON.stringify(newTrades))
-    }
   }
+
+  useEffect(() => {
+    refreshData()
+  }, [isSupabaseLive])
 
   const toggleDemoMode = (enabled: boolean) => {
     setIsDemoMode(enabled)
@@ -131,25 +216,43 @@ export function TradingProvider({ children }: { children: ReactNode }) {
       setPsychologyLogs(SAMPLE_PSYCHOLOGY)
       setGoals(SAMPLE_GOALS)
     } else {
-      const storedAccounts = localStorage.getItem(STORAGE_KEY_ACCOUNTS)
-      const storedTrades = localStorage.getItem(STORAGE_KEY_TRADES)
-      setAccounts(storedAccounts ? JSON.parse(storedAccounts) : [])
-      setTrades(storedTrades ? JSON.parse(storedTrades) : [])
-      setPropRules([])
-      setStrategies([])
-      setPsychologyLogs([])
-      setGoals([])
+      refreshData()
     }
     setActiveAccountId('ALL')
   }
 
-  // Account operations
+  const signOut = async () => {
+    await signOutUser()
+    setUserProfile(null)
+    refreshData()
+  }
+
+  // Active Account Helper
   const activeAccount = useMemo(() => {
     if (activeAccountId === 'ALL') return null
     return accounts.find((a) => a.id === activeAccountId) || null
   }, [accounts, activeAccountId])
 
-  const createAccount = (accountData: Omit<TradingAccount, 'id' | 'created_at' | 'updated_at'>) => {
+  // --- RECONCILE BALANCE MATHEMATICALLY ---
+  const calculateAccountBalance = (acc: TradingAccount, allTrades: Trade[]): number => {
+    const accClosedTrades = allTrades.filter(
+      (t) => t.account_id === acc.id && t.status === 'CLOSED'
+    )
+    const netSum = accClosedTrades.reduce((sum, t) => sum + Number(t.net_pnl || 0), 0)
+    return Number((Number(acc.initial_balance) + netSum).toFixed(4))
+  }
+
+  // --- ACCOUNTS OPERATIONS ---
+  const createAccount = async (accountData: Omit<TradingAccount, 'id' | 'created_at' | 'updated_at'>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const created = await createAccountDB(accountData)
+      if (created) {
+        setAccounts((prev) => [created, ...prev])
+        setActiveAccountId(created.id)
+      }
+      return
+    }
+
     const newAcc: TradingAccount = {
       ...accountData,
       id: crypto.randomUUID(),
@@ -158,29 +261,60 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     }
     const updated = [...accounts, newAcc]
     setAccounts(updated)
-    persistState(updated, trades)
+    if (!isDemoMode) localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updated))
     setActiveAccountId(newAcc.id)
   }
 
-  const updateAccount = (id: string, updates: Partial<TradingAccount>) => {
-    const updated = accounts.map((acc) => (acc.id === id ? { ...acc, ...updates, updated_at: new Date().toISOString() } : acc))
+  const updateAccount = async (id: string, updates: Partial<TradingAccount>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const updated = await updateAccountDB(id, updates)
+      if (updated) {
+        setAccounts((prev) => prev.map((a) => (a.id === id ? updated : a)))
+      }
+      return
+    }
+
+    const updated = accounts.map((acc) =>
+      acc.id === id ? { ...acc, ...updates, updated_at: new Date().toISOString() } : acc
+    )
     setAccounts(updated)
-    persistState(updated, trades)
+    if (!isDemoMode) localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updated))
   }
 
-  const deleteAccount = (id: string) => {
+  const deleteAccount = async (id: string) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      await deleteAccountDB(id)
+      setAccounts((prev) => prev.filter((a) => a.id !== id))
+      setTrades((prev) => prev.filter((t) => t.account_id !== id))
+      if (activeAccountId === id) setActiveAccountId('ALL')
+      return
+    }
+
     const updatedAccs = accounts.filter((a) => a.id !== id)
     const updatedTrades = trades.filter((t) => t.account_id !== id)
     setAccounts(updatedAccs)
     setTrades(updatedTrades)
-    persistState(updatedAccs, updatedTrades)
-    if (activeAccountId === id) {
-      setActiveAccountId('ALL')
+    if (!isDemoMode) {
+      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updatedAccs))
+      localStorage.setItem(STORAGE_KEY_TRADES, JSON.stringify(updatedTrades))
     }
+    if (activeAccountId === id) setActiveAccountId('ALL')
   }
 
-  // Trade operations
-  const addTrade = (tradeData: Omit<Trade, 'id' | 'created_at' | 'updated_at'>) => {
+  // --- TRADES OPERATIONS WITH GUARANTEED BALANCE RECONCILIATION ---
+  const addTrade = async (tradeData: Omit<Trade, 'id' | 'created_at' | 'updated_at'>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const created = await addTradeDB(tradeData)
+      if (created) {
+        const nextTrades = [created, ...trades]
+        setTrades(nextTrades)
+        // Refresh account balance
+        const updatedAccounts = await fetchUserAccounts()
+        setAccounts(updatedAccounts)
+      }
+      return
+    }
+
     const newTrade: Trade = {
       ...tradeData,
       id: crypto.randomUUID(),
@@ -190,36 +324,104 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     const updatedTrades = [newTrade, ...trades]
     setTrades(updatedTrades)
 
-    // Recalculate account balance
-    const acc = accounts.find((a) => a.id === tradeData.account_id)
-    if (acc) {
-      const updatedBalance = Number(acc.current_balance) + Number(tradeData.net_pnl || 0)
-      updateAccount(acc.id, { current_balance: updatedBalance })
+    // Reconcile balance in memory
+    const updatedAccs = accounts.map((acc) => {
+      if (acc.id === tradeData.account_id) {
+        return { ...acc, current_balance: calculateAccountBalance(acc, updatedTrades) }
+      }
+      return acc
+    })
+    setAccounts(updatedAccs)
+
+    if (!isDemoMode) {
+      localStorage.setItem(STORAGE_KEY_TRADES, JSON.stringify(updatedTrades))
+      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updatedAccs))
+    }
+  }
+
+  const updateTrade = async (id: string, updates: Partial<Trade>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const updated = await updateTradeDB(id, updates)
+      if (updated) {
+        const nextTrades = trades.map((t) => (t.id === id ? updated : t))
+        setTrades(nextTrades)
+        const updatedAccounts = await fetchUserAccounts()
+        setAccounts(updatedAccounts)
+      }
+      return
     }
 
-    persistState(accounts, updatedTrades)
-  }
-
-  const updateTrade = (id: string, updates: Partial<Trade>) => {
-    const updatedTrades = trades.map((t) => (t.id === id ? { ...t, ...updates, updated_at: new Date().toISOString() } : t))
+    const updatedTrades = trades.map((t) =>
+      t.id === id ? { ...t, ...updates, updated_at: new Date().toISOString() } : t
+    )
     setTrades(updatedTrades)
-    persistState(accounts, updatedTrades)
+
+    // Reconcile all affected account balances
+    const targetAccountId = updates.account_id || trades.find((t) => t.id === id)?.account_id
+    const updatedAccs = accounts.map((acc) => {
+      if (acc.id === targetAccountId) {
+        return { ...acc, current_balance: calculateAccountBalance(acc, updatedTrades) }
+      }
+      return acc
+    })
+    setAccounts(updatedAccs)
+
+    if (!isDemoMode) {
+      localStorage.setItem(STORAGE_KEY_TRADES, JSON.stringify(updatedTrades))
+      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updatedAccs))
+    }
   }
 
-  const deleteTrade = (id: string) => {
+  const deleteTrade = async (id: string) => {
+    const tradeToDelete = trades.find((t) => t.id === id)
+    const targetAccountId = tradeToDelete?.account_id
+
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      await deleteTradeDB(id)
+      setTrades((prev) => prev.filter((t) => t.id !== id))
+      const updatedAccounts = await fetchUserAccounts()
+      setAccounts(updatedAccounts)
+      return
+    }
+
     const updatedTrades = trades.filter((t) => t.id !== id)
     setTrades(updatedTrades)
-    persistState(accounts, updatedTrades)
+
+    // Reconcile account balance after deletion
+    const updatedAccs = accounts.map((acc) => {
+      if (acc.id === targetAccountId) {
+        return { ...acc, current_balance: calculateAccountBalance(acc, updatedTrades) }
+      }
+      return acc
+    })
+    setAccounts(updatedAccs)
+
+    if (!isDemoMode) {
+      localStorage.setItem(STORAGE_KEY_TRADES, JSON.stringify(updatedTrades))
+      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updatedAccs))
+    }
   }
 
-  const bulkAddTrades = (incomingTrades: Omit<Trade, 'id' | 'created_at' | 'updated_at'>[]) => {
+  const bulkAddTrades = async (incomingTrades: Omit<Trade, 'id' | 'created_at' | 'updated_at'>[]) => {
+    if (incomingTrades.length === 0) return { added: 0, duplicates: 0 }
+    const targetAccountId = incomingTrades[0].account_id
+
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const summary = await bulkAddTradesDB(incomingTrades)
+      const [freshTrades, freshAccounts] = await Promise.all([
+        fetchUserTrades(),
+        fetchUserAccounts(),
+      ])
+      setTrades(freshTrades)
+      setAccounts(freshAccounts)
+      return summary
+    }
+
     let duplicateCount = 0
     const addedTrades: Trade[] = []
-
-    // Build existing ticket map for deduplication
     const existingTicketSet = new Set(
       trades
-        .filter((t) => t.source_ticket && t.account_id === incomingTrades[0]?.account_id)
+        .filter((t) => t.source_ticket && t.account_id === targetAccountId)
         .map((t) => `${t.account_id}_${t.source_ticket}`)
     )
 
@@ -230,9 +432,7 @@ export function TradingProvider({ children }: { children: ReactNode }) {
         return
       }
 
-      if (ticketKey) {
-        existingTicketSet.add(ticketKey)
-      }
+      if (ticketKey) existingTicketSet.add(ticketKey)
 
       addedTrades.push({
         ...t,
@@ -245,28 +445,46 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     const finalTrades = [...addedTrades, ...trades]
     setTrades(finalTrades)
 
-    // Update account balances
-    const targetAccountId = incomingTrades[0]?.account_id
-    if (targetAccountId) {
-      const totalNet = addedTrades.reduce((acc, t) => acc + Number(t.net_pnl || 0), 0)
-      const targetAcc = accounts.find((a) => a.id === targetAccountId)
-      if (targetAcc) {
-        updateAccount(targetAccountId, { current_balance: Number(targetAcc.current_balance) + totalNet })
+    // Reconcile balance for target account
+    const updatedAccs = accounts.map((acc) => {
+      if (acc.id === targetAccountId) {
+        return { ...acc, current_balance: calculateAccountBalance(acc, finalTrades) }
       }
+      return acc
+    })
+    setAccounts(updatedAccs)
+
+    if (!isDemoMode) {
+      localStorage.setItem(STORAGE_KEY_TRADES, JSON.stringify(finalTrades))
+      localStorage.setItem(STORAGE_KEY_ACCOUNTS, JSON.stringify(updatedAccs))
     }
 
-    persistState(accounts, finalTrades)
     return { added: addedTrades.length, duplicates: duplicateCount }
   }
 
-  // Prop rules, strategies, goals
-  const updatePropRule = (accountId: string, updates: Partial<PropFirmRule>) => {
-    const updated = propRules.map((r) => (r.account_id === accountId ? { ...r, ...updates, updated_at: new Date().toISOString() } : r))
+  // --- MODULE OPERATIONS (Strategies, Prop Rules, Psychology, Goals) ---
+  const updatePropRule = async (accountId: string, updates: Partial<PropFirmRule>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      await updatePropRuleDB(accountId, updates)
+      const freshRules = await fetchUserPropRules()
+      setPropRules(freshRules)
+      return
+    }
+
+    const updated = propRules.map((r) =>
+      r.account_id === accountId ? { ...r, ...updates, updated_at: new Date().toISOString() } : r
+    )
     setPropRules(updated)
     if (!isDemoMode) localStorage.setItem(STORAGE_KEY_PROP, JSON.stringify(updated))
   }
 
-  const addStrategy = (strategy: Omit<Strategy, 'id' | 'created_at' | 'updated_at'>) => {
+  const addStrategy = async (strategy: Omit<Strategy, 'id' | 'created_at' | 'updated_at'>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const created = await addStrategyDB(strategy)
+      if (created) setStrategies((prev) => [...prev, created])
+      return
+    }
+
     const newStrat: Strategy = {
       ...strategy,
       id: crypto.randomUUID(),
@@ -278,7 +496,15 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     if (!isDemoMode) localStorage.setItem(STORAGE_KEY_STRATEGIES, JSON.stringify(updated))
   }
 
-  const addPsychologyLog = (log: Omit<PsychologyLog, 'id' | 'created_at' | 'updated_at'>) => {
+  const addPsychologyLog = async (log: Omit<PsychologyLog, 'id' | 'created_at' | 'updated_at'>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const created = await addPsychologyLogDB(log)
+      if (created) {
+        setPsychologyLogs((prev) => [created, ...prev.filter((p) => p.date !== log.date)])
+      }
+      return
+    }
+
     const newLog: PsychologyLog = {
       ...log,
       id: crypto.randomUUID(),
@@ -290,7 +516,13 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     if (!isDemoMode) localStorage.setItem(STORAGE_KEY_PSYCH, JSON.stringify(updated))
   }
 
-  const addGoal = (goal: Omit<Goal, 'id' | 'created_at' | 'updated_at'>) => {
+  const addGoal = async (goal: Omit<Goal, 'id' | 'created_at' | 'updated_at'>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const created = await addGoalDB(goal)
+      if (created) setGoals((prev) => [...prev, created])
+      return
+    }
+
     const newGoal: Goal = {
       ...goal,
       id: crypto.randomUUID(),
@@ -302,13 +534,23 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     if (!isDemoMode) localStorage.setItem(STORAGE_KEY_GOALS, JSON.stringify(updated))
   }
 
-  const updateGoal = (id: string, updates: Partial<Goal>) => {
-    const updated = goals.map((g) => (g.id === id ? { ...g, ...updates, updated_at: new Date().toISOString() } : g))
+  const updateGoal = async (id: string, updates: Partial<Goal>) => {
+    if (userProfile && isSupabaseLive && !isDemoMode) {
+      const updated = await updateGoalDB(id, updates)
+      if (updated) {
+        setGoals((prev) => prev.map((g) => (g.id === id ? updated : g)))
+      }
+      return
+    }
+
+    const updated = goals.map((g) =>
+      g.id === id ? { ...g, ...updates, updated_at: new Date().toISOString() } : g
+    )
     setGoals(updated)
     if (!isDemoMode) localStorage.setItem(STORAGE_KEY_GOALS, JSON.stringify(updated))
   }
 
-  const resetAllData = () => {
+  const resetAllData = async () => {
     setTrades([])
     setAccounts([])
     setPropRules([])
@@ -326,37 +568,16 @@ export function TradingProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Filtered trades computation
+  // --- FILTERED TRADES COMPUTATION ---
   const filteredTrades = useMemo(() => {
     return trades.filter((trade) => {
-      // Account filter
-      if (activeAccountId !== 'ALL' && trade.account_id !== activeAccountId) {
-        return false
-      }
-      if (filter.accountId && filter.accountId !== 'ALL' && trade.account_id !== filter.accountId) {
-        return false
-      }
-      // Symbol filter
-      if (filter.symbol && !trade.symbol.toLowerCase().includes(filter.symbol.toLowerCase())) {
-        return false
-      }
-      // Direction filter
-      if (filter.direction && trade.direction !== filter.direction) {
-        return false
-      }
-      // Status filter
-      if (filter.status && trade.status !== filter.status) {
-        return false
-      }
-      // Strategy filter
-      if (filter.strategyId && trade.strategy_id !== filter.strategyId) {
-        return false
-      }
-      // Session filter
-      if (filter.session && trade.session !== filter.session) {
-        return false
-      }
-      // Date range filter
+      if (activeAccountId !== 'ALL' && trade.account_id !== activeAccountId) return false
+      if (filter.accountId && filter.accountId !== 'ALL' && trade.account_id !== filter.accountId) return false
+      if (filter.symbol && !trade.symbol.toLowerCase().includes(filter.symbol.toLowerCase())) return false
+      if (filter.direction && trade.direction !== filter.direction) return false
+      if (filter.status && trade.status !== filter.status) return false
+      if (filter.strategyId && trade.strategy_id !== filter.strategyId) return false
+      if (filter.session && trade.session !== filter.session) return false
       if (filter.startDate) {
         const entryTime = new Date(trade.entry_time).getTime()
         const start = new Date(filter.startDate).getTime()
@@ -364,24 +585,36 @@ export function TradingProvider({ children }: { children: ReactNode }) {
       }
       if (filter.endDate) {
         const exitTime = new Date(trade.exit_time || trade.entry_time).getTime()
-        const end = new Date(filter.endDate).getTime() + 86400000 // inclusive end of day
+        const end = new Date(filter.endDate).getTime() + 86400000
         if (exitTime > end) return false
       }
       return true
     })
   }, [trades, activeAccountId, filter])
 
-  // Real-time metric summary calculated from filtered trades
+  // --- METRIC CALCULATIONS ---
   const metrics = useMemo(() => {
     const initialBal = activeAccount ? Number(activeAccount.initial_balance) : 10000
     return calculateMetricSummary(filteredTrades, initialBal)
   }, [filteredTrades, activeAccount])
+
+  // --- MULTI-CURRENCY PORTFOLIO BALANCES ---
+  const baseCurrency = userProfile?.base_currency || activeAccount?.currency || 'USD'
+  const portfolioBalance = useMemo(() => {
+    const targetAccounts = activeAccountId === 'ALL'
+      ? accounts
+      : accounts.filter((a) => a.id === activeAccountId)
+    return aggregatePortfolioBalances(targetAccounts, baseCurrency)
+  }, [accounts, activeAccountId, baseCurrency])
 
   return (
     <TradingContext.Provider
       value={{
         isDemoMode,
         toggleDemoMode,
+        userProfile,
+        signOut,
+        refreshData,
         accounts,
         activeAccountId,
         setActiveAccountId,
@@ -407,6 +640,7 @@ export function TradingProvider({ children }: { children: ReactNode }) {
         addGoal,
         updateGoal,
         metrics,
+        portfolioBalance,
         isLoading,
         resetAllData,
       }}
@@ -423,4 +657,3 @@ export function useTrading() {
   }
   return context
 }
-

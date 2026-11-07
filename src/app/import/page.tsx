@@ -39,13 +39,30 @@ export default function ImportPage() {
   const [validationIssues, setValidationIssues] = useState<ValidationIssue[]>([])
   const [importSummary, setImportSummary] = useState<{ added: number; duplicates: number } | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [fileError, setFileError] = useState<string | null>(null)
 
   const adapter = new CsvAdapter()
+  const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB limit
 
-  // Handle file select
+  // Handle file select with validation
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError(null)
     const selected = e.target.files?.[0]
     if (!selected) return
+
+    // 1. File size check
+    if (selected.size > MAX_FILE_SIZE_BYTES) {
+      setFileError('File size exceeds the 10MB limit. Please upload a smaller statement file.')
+      return
+    }
+
+    // 2. Extension check
+    const validExtensions = ['.csv', '.tsv', '.txt']
+    const hasValidExt = validExtensions.some((ext) => selected.name.toLowerCase().endsWith(ext))
+    if (!hasValidExt) {
+      setFileError('Unsupported file format. Please upload a valid CSV, TSV, or TXT file.')
+      return
+    }
 
     setFile(selected)
     const reader = new FileReader()
@@ -55,17 +72,22 @@ export default function ImportPage() {
 
       try {
         const records = await adapter.parse(text)
-        if (records.length > 0) {
-          const hdrs = Object.keys(records[0])
-          setHeaders(hdrs)
-          setRawRecords(records)
-          const autoMap = adapter.detectMapping(hdrs)
-          setMapping(autoMap)
-          setStep(2)
+        if (records.length === 0) {
+          setFileError('The uploaded file is empty or contains no parseable trade rows.')
+          return
         }
-      } catch (err) {
-        console.error('Failed to parse CSV:', err)
+        const hdrs = Object.keys(records[0])
+        setHeaders(hdrs)
+        setRawRecords(records)
+        const autoMap = adapter.detectMapping(hdrs)
+        setMapping(autoMap)
+        setStep(2)
+      } catch (err: any) {
+        setFileError(`Failed to parse file: ${err?.message || 'Invalid CSV syntax'}`)
       }
+    }
+    reader.onerror = () => {
+      setFileError('Error reading file from disk. Please try again.')
     }
     reader.readAsText(selected)
   }
@@ -73,6 +95,7 @@ export default function ImportPage() {
   // Handle Drag & Drop
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
+    setFileError(null)
     const droppedFile = e.dataTransfer.files?.[0]
     if (droppedFile) {
       const fakeEvent = {
@@ -93,7 +116,7 @@ export default function ImportPage() {
   }
 
   // Commit imported trades to journal
-  const handleCommitImport = () => {
+  const handleCommitImport = async () => {
     if (!selectedAccountId) return
     setIsProcessing(true)
 
@@ -130,7 +153,7 @@ export default function ImportPage() {
       source_ticket: t.sourceTicket || null,
     }))
 
-    const summary = bulkAddTrades(payload)
+    const summary = await bulkAddTrades(payload)
     setImportSummary(summary)
     setIsProcessing(false)
     setStep(4)
@@ -200,6 +223,13 @@ export default function ImportPage() {
         {/* STEP 1: Upload */}
         {step === 1 && (
           <div className="space-y-4">
+            {fileError && (
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{fileError}</span>
+              </div>
+            )}
+
             {/* Target Account Selector */}
             <div className="p-4 rounded-xl border bg-card space-y-2">
               <label className="text-xs font-semibold text-foreground">Select Target Trading Account *</label>

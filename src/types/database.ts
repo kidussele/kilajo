@@ -69,7 +69,7 @@ export interface Database {
           account_type?: string
           currency?: string
           initial_balance: number
-          current_balance: number
+          current_balance?: number
           is_prop_firm?: boolean
           prop_firm_name?: string | null
           is_active?: boolean
@@ -224,6 +224,44 @@ export interface Database {
           created_at: string
           updated_at: string
         }
+        Insert: {
+          id?: string
+          account_id: string
+          firm_name: string
+          challenge_type?: string
+          phase?: number
+          initial_balance: number
+          profit_target_pct?: number
+          daily_loss_limit_pct?: number
+          max_loss_limit_pct?: number
+          min_trading_days?: number
+          max_calendar_days?: number | null
+          start_date?: string
+          end_date?: string | null
+          status?: 'ACTIVE' | 'PASSED' | 'FAILED' | 'DISQUALIFIED'
+          breach_reason?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          account_id?: string
+          firm_name?: string
+          challenge_type?: string
+          phase?: number
+          initial_balance?: number
+          profit_target_pct?: number
+          daily_loss_limit_pct?: number
+          max_loss_limit_pct?: number
+          min_trading_days?: number
+          max_calendar_days?: number | null
+          start_date?: string
+          end_date?: string | null
+          status?: 'ACTIVE' | 'PASSED' | 'FAILED' | 'DISQUALIFIED'
+          breach_reason?: string | null
+          created_at?: string
+          updated_at?: string
+        }
       }
       strategies: {
         Row: {
@@ -237,6 +275,30 @@ export interface Database {
           is_active: boolean
           created_at: string
           updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          description?: string | null
+          timeframe?: string | null
+          entry_conditions?: string | null
+          exit_conditions?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          description?: string | null
+          timeframe?: string | null
+          entry_conditions?: string | null
+          exit_conditions?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
         }
       }
       psychology_logs: {
@@ -255,6 +317,36 @@ export interface Database {
           created_at: string
           updated_at: string
         }
+        Insert: {
+          id?: string
+          user_id: string
+          date: string
+          mood_score?: number | null
+          discipline_score?: number | null
+          stress_level?: number | null
+          sleep_hours?: number | null
+          market_prep_done?: boolean
+          rule_violations?: string[] | null
+          lessons_learned?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          date?: string
+          mood_score?: number | null
+          discipline_score?: number | null
+          stress_level?: number | null
+          sleep_hours?: number | null
+          market_prep_done?: boolean
+          rule_violations?: string[] | null
+          lessons_learned?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
       }
       goals: {
         Row: {
@@ -271,8 +363,79 @@ export interface Database {
           created_at: string
           updated_at: string
         }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          type?: 'PROFIT' | 'WIN_RATE' | 'DISCIPLINE' | 'RISK' | 'MAX_LOSS'
+          target_value: number
+          current_value?: number
+          period?: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY'
+          start_date: string
+          end_date: string
+          is_completed?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          type?: 'PROFIT' | 'WIN_RATE' | 'DISCIPLINE' | 'RISK' | 'MAX_LOSS'
+          target_value?: number
+          current_value?: number
+          period?: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY'
+          start_date?: string
+          end_date?: string
+          is_completed?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      integrations: {
+        Row: {
+          id: string
+          user_id: string
+          account_id: string
+          provider: string
+          bridge_token_hash: string
+          sync_mode: string
+          last_ping_at: string | null
+          last_sync_at: string | null
+          status: string
+          server_info: Json | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          account_id: string
+          provider: string
+          bridge_token_hash: string
+          sync_mode?: string
+          last_ping_at?: string | null
+          last_sync_at?: string | null
+          status?: string
+          server_info?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          account_id?: string
+          provider?: string
+          bridge_token_hash?: string
+          sync_mode?: string
+          last_ping_at?: string | null
+          last_sync_at?: string | null
+          status?: string
+          server_info?: Json | null
+          created_at?: string
+          updated_at?: string
+        }
       }
     }
   }
 }
-

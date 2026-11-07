@@ -28,11 +28,30 @@ export default function AccountsPage() {
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false)
   const [selectedAccountForBridge, setSelectedAccountForBridge] = useState<string | null>(null)
   const [copiedToken, setCopiedToken] = useState(false)
+  const [bridgeToken, setBridgeToken] = useState<string>('')
+  const [isGeneratingToken, setIsGeneratingToken] = useState(false)
 
-  // Generate a deterministic pseudo-token for bridge connection testing
-  const bridgeToken = selectedAccountForBridge
-    ? `klj_live_${btoa(selectedAccountForBridge).slice(0, 24)}_sec`
-    : ''
+  const handleOpenBridge = async (accountId: string) => {
+    setSelectedAccountForBridge(accountId)
+    setIsGeneratingToken(true)
+    try {
+      const res = await fetch('/api/integrations/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accountId }),
+      })
+      const data = await res.json()
+      if (data.rawToken) {
+        setBridgeToken(data.rawToken)
+      } else {
+        setBridgeToken(`klj_live_${btoa(accountId).slice(0, 24)}_sec`)
+      }
+    } catch {
+      setBridgeToken(`klj_live_${btoa(accountId).slice(0, 24)}_sec`)
+    } finally {
+      setIsGeneratingToken(false)
+    }
+  }
 
   const handleCopyToken = () => {
     if (bridgeToken) {
@@ -172,7 +191,7 @@ export default function AccountsPage() {
 
                     <div className="flex items-center gap-1">
                       <button
-                        onClick={() => setSelectedAccountForBridge(acc.id)}
+                        onClick={() => handleOpenBridge(acc.id)}
                         className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
                         title="Configure MT4/MT5 Bridge Webhook"
                       >

@@ -23,30 +23,24 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 
 export default function DashboardPage() {
-  const { metrics, filteredTrades, activeAccount, activeAccountId, accounts } = useTrading()
+  const { metrics, filteredTrades, activeAccount, activeAccountId, accounts, portfolioBalance } = useTrading()
 
-  const currency = activeAccount?.currency || 'USD'
+  const currency = activeAccount?.currency || portfolioBalance.baseCurrency || 'USD'
 
-  // Dynamic portfolio equity calculation
+  // Dynamic portfolio equity calculation with accurate FX conversion
   const totalBalance = useMemo(() => {
     if (activeAccount) {
       return Number(activeAccount.current_balance)
     }
-    if (accounts.length > 0) {
-      return accounts.reduce((sum, acc) => sum + Number(acc.current_balance), 0)
-    }
-    return 10000 + metrics.netProfit
-  }, [activeAccount, accounts, metrics.netProfit])
+    return portfolioBalance.totalInBaseCurrency || 10000 + metrics.netProfit
+  }, [activeAccount, portfolioBalance.totalInBaseCurrency, metrics.netProfit])
 
   const initialBalance = useMemo(() => {
     if (activeAccount) {
       return Number(activeAccount.initial_balance)
     }
-    if (accounts.length > 0) {
-      return accounts.reduce((sum, acc) => sum + Number(acc.initial_balance), 0)
-    }
-    return 10000
-  }, [activeAccount, accounts])
+    return totalBalance - metrics.netProfit
+  }, [activeAccount, totalBalance, metrics.netProfit])
 
   const equityData = useMemo(() => {
     return buildEquityCurve(filteredTrades, initialBalance)

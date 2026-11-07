@@ -42,7 +42,7 @@ export const NAVIGATION_ITEMS = [
 export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolean; onCloseMobile?: () => void }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
-  const { isDemoMode, toggleDemoMode } = useTrading()
+  const { isDemoMode, toggleDemoMode, userProfile, signOut } = useTrading()
 
   return (
     <aside
@@ -116,6 +116,43 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
             </Link>
           )
         })}
+      </div>
+
+      {/* User Session Bar */}
+      <div className="px-3 py-2 border-t">
+        {(!collapsed || isMobile) ? (
+          <div className="flex items-center justify-between text-xs">
+            {userProfile ? (
+              <div className="flex items-center justify-between w-full">
+                <div className="truncate mr-2">
+                  <p className="font-semibold text-foreground truncate">{userProfile.full_name || 'Verified Trader'}</p>
+                  <p className="text-[10px] text-muted-foreground">{userProfile.base_currency} • PostgreSQL</p>
+                </div>
+                <button
+                  onClick={signOut}
+                  className="text-[10px] text-muted-foreground hover:text-destructive underline"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between w-full">
+                <span className="text-[11px] text-muted-foreground">Guest Mode</span>
+                <Link href="/login" className="text-xs font-semibold text-primary hover:underline">
+                  Sign In
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <Link href={userProfile ? "/settings" : "/login"} title={userProfile ? "Profile" : "Sign In"}>
+              <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
+                {userProfile ? (userProfile.full_name?.[0] || 'T') : '?'}
+              </div>
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* Demo Mode / Environment Badge */}

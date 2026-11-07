@@ -119,7 +119,7 @@ export function TradeModal({ isOpen, onClose, tradeToEdit }: TradeModalProps) {
     )
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
@@ -183,9 +183,9 @@ export function TradeModal({ isOpen, onClose, tradeToEdit }: TradeModalProps) {
     }
 
     if (tradeToEdit) {
-      updateTrade(tradeToEdit.id, payload)
+      await updateTrade(tradeToEdit.id, payload)
     } else {
-      addTrade(payload)
+      await addTrade(payload)
     }
 
     onClose()

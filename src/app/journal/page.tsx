@@ -136,9 +136,9 @@ export default function JournalPage() {
     document.body.removeChild(link)
   }
 
-  const handleDeleteConfirmed = () => {
+  const handleDeleteConfirmed = async () => {
     if (tradeToDelete) {
-      deleteTrade(tradeToDelete.id)
+      await deleteTrade(tradeToDelete.id)
       setTradeToDelete(null)
     }
   }
