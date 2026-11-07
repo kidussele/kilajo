@@ -201,16 +201,6 @@ export default function JournalPage() {
         <PageHeroBanner
           title="Trade Journal"
           subtitle="Comprehensive record of executed trades, setups, and notes for better analysis and consistent growth."
-          iconElement={
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#064e3b] to-emerald-600 text-white shadow-md shadow-emerald-900/20">
-              <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <rect x="3" y="14" width="3.5" height="7" rx="1.5" />
-                <rect x="8.5" y="10" width="3.5" height="11" rx="1.5" />
-                <rect x="14" y="6" width="3.5" height="15" rx="1.5" />
-                <rect x="19.5" y="2" width="3.5" height="19" rx="1.5" />
-              </svg>
-            </div>
-          }
           middleContent={
             <div className="flex items-center gap-2 rounded-full bg-white/60 dark:bg-slate-900/80 p-1 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
               <button

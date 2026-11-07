@@ -129,11 +129,6 @@ export default function CalendarPage() {
         <PageHeroBanner
           title="Trading Calendar"
           subtitle="Plan, execute and review your trades, and track your consistency."
-          iconElement={
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#064e3b] to-emerald-600 text-white shadow-md shadow-emerald-900/20">
-              <Calendar className="h-7 w-7 text-white stroke-[2.2]" />
-            </div>
-          }
           middleContent={
             <div className="flex items-center gap-2 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1.5 shadow-2xs">
               <button onClick={prevMonth} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer p-0.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">

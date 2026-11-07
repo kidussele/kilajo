@@ -74,19 +74,6 @@ export default function DashboardPage() {
         <PageHeroBanner
           title="Portfolio Overview"
           subtitle="Track your performance and stay on top of your trading journey"
-          iconElement={
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white border-2 border-emerald-600/40 shadow-md shadow-emerald-950/10 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-tr from-emerald-100/60 via-teal-50/40 to-emerald-50/60" />
-              <svg className="h-9 w-9 text-[#064e3b] relative z-10" viewBox="0 0 36 36" fill="none">
-                <circle cx="18" cy="18" r="14" stroke="#047857" strokeWidth="2.8" />
-                <circle cx="18" cy="18" r="9.5" stroke="#10b981" strokeWidth="2.8" fill="#ecfdf5" />
-                <circle cx="18" cy="18" r="5" fill="#047857" />
-                <circle cx="18" cy="18" r="2" fill="#ffffff" />
-                <line x1="26" y1="10" x2="18" y2="18" stroke="#059669" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M25 9 L28 8 L27 11 Z" fill="#047857" />
-              </svg>
-            </div>
-          }
           quote="Plan Well, Trade Smart, Grow Steady."
         />
 
