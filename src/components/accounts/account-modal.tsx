@@ -33,7 +33,7 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
   const [name, setName] = useState('')
   const [broker, setBroker] = useState('FTMO')
   const [platform, setPlatform] = useState('MetaTrader 5')
-  const [accountType, setAccountType] = useState('Prop Challenge')
+  const [accountType, setAccountType] = useState('Prop Challenges')
   const [currency, setCurrency] = useState('USD')
   const [initialBalance, setInitialBalance] = useState('100000')
   const [isPropFirm, setIsPropFirm] = useState(true)
@@ -111,7 +111,7 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
                 setBroker(e.target.value)
                 if (['FTMO', 'FundedNext', 'The Funded Trader', 'MFFX'].includes(e.target.value)) {
                   setIsPropFirm(true)
-                  setAccountType('Prop Challenge')
+                  setAccountType('Prop Challenges')
                 }
               }}
               className="w-full rounded-md border bg-background px-3 py-1.5 text-xs"
@@ -141,13 +141,21 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
             <label className="text-xs font-semibold text-foreground">Account Type</label>
             <select
               value={accountType}
-              onChange={(e) => setAccountType(e.target.value)}
-              className="w-full rounded-md border bg-background px-3 py-1.5 text-xs"
+              onChange={(e) => {
+                const val = e.target.value
+                setAccountType(val)
+                if (val === 'Prop Challenges') {
+                  setIsPropFirm(true)
+                } else {
+                  setIsPropFirm(false)
+                }
+              }}
+              className="w-full rounded-md border bg-background px-3 py-1.5 text-xs font-medium"
             >
-              <option value="Live">Live Real Money</option>
-              <option value="Prop Challenge">Prop Firm Challenge</option>
-              <option value="Prop Funded">Prop Firm Funded Account</option>
-              <option value="Demo">Demo Practice</option>
+              <option value="Demo Practice">Demo Practice</option>
+              <option value="Backtesting">Backtesting</option>
+              <option value="Prop Challenges">Prop Challenges</option>
+              <option value="Live Trading">Live Trading</option>
             </select>
           </div>
 

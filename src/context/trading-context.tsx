@@ -13,6 +13,7 @@ import {
 } from '@/types/trading'
 import { calculateMetricSummary } from '@/lib/calculations/financial'
 import { aggregatePortfolioBalances, PortfolioBalanceSummary } from '@/lib/calculations/currency'
+import { getAccountCategory } from '@/lib/accounts/categories'
 import {
   SAMPLE_ACCOUNTS,
   SAMPLE_TRADES,
@@ -229,7 +230,7 @@ export function TradingProvider({ children }: { children: ReactNode }) {
 
   // Active Account Helper
   const activeAccount = useMemo(() => {
-    if (activeAccountId === 'ALL') return null
+    if (activeAccountId === 'ALL' || activeAccountId.startsWith('CAT:')) return null
     return accounts.find((a) => a.id === activeAccountId) || null
   }, [accounts, activeAccountId])
 
@@ -571,7 +572,15 @@ export function TradingProvider({ children }: { children: ReactNode }) {
   // --- FILTERED TRADES COMPUTATION ---
   const filteredTrades = useMemo(() => {
     return trades.filter((trade) => {
-      if (activeAccountId !== 'ALL' && trade.account_id !== activeAccountId) return false
+      if (activeAccountId !== 'ALL') {
+        if (activeAccountId.startsWith('CAT:')) {
+          const category = activeAccountId.replace('CAT:', '')
+          const account = accounts.find((a) => a.id === trade.account_id)
+          if (!account || getAccountCategory(account) !== category) return false
+        } else if (trade.account_id !== activeAccountId) {
+          return false
+        }
+      }
       if (filter.accountId && filter.accountId !== 'ALL' && trade.account_id !== filter.accountId) return false
       if (filter.symbol && !trade.symbol.toLowerCase().includes(filter.symbol.toLowerCase())) return false
       if (filter.direction && trade.direction !== filter.direction) return false
@@ -590,19 +599,31 @@ export function TradingProvider({ children }: { children: ReactNode }) {
       }
       return true
     })
-  }, [trades, activeAccountId, filter])
+  }, [trades, activeAccountId, accounts, filter])
 
   // --- METRIC CALCULATIONS ---
   const metrics = useMemo(() => {
-    const initialBal = activeAccount ? Number(activeAccount.initial_balance) : 10000
+    let initialBal = 10000
+    if (activeAccount) {
+      initialBal = Number(activeAccount.initial_balance)
+    } else if (activeAccountId.startsWith('CAT:')) {
+      const catAccounts = accounts.filter((a) => getAccountCategory(a) === activeAccountId.replace('CAT:', ''))
+      const totalInitial = catAccounts.reduce((sum, a) => sum + Number(a.initial_balance || 0), 0)
+      initialBal = totalInitial > 0 ? totalInitial : 10000
+    } else if (accounts.length > 0) {
+      const totalInitial = accounts.reduce((sum, a) => sum + Number(a.initial_balance || 0), 0)
+      initialBal = totalInitial > 0 ? totalInitial : 10000
+    }
     return calculateMetricSummary(filteredTrades, initialBal)
-  }, [filteredTrades, activeAccount])
+  }, [filteredTrades, activeAccount, activeAccountId, accounts])
 
   // --- MULTI-CURRENCY PORTFOLIO BALANCES ---
   const baseCurrency = userProfile?.base_currency || activeAccount?.currency || 'USD'
   const portfolioBalance = useMemo(() => {
     const targetAccounts = activeAccountId === 'ALL'
       ? accounts
+      : activeAccountId.startsWith('CAT:')
+      ? accounts.filter((a) => getAccountCategory(a) === activeAccountId.replace('CAT:', ''))
       : accounts.filter((a) => a.id === activeAccountId)
     return aggregatePortfolioBalances(targetAccounts, baseCurrency)
   }, [accounts, activeAccountId, baseCurrency])

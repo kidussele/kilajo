@@ -34,7 +34,9 @@ export default function ImportPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [selectedAccountId, setSelectedAccountId] = useState(
-    activeAccountId !== 'ALL' ? activeAccountId : accounts[0]?.id || ''
+    activeAccountId !== 'ALL' && !activeAccountId.startsWith('CAT:')
+      ? activeAccountId
+      : accounts[0]?.id || ''
   )
   const [file, setFile] = useState<File | null>(null)
   const [csvContent, setCsvContent] = useState<string>('')

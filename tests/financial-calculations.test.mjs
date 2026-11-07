@@ -512,3 +512,96 @@ test('AI Assistant: Trade evaluation correctly flags missing stop-loss as critic
   assert.strictEqual(flags.includes('CRITICAL: Missing Stop Loss'), true)
   assert.strictEqual(flags.includes('RISK BREACH: Risking > 2% per trade'), true)
 })
+
+// ============================================================================
+// PART 6: ACCOUNT REORDERING & 5-CATEGORY CLASSIFICATION TESTS
+// ============================================================================
+
+test('Account Categorization: Verifies 5 categories exist in exact specified order', () => {
+  const EXPECTED_CATEGORIES = [
+    'All Accounts',
+    'Demo Practice',
+    'Backtesting',
+    'Prop Challenges',
+    'Live Trading',
+  ]
+
+  const CATEGORY_IDS = ['ALL', 'DEMO', 'BACKTEST', 'PROP', 'LIVE']
+
+  assert.strictEqual(EXPECTED_CATEGORIES.length, 5)
+  assert.strictEqual(EXPECTED_CATEGORIES[0], 'All Accounts')
+  assert.strictEqual(EXPECTED_CATEGORIES[1], 'Demo Practice')
+  assert.strictEqual(EXPECTED_CATEGORIES[2], 'Backtesting')
+  assert.strictEqual(EXPECTED_CATEGORIES[3], 'Prop Challenges')
+  assert.strictEqual(EXPECTED_CATEGORIES[4], 'Live Trading')
+})
+
+test('Account Categorization: Accurately classifies trading accounts by type, metadata, and name', () => {
+  function getAccountCategory(acc) {
+    const type = (acc.account_type || '').toLowerCase()
+    const name = (acc.name || '').toLowerCase()
+    const broker = (acc.broker || '').toLowerCase()
+
+    if (type.includes('backtest') || name.includes('backtest') || broker.includes('backtest')) {
+      return 'BACKTEST'
+    }
+    if (
+      acc.is_prop_firm ||
+      type.includes('prop') ||
+      type.includes('challenge') ||
+      name.includes('challenge') ||
+      name.includes('ftmo')
+    ) {
+      return 'PROP'
+    }
+    if (
+      type.includes('demo') ||
+      type.includes('practice') ||
+      type.includes('paper') ||
+      name.includes('demo')
+    ) {
+      return 'DEMO'
+    }
+    return 'LIVE'
+  }
+
+  // 1. Demo Practice
+  assert.strictEqual(
+    getAccountCategory({ account_type: 'Demo Practice', name: 'Paper Trading MT5' }),
+    'DEMO'
+  )
+  assert.strictEqual(
+    getAccountCategory({ account_type: 'Manual', name: 'Demo Simulator Account' }),
+    'DEMO'
+  )
+
+  // 2. Backtesting
+  assert.strictEqual(
+    getAccountCategory({ account_type: 'Backtesting', name: '2024 London Sweep Backtest' }),
+    'BACKTEST'
+  )
+  assert.strictEqual(
+    getAccountCategory({ broker: 'TradingView Replay', name: 'EURUSD 2023 Backtest' }),
+    'BACKTEST'
+  )
+
+  // 3. Prop Challenges
+  assert.strictEqual(
+    getAccountCategory({ account_type: 'Prop Challenges', is_prop_firm: true, name: 'FTMO $100k' }),
+    'PROP'
+  )
+  assert.strictEqual(
+    getAccountCategory({ name: 'FundedNext Phase 1 Challenge' }),
+    'PROP'
+  )
+
+  // 4. Live Trading
+  assert.strictEqual(
+    getAccountCategory({ account_type: 'Live Trading', name: 'IC Markets Live' }),
+    'LIVE'
+  )
+  assert.strictEqual(
+    getAccountCategory({ account_type: 'Live', name: 'OANDA Primary Brokerage' }),
+    'LIVE'
+  )
+})

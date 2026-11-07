@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatDate } from '@/lib/utils'
@@ -22,7 +22,18 @@ import {
   Key,
   Copy,
   Check,
+  Briefcase,
+  GraduationCap,
+  History,
+  Trophy,
+  Zap,
 } from 'lucide-react'
+import {
+  ACCOUNT_CATEGORIES,
+  getAccountCategory,
+  getScopeLabel,
+  AccountCategory,
+} from '@/lib/accounts/categories'
 
 export default function AccountsPage() {
   const { accounts, deleteAccount, activeAccountId, setActiveAccountId } = useTrading()
@@ -32,6 +43,18 @@ export default function AccountsPage() {
   const [copiedToken, setCopiedToken] = useState(false)
   const [bridgeToken, setBridgeToken] = useState<string>('')
   const [isGeneratingToken, setIsGeneratingToken] = useState(false)
+
+  // Selected Category filter state
+  const [selectedCategory, setSelectedCategory] = useState<AccountCategory>('ALL')
+
+  // Keep selectedCategory synced with activeAccountId if set to category
+  React.useEffect(() => {
+    if (activeAccountId === 'ALL') {
+      setSelectedCategory('ALL')
+    } else if (activeAccountId.startsWith('CAT:')) {
+      setSelectedCategory(activeAccountId.replace('CAT:', '') as AccountCategory)
+    }
+  }, [activeAccountId])
 
   const handleOpenBridge = async (accountId: string) => {
     setSelectedAccountForBridge(accountId)
@@ -63,8 +86,45 @@ export default function AccountsPage() {
     }
   }
 
-  const totalCapital = accounts.reduce((sum, acc) => sum + Number(acc.current_balance || 0), 0)
-  const propCount = accounts.filter((a) => a.is_prop_firm).length
+  // Calculate category counts
+  const categoryCounts = useMemo(() => {
+    const counts: Record<AccountCategory, number> = {
+      ALL: accounts.length,
+      DEMO: 0,
+      BACKTEST: 0,
+      PROP: 0,
+      LIVE: 0,
+    }
+    accounts.forEach((a) => {
+      const cat = getAccountCategory(a)
+      counts[cat] = (counts[cat] || 0) + 1
+    })
+    return counts
+  }, [accounts])
+
+  // Filter accounts by category
+  const filteredAccounts = useMemo(() => {
+    if (selectedCategory === 'ALL') return accounts
+    return accounts.filter((a) => getAccountCategory(a) === selectedCategory)
+  }, [accounts, selectedCategory])
+
+  const totalCapital = filteredAccounts.reduce((sum, acc) => sum + Number(acc.current_balance || 0), 0)
+  const propCount = filteredAccounts.filter((a) => a.is_prop_firm).length
+
+  const getCategoryIcon = (catId: AccountCategory) => {
+    switch (catId) {
+      case 'ALL':
+        return Briefcase
+      case 'DEMO':
+        return GraduationCap
+      case 'BACKTEST':
+        return History
+      case 'PROP':
+        return Trophy
+      case 'LIVE':
+        return Zap
+    }
+  }
 
   return (
     <DashboardLayout>
@@ -72,46 +132,90 @@ export default function AccountsPage() {
         {/* Page Hero Banner */}
         <PageHeroBanner
           title="Trading Accounts"
-          subtitle="Connect and manage live broker accounts, prop firm challenges, and synchronization bridges"
+          subtitle="Connect and organize accounts across Demo Practice, Backtesting, Prop Challenges, and Live Trading"
           icon={Wallet}
           quote="One journal. All brokers. Unified control."
         >
           <button
             onClick={() => setIsAddAccountOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
           >
             <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>Connect Account</span>
           </button>
         </PageHeroBanner>
 
+        {/* 5 Explicit Category Filter Pills in Exact Requested Order */}
+        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-[#0c141c] border border-slate-100 dark:border-slate-800 shadow-2xs">
+          {ACCOUNT_CATEGORIES.map((cat) => {
+            const isActive = selectedCategory === cat.id
+            const count = categoryCounts[cat.id] || 0
+            const Icon = getCategoryIcon(cat.id)
+
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  setSelectedCategory(cat.id)
+                  if (cat.id === 'ALL') {
+                    setActiveAccountId('ALL')
+                  } else {
+                    setActiveAccountId(`CAT:${cat.id}`)
+                  }
+                }}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  isActive
+                    ? cat.activeBgClass
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{cat.label}</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold font-mono ${
+                    isActive
+                      ? 'bg-white/25 text-white'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
         {/* Account Overview Metric Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard
             title="Total Accounts"
-            value={accounts.length.toString()}
-            subtitle={`${propCount} prop firm challenges`}
+            value={filteredAccounts.length.toString()}
+            subtitle={
+              selectedCategory === 'ALL'
+                ? `${propCount} prop challenges`
+                : `${categoryCounts[selectedCategory]} in ${selectedCategory}`
+            }
             icon={Wallet}
             color="emerald"
           />
           <MetricCard
-            title="Total Portfolio Value"
+            title="Total Capital"
             value={formatCurrency(totalCapital, 'USD')}
-            subtitle="Combined equity"
+            subtitle={selectedCategory === 'ALL' ? 'Combined equity' : `${getScopeLabel(activeAccountId, accounts)} equity`}
             icon={CheckCircle}
             color="purple"
           />
           <MetricCard
-            title="Prop Challenges"
-            value={propCount.toString()}
-            subtitle="Funded & Evaluation"
+            title="Category Scope"
+            value={ACCOUNT_CATEGORIES.find((c) => c.id === selectedCategory)?.shortLabel || 'All'}
+            subtitle={ACCOUNT_CATEGORIES.find((c) => c.id === selectedCategory)?.description || 'Unified view'}
             icon={ShieldAlert}
             color="amber"
           />
           <MetricCard
             title="Active Scope"
-            value={activeAccountId === 'ALL' ? 'All Accounts' : accounts.find((a) => a.id === activeAccountId)?.name || 'Account'}
-            subtitle="Current dashboard filter"
+            value={getScopeLabel(activeAccountId, accounts)}
+            subtitle="Global filter applied"
             icon={Radio}
             color="blue"
           />
@@ -119,28 +223,33 @@ export default function AccountsPage() {
 
         {/* Accounts List Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {accounts.length === 0 ? (
+          {filteredAccounts.length === 0 ? (
             <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800 rounded-3xl bg-white dark:bg-[#0c141c] shadow-xs">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-900 mb-3 text-slate-400">
                 <Wallet className="h-7 w-7 stroke-[2]" />
               </div>
-              <h3 className="text-base font-bold text-slate-800 dark:text-white">No accounts connected yet</h3>
+              <h3 className="text-base font-bold text-slate-800 dark:text-white">
+                No accounts in {ACCOUNT_CATEGORIES.find((c) => c.id === selectedCategory)?.label || 'this category'}
+              </h3>
               <p className="text-xs mt-1 max-w-sm text-slate-400">
-                Add your live broker account or prop firm challenge to start tracking your performance.
+                Create a new account or select another category from the filter pills above.
               </p>
               <button
                 onClick={() => setIsAddAccountOpen(true)}
                 className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs cursor-pointer"
               >
                 <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
-                <span>Add Your First Account</span>
+                <span>Connect Account</span>
               </button>
             </div>
           ) : (
-            accounts.map((acc) => {
+            filteredAccounts.map((acc) => {
               const isSelected = activeAccountId === acc.id
               const pnl = Number(acc.current_balance) - Number(acc.initial_balance)
               const pnlPct = Number(acc.initial_balance) > 0 ? (pnl / Number(acc.initial_balance)) * 100 : 0
+              const categoryKey = getAccountCategory(acc)
+              const catDef = ACCOUNT_CATEGORIES.find((c) => c.id === categoryKey) || ACCOUNT_CATEGORIES[4]
+              const CatIcon = getCategoryIcon(categoryKey)
 
               return (
                 <div
@@ -151,15 +260,14 @@ export default function AccountsPage() {
                 >
                   {/* Top line badges */}
                   <div className="flex items-start justify-between gap-2">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold font-mono text-sm text-foreground">{acc.name}</span>
-                        {acc.is_prop_firm && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300">
-                            <ShieldAlert className="h-2.5 w-2.5" />
-                            PROP
-                          </span>
-                        )}
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="font-bold text-sm text-foreground">{acc.name}</span>
+                        {/* Category badge */}
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${catDef.badgeClass}`}>
+                          <CatIcon className="h-2.5 w-2.5" />
+                          {catDef.label}
+                        </span>
                       </div>
                       <p className="text-xs text-muted-foreground">
                         {acc.broker} • {acc.platform}
@@ -168,12 +276,12 @@ export default function AccountsPage() {
 
                     <div className="flex items-center gap-1">
                       {acc.connection_status === 'connected' ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
                           <CheckCircle className="h-3 w-3" />
                           Live Sync
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
                           Manual / CSV
                         </span>
                       )}
@@ -181,7 +289,7 @@ export default function AccountsPage() {
                   </div>
 
                   {/* Financial Balance Overview */}
-                  <div className="mt-4 border-t pt-3 space-y-1">
+                  <div className="mt-4 border-t border-slate-100 dark:border-slate-800 pt-3 space-y-1">
                     <div className="flex items-baseline justify-between">
                       <span className="text-xs text-muted-foreground">Current Balance</span>
                       <span className="font-mono text-lg font-bold text-foreground tabular-nums">
@@ -196,43 +304,43 @@ export default function AccountsPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-xs pt-1 border-t">
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100 dark:border-slate-800">
                       <span className="text-muted-foreground">Net P&L</span>
                       <span
                         className={`font-mono font-bold tabular-nums ${
-                          pnl >= 0 ? 'text-emerald-600' : 'text-red-600'
+                          pnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                         }`}
                       >
                         {pnl >= 0 ? `+${formatCurrency(pnl, acc.currency)}` : `-${formatCurrency(Math.abs(pnl), acc.currency)}`} (
-                        {pnlPct.toFixed(2)}%)
+                        {pnlPct >= 0 ? `+${pnlPct.toFixed(2)}` : pnlPct.toFixed(2)}%)
                       </span>
                     </div>
                   </div>
 
                   {/* Bottom Actions */}
-                  <div className="mt-4 pt-3 border-t flex items-center justify-between gap-2">
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                     <button
                       onClick={() => setActiveAccountId(isSelected ? 'ALL' : acc.id)}
-                      className={`text-xs font-semibold px-2.5 py-1 rounded transition-colors ${
+                      className={`text-xs font-semibold px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
+                          ? 'bg-[#064e3b] text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200'
                       }`}
                     >
-                      {isSelected ? 'Active Scope' : 'Select Account'}
+                      {isSelected ? '✓ Active Scope' : 'Select Scope'}
                     </button>
 
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleOpenBridge(acc.id)}
-                        className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-foreground cursor-pointer"
                         title="Configure MT4/MT5 Bridge Webhook"
                       >
                         <Key className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => deleteAccount(acc.id)}
-                        className="rounded p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 cursor-pointer"
                         title="Delete Account"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -246,32 +354,31 @@ export default function AccountsPage() {
         </div>
 
         {/* Universal Provider Architecture Information Card */}
-        <div className="rounded-xl border bg-muted/20 p-5 shadow-xs space-y-3">
+        <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white/70 dark:bg-[#0c141c]/70 p-6 shadow-xs space-y-3">
           <div className="flex items-center gap-2">
-            <Radio className="h-4 w-4 text-primary" />
+            <Radio className="h-4 w-4 text-[#064e3b] dark:text-emerald-400" />
             <h3 className="text-sm font-bold font-mono text-foreground uppercase">
               Universal Provider Adapter Framework
             </h3>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            KILAJO adheres to a strict zero-compromise architectural standard: trading accounts remain completely isolated, 
-            and data is normalized through a unified ingestion pipeline. No master broker passwords or private investor credentials 
-            are ever requested or stored. Read-only bridges and verifiable CSV/Excel exports are normalized identically.
+            KILAJO adheres to a strict zero-compromise architectural standard: trading accounts remain completely isolated across 
+            Demo Practice, Backtesting, Prop Challenges, and Live Trading. Read-only bridges and verifiable CSV/Excel exports are normalized identically.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
-            <div className="p-3 rounded-lg border bg-card">
+            <div className="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
               <span className="font-semibold text-foreground block mb-1">CSV / Excel Statement</span>
               <p className="text-muted-foreground text-[11px]">
                 Import statements from any broker or trading platform with instant column mapping.
               </p>
             </div>
-            <div className="p-3 rounded-lg border bg-card">
+            <div className="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
               <span className="font-semibold text-foreground block mb-1">MetaTrader 4 & 5 Bridge</span>
               <p className="text-muted-foreground text-[11px]">
                 Lightweight read-only Expert Advisor transmits execution reports via encrypted webhook.
               </p>
             </div>
-            <div className="p-3 rounded-lg border bg-card">
+            <div className="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
               <span className="font-semibold text-foreground block mb-1">cTrader / Open API</span>
               <p className="text-muted-foreground text-[11px]">
                 Direct read-only statement export and OpenAPI token synchronization.
@@ -340,4 +447,3 @@ export default function AccountsPage() {
     </DashboardLayout>
   )
 }
-

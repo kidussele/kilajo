@@ -84,7 +84,9 @@ export function TradeModal({ isOpen, onClose, tradeToEdit }: TradeModalProps) {
       setNotes(tradeToEdit.notes || '')
     } else {
       // Default to active account or first available
-      const defaultAcc = activeAccountId !== 'ALL' ? activeAccountId : accounts[0]?.id || ''
+      const defaultAcc = activeAccountId !== 'ALL' && !activeAccountId.startsWith('CAT:')
+        ? activeAccountId
+        : accounts[0]?.id || ''
       setAccountId(defaultAcc)
       setSymbol('EURUSD')
       setDirection('BUY')
