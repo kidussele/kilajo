@@ -37,7 +37,7 @@ export const NAVIGATION_ITEMS = [
   { name: 'Psychology & Discipline', href: '/psychology', icon: Brain },
   { name: 'Strategies', href: '/strategies', icon: TrendingUp },
   { name: 'Goals', href: '/goals', icon: Target },
-  { name: 'Plans', href: '/settings', icon: Sparkles },
+  { name: 'Plans', href: '/plans', icon: Sparkles },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
