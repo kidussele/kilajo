@@ -22,6 +22,7 @@ import {
   Moon,
   Trophy,
   ChevronDown,
+  Bot,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTrading } from '@/context/trading-context'
@@ -30,6 +31,7 @@ import { useTheme } from '@/context/theme-context'
 export const NAVIGATION_ITEMS = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard, color: 'text-emerald-500 dark:text-emerald-400', iconBg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100/80 dark:border-emerald-800/50', badgeColor: 'bg-emerald-100 text-emerald-700' },
   { name: 'Trade Journal', href: '/journal', icon: BookOpen, color: 'text-teal-500 dark:text-teal-400', iconBg: 'bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 border border-teal-100/80 dark:border-teal-800/50', badgeColor: 'bg-teal-100 text-teal-700' },
+  { name: 'AI Assistant', href: '/ai-coach', icon: Bot, color: 'text-violet-500 dark:text-violet-400', iconBg: 'bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 border border-violet-100/80 dark:border-violet-800/50', badgeColor: 'bg-violet-100 text-violet-700' },
   { name: 'Analytics', href: '/analytics', icon: LineChart, color: 'text-blue-500 dark:text-blue-400', iconBg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100/80 dark:border-blue-800/50', badgeColor: 'bg-blue-100 text-blue-700' },
   { name: 'Calendar', href: '/calendar', icon: CalendarDays, color: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-100/80 dark:border-emerald-800/50', badgeColor: 'bg-emerald-100 text-emerald-700' },
   { name: 'Reports', href: '/reports', icon: FileSpreadsheet, color: 'text-purple-500 dark:text-purple-400', iconBg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100/80 dark:border-purple-800/50', badgeColor: 'bg-purple-100 text-purple-700' },

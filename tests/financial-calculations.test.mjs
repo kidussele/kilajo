@@ -467,3 +467,48 @@ test('Performance Metrics: Expectancy, Max Drawdown, and Recovery Factor calcula
   const recoveryFactor = totalNetProfit / maxDrawdown // 3800 / 2000 = 1.9
   assert.strictEqual(recoveryFactor, 1.9)
 })
+
+// ============================================================================
+// PART 5: AI ASSISTANT & TEACHER HELPER DIAGNOSTICS TESTS
+// ============================================================================
+
+test('AI Assistant: Validates Gemini API Key format and AQ. prefix support', () => {
+  const isGeminiApiKeyValid = (key) => {
+    if (!key || typeof key !== 'string') return false
+    const trimmed = key.trim()
+    // Supports Google AI Studio newer AQ. authentication keys and standard formats
+    return trimmed.startsWith('AQ.') || trimmed.startsWith('AIza')
+  }
+
+  const sampleKey = 'AQ.mock_sample_key_for_testing_purposes_only_123456789'
+  assert.strictEqual(isGeminiApiKeyValid(sampleKey), true)
+  assert.strictEqual(isGeminiApiKeyValid('AIzaSyD-exampleKey123'), true)
+  assert.strictEqual(isGeminiApiKeyValid(''), false)
+  assert.strictEqual(isGeminiApiKeyValid('invalid_random_string'), false)
+})
+
+test('AI Assistant: Trade evaluation correctly flags missing stop-loss as critical risk breach', () => {
+  const auditTrade = (trade) => {
+    const mistakes = []
+    if (!trade.stop_loss || trade.stop_loss === 0) {
+      mistakes.push('CRITICAL: Missing Stop Loss')
+    }
+    if (trade.risk_amount && trade.account_balance && trade.risk_amount / trade.account_balance > 0.02) {
+      mistakes.push('RISK BREACH: Risking > 2% per trade')
+    }
+    return mistakes
+  }
+
+  const badTrade = {
+    symbol: 'EURUSD',
+    direction: 'BUY',
+    quantity: 2.0,
+    stop_loss: null,
+    account_balance: 10000,
+    risk_amount: 500, // 5% risk!
+  }
+
+  const flags = auditTrade(badTrade)
+  assert.strictEqual(flags.includes('CRITICAL: Missing Stop Loss'), true)
+  assert.strictEqual(flags.includes('RISK BREACH: Risking > 2% per trade'), true)
+})

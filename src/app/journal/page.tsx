@@ -33,6 +33,8 @@ import {
   ListFilter,
   Layers,
   ChevronDown,
+  Bot,
+  Sparkles,
 } from 'lucide-react'
 
 export default function JournalPage() {
@@ -56,6 +58,33 @@ export default function JournalPage() {
   const [tradeToEdit, setTradeToEdit] = useState<Trade | null>(null)
   const [tradeToView, setTradeToView] = useState<Trade | null>(null)
   const [tradeToDelete, setTradeToDelete] = useState<Trade | null>(null)
+  const [tradeAiAudit, setTradeAiAudit] = useState<string | null>(null)
+  const [isAuditingTrade, setIsAuditingTrade] = useState(false)
+
+  const handleAuditTradeWithAi = async (trade: Trade) => {
+    setIsAuditingTrade(true)
+    setTradeAiAudit(null)
+    try {
+      const res = await fetch('/api/ai/coach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'analyze-single-trade',
+          trade,
+        }),
+      })
+      const data = await res.json()
+      if (data.analysis) {
+        setTradeAiAudit(data.analysis)
+      } else {
+        throw new Error(data.error || 'Audit failed')
+      }
+    } catch (err: any) {
+      setTradeAiAudit(`⚠️ Failed to audit trade: ${err.message}`)
+    } finally {
+      setIsAuditingTrade(false)
+    }
+  }
 
   // Filter and sort trades
   const processedTrades = useMemo(() => {
@@ -496,7 +525,10 @@ export default function JournalPage() {
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <button
-                              onClick={() => setTradeToView(trade)}
+                              onClick={() => {
+                                setTradeToView(trade)
+                                setTradeAiAudit(null)
+                              }}
                               className="rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
                               title="View trade breakdown"
                             >
@@ -631,13 +663,38 @@ export default function JournalPage() {
             </div>
 
             {tradeToView.notes && (
-              <div className="border-t border-slate-100 pt-3">
+              <div className="border-t border-slate-100 dark:border-slate-800 pt-3">
                 <span className="text-slate-400 block text-[11px] mb-1">Trade Notes & Psychological Review</span>
-                <p className="p-3 bg-slate-50 rounded-xl text-slate-700 italic leading-relaxed">
+                <p className="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-700 dark:text-slate-300 italic leading-relaxed">
                   "{tradeToView.notes}"
                 </p>
               </div>
             )}
+
+            {/* AI Assistant Audit Block */}
+            <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 font-bold text-slate-800 dark:text-white">
+                  <Bot className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span>AI Coach: Mistake & Execution Audit</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleAuditTradeWithAi(tradeToView)}
+                  disabled={isAuditingTrade}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  <span>{isAuditingTrade ? 'Auditing...' : 'Audit This Trade'}</span>
+                </button>
+              </div>
+
+              {tradeAiAudit && (
+                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-100 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap max-h-56 overflow-y-auto">
+                  {tradeAiAudit}
+                </div>
+              )}
+            </div>
           </div>
         </Modal>
       )}

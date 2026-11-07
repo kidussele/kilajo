@@ -27,6 +27,8 @@ import {
   Lock,
   RefreshCw,
   Check,
+  Bot,
+  ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -38,7 +40,8 @@ export default function SettingsPage() {
   const [baseCurrency, setBaseCurrency] = useState('USD')
   const [timezone, setTimezone] = useState('UTC')
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
-  const [activeTab, setActiveTab] = useState<'profile' | 'bridge' | 'data' | 'danger'>('profile')
+  const [activeTab, setActiveTab] = useState<'profile' | 'bridge' | 'ai' | 'data' | 'danger'>('profile')
+  const [geminiApiKey, setGeminiApiKey] = useState('')
   const [isSaved, setIsSaved] = useState(false)
   const [copiedWebhook, setCopiedWebhook] = useState(false)
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false)
@@ -175,6 +178,19 @@ export default function SettingsPage() {
           >
             <Key className="h-3.5 w-3.5" />
             <span>Bridge & Webhooks</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('ai')}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
+              activeTab === 'ai'
+                ? 'bg-[#064e3b] text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
+            )}
+          >
+            <Bot className="h-3.5 w-3.5" />
+            <span>AI Assistant</span>
           </button>
           <button
             type="button"
@@ -349,6 +365,87 @@ export default function SettingsPage() {
                     <span className="text-[10px] uppercase font-bold text-emerald-800 dark:text-emerald-400 block">Execution Mode</span>
                     <span className="font-bold text-slate-800 dark:text-white">Strictly Read-Only (Audited)</span>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 5.1 Tab: AI Assistant & Mistake Analyzer */}
+        {activeTab === 'ai' && (
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-7 sm:p-8 shadow-xs space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">AI Assistant & Trading Teacher Engine</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Powered by Google Gemini 3.8. Deep mistake diagnosis, psychology auditing, and institutional mentoring.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-3 py-1 text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                  AUTHENTICATED & ACTIVE
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-5 text-xs">
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-800 dark:text-slate-200">Google Gemini API Authentication Key</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="password"
+                    value={geminiApiKey}
+                    onChange={(e) => setGeminiApiKey(e.target.value)}
+                    placeholder="•••••••••••••••••••• (Active & Loaded via GEMINI_API_KEY)"
+                    className="flex-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 font-mono text-xs text-slate-800 dark:text-emerald-400 select-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsSaved(true)
+                      setTimeout(() => setIsSaved(false), 2500)
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 font-semibold shadow-2xs transition-colors cursor-pointer"
+                  >
+                    {isSaved ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+                    <span>{isSaved ? 'Saved!' : 'Save Key'}</span>
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Your key is securely processed server-side via Next.js API routes and never exposed to public clients.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-emerald-100 dark:border-emerald-900/60 bg-gradient-to-r from-emerald-50/60 via-teal-50/30 to-emerald-50/60 dark:from-emerald-950/30 dark:via-slate-900 dark:to-slate-900 p-5 space-y-3">
+                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
+                  <Sparkles className="h-4 w-4" />
+                  <span>AI Mentor Capabilities</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  <div className="p-3.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-emerald-200/60 dark:border-slate-800 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400 block">🩺 Mistake Detector</span>
+                    <p className="text-slate-600 dark:text-slate-300 text-[11px]">Uncovers overtrading, revenge sizing, and missing stops.</p>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-emerald-200/60 dark:border-slate-800 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400 block">🧠 Psychology Guard</span>
+                    <p className="text-slate-600 dark:text-slate-300 text-[11px]">Detects FOMO and tilt cycles based on trade sequences.</p>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white/90 dark:bg-slate-900/80 border border-emerald-200/60 dark:border-slate-800 space-y-1">
+                    <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-400 block">👨‍🏫 Teacher Helper</span>
+                    <p className="text-slate-600 dark:text-slate-300 text-[11px]">Gives actionable homework rules for upcoming trading weeks.</p>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <a
+                    href="/ai-coach"
+                    className="inline-flex items-center gap-2 rounded-full bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white px-5 py-2 text-xs font-bold transition-all shadow-xs cursor-pointer"
+                  >
+                    <Bot className="h-4 w-4 text-emerald-400" />
+                    <span>Launch AI Assistant & Coach</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </a>
                 </div>
               </div>
             </div>

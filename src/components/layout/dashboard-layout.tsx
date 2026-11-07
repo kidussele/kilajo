@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { Sidebar } from './sidebar'
 import { Header } from './header'
-import { X } from 'lucide-react'
+import { X, Bot } from 'lucide-react'
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -54,6 +55,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+
+      {/* Floating AI Assistant Quick Trigger */}
+      <Link
+        href="/ai-coach"
+        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-emerald-300 dark:border-emerald-700 bg-[#064e3b] text-white px-4 py-2.5 shadow-lg shadow-emerald-950/25 hover:bg-[#043c2e] hover:scale-105 transition-all group cursor-pointer"
+        title="Open AI Assistant & Teacher Helper"
+      >
+        <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+        <Bot className="h-4 w-4 text-emerald-300 group-hover:rotate-12 transition-transform" />
+        <span className="text-xs font-bold tracking-tight">AI Assistant</span>
+      </Link>
     </div>
   )
 }
