@@ -1,15 +1,14 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { usePathname } from 'next/navigation'
 import {
   Menu,
   Briefcase,
   Bell,
-  Search,
-  MessageSquare,
+  Calendar,
   ChevronDown,
   Check,
+  PlusCircle,
   GraduationCap,
   History,
   Trophy,
@@ -27,31 +26,17 @@ import {
 } from '@/lib/accounts/categories'
 
 export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
-  const pathname = usePathname()
   const { accounts, activeAccountId, setActiveAccountId, activeAccount, isDemoMode } = useTrading()
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false)
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false)
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
 
-  // Compute page title based on current route
-  const pageTitle = useMemo(() => {
-    if (pathname === '/') return 'Dashboard'
-    if (pathname.startsWith('/journal')) return 'Trade Journal'
-    if (pathname.startsWith('/analytics')) return 'Analytics'
-    if (pathname.startsWith('/accounts')) return 'Accounts'
-    if (pathname.startsWith('/calendar')) return 'Trading Calendar'
-    if (pathname.startsWith('/reports')) return 'Reports'
-    if (pathname.startsWith('/import')) return 'Import Center'
-    if (pathname.startsWith('/prop-firms')) return 'Prop Challenges'
-    if (pathname.startsWith('/psychology')) return 'Psychology & Discipline'
-    if (pathname.startsWith('/strategies')) return 'Strategies'
-    if (pathname.startsWith('/goals')) return 'Goals'
-    if (pathname.startsWith('/plans')) return 'Future Plans'
-    if (pathname.startsWith('/settings')) return 'Settings'
-    if (pathname.startsWith('/ai-coach')) return 'AI Mentor'
-    return 'Dashboard'
-  }, [pathname])
+  // Current formatted date matching the screenshot aesthetic (e.g. "Nov 5, 2026")
+  const formattedDate = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
   // Group accounts by category
   const accountsByCategory = useMemo(() => {
@@ -84,6 +69,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
     }
   }
 
+  // Active Category indicator for button
   const currentCategoryIcon = useMemo(() => {
     if (activeAccountId === 'ALL') return Briefcase
     if (activeAccountId === 'CAT:DEMO') return GraduationCap
@@ -103,34 +89,30 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8 bg-white/80 dark:bg-[#0c141c]/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 select-none">
-        {/* Left Section: Page Title + Account Selector Pill */}
-        <div className="flex items-center gap-3.5">
+      <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-8 bg-transparent backdrop-blur-xs select-none">
+        {/* Left Section: Mobile Menu + Account Filter Selector Pill */}
+        <div className="flex items-center gap-3">
           <button
             onClick={onOpenMobileMenu}
-            className="md:hidden rounded-xl p-2 text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white border border-slate-200/60 dark:border-slate-800 shadow-xs cursor-pointer"
+            className="md:hidden rounded-xl p-2 text-slate-600 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white border border-slate-200/60 dark:border-slate-800 shadow-xs cursor-pointer"
             aria-label="Open navigation menu"
           >
             <Menu className="h-5 w-5" />
           </button>
 
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800 dark:text-white">
-            {pageTitle}
-          </h2>
-
           {/* Account Selector Pill with Categories */}
-          <div className="relative hidden sm:block">
+          <div className="relative">
             <button
               onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-              className="flex items-center gap-2 rounded-full border border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer"
             >
               {React.createElement(currentCategoryIcon, {
-                className: 'h-3.5 w-3.5 text-blue-600 dark:text-cyan-400 stroke-[2.2] shrink-0',
+                className: 'h-4 w-4 text-emerald-600 dark:text-emerald-400 stroke-[2.2] shrink-0',
               })}
-              <span className="max-w-[120px] lg:max-w-[180px] truncate">
+              <span className="max-w-[130px] sm:max-w-[200px] truncate">
                 {currentScopeTitle}
               </span>
-              <ChevronDown className="h-3 w-3 text-slate-400 stroke-[2.5]" />
+              <ChevronDown className="h-3.5 w-3.5 text-slate-400 stroke-[2.5]" />
             </button>
 
             {isAccountDropdownOpen && (
@@ -145,7 +127,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                     <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                       Trading Categories & Accounts
                     </span>
-                    <span className="text-[10px] font-semibold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
                       {accounts.length} Total
                     </span>
                   </div>
@@ -159,17 +141,17 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                       }}
                       className={`flex w-full items-center justify-between rounded-2xl px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
                         activeAccountId === 'ALL'
-                          ? 'bg-[#1e3a8a] text-white shadow-xs'
-                          : 'text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80'
+                          ? 'bg-[#064e3b] text-white shadow-xs'
+                          : 'text-slate-800 dark:text-slate-200 hover:bg-emerald-50/70 dark:hover:bg-slate-800/80'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className={`p-1.5 rounded-xl ${activeAccountId === 'ALL' ? 'bg-white/20' : 'bg-blue-50 dark:bg-blue-950/50 text-blue-600'}`}>
+                        <div className={`p-1.5 rounded-xl ${activeAccountId === 'ALL' ? 'bg-white/20' : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600'}`}>
                           <Briefcase className="h-3.5 w-3.5 stroke-[2.2]" />
                         </div>
                         <div className="text-left">
                           <p className="font-bold">All Accounts</p>
-                          <p className={`text-[10px] ${activeAccountId === 'ALL' ? 'text-blue-100' : 'text-slate-400'}`}>
+                          <p className={`text-[10px] ${activeAccountId === 'ALL' ? 'text-emerald-100' : 'text-slate-400'}`}>
                             Unified multi-broker portfolio ({accounts.length})
                           </p>
                         </div>
@@ -190,6 +172,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                           key={category.id}
                           className="rounded-2xl border border-slate-100 dark:border-slate-800/80 p-2 bg-slate-50/50 dark:bg-slate-900/50"
                         >
+                          {/* Category Header Row (Clickable to filter all accounts in this category) */}
                           <button
                             onClick={() => {
                               setActiveAccountId(`CAT:${category.id}`)
@@ -210,10 +193,11 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                               <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                                 {catAccounts.length}
                               </span>
-                              {isCatActive && <Check className="h-3.5 w-3.5 text-cyan-400 shrink-0 font-bold" />}
+                              {isCatActive && <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 font-bold" />}
                             </div>
                           </button>
 
+                          {/* Individual Accounts in this Category */}
                           <div className="mt-1 space-y-1 pl-2">
                             {catAccounts.length === 0 ? (
                               <p className="text-[10px] text-slate-400 italic py-1 pl-2">
@@ -231,7 +215,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                                     }}
                                     className={`flex w-full items-center justify-between rounded-xl px-2.5 py-1.5 text-xs font-medium transition-colors text-left cursor-pointer ${
                                       isAccActive
-                                        ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-900 dark:text-cyan-200 font-semibold'
+                                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 font-semibold'
                                         : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white'
                                     }`}
                                   >
@@ -242,7 +226,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                                       </p>
                                     </div>
                                     {isAccActive && (
-                                      <Check className="h-3.5 w-3.5 text-blue-600 shrink-0 font-bold" />
+                                      <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 font-bold" />
                                     )}
                                   </button>
                                 )
@@ -261,7 +245,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                         setIsAccountDropdownOpen(false)
                         setIsAccountModalOpen(true)
                       }}
-                      className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-blue-400 dark:border-blue-700 bg-blue-50/50 dark:bg-blue-950/30 py-2 text-xs font-semibold text-blue-700 dark:text-cyan-300 hover:bg-blue-100/60 dark:hover:bg-blue-900/40 transition-colors cursor-pointer"
+                      className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-emerald-600/40 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/30 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100/60 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>Connect New Trading Account</span>
@@ -273,58 +257,50 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           </div>
         </div>
 
-        {/* Right Section: Search Pill + Message Icon + Bell + User Avatar (Exact Reference UI) */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Search Bar matching screenshot: "Search project, analytics..." */}
-          <div className="relative hidden md:flex items-center">
-            <Search className="absolute left-3.5 h-3.5 w-3.5 text-slate-400" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search project, analytics"
-              className="rounded-full border border-slate-200/90 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 pl-9 pr-4 py-1.5 text-xs text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-500 w-44 lg:w-60 shadow-2xs transition-all"
-            />
-          </div>
-
-          {/* Chat Bubble Icon */}
+        {/* Right Section: Notification Pill + Date Pill + Log Trade Action */}
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          {/* Quick Log Trade Button */}
           <button
-            onClick={() => window.location.href = '/ai-coach'}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-            title="AI Coach Messages"
+            onClick={() => setIsTradeModalOpen(true)}
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:shadow-xs shadow-2xs transition-all cursor-pointer"
           >
-            <MessageSquare className="h-4 w-4" />
+            <PlusCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
+            <span>Log Trade</span>
           </button>
 
-          {/* Notification Bell with Dot */}
+          {/* Notification Bell Pill with Red Badge */}
           <button
-            className="relative flex h-9 w-9 items-center justify-center rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-xs transition-all cursor-pointer"
             title="Notifications"
           >
-            <Bell className="h-4 w-4" />
-            <span className="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-rose-500" />
+            <Bell className="h-4 w-4 stroke-[2]" />
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-xs">
+              3
+            </span>
           </button>
 
-          {/* User Avatar with Green Active Dot */}
-          <div className="relative flex items-center cursor-pointer group">
-            <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-200 ring-2 ring-slate-100 dark:ring-slate-800 shadow-2xs">
-              {/* Fallback stylized avatar */}
-              <div className="h-full w-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-white font-bold text-xs">
-                KS
-              </div>
-            </div>
-            <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+          {/* Date Selector Pill (in dark forest green bg-[#064e3b]) */}
+          <div className="flex items-center gap-2 rounded-xl bg-[#064e3b] text-white px-3.5 py-1.5 text-xs font-semibold shadow-xs hover:bg-[#075e46] transition-colors cursor-pointer">
+            <Calendar className="h-3.5 w-3.5 text-emerald-300 stroke-[2.2]" />
+            <span>{formattedDate}</span>
+            <ChevronDown className="h-3 w-3 text-emerald-300 stroke-[2.5]" />
           </div>
-
-          {/* Options Menu icon */}
-          <button
-            onClick={onOpenMobileMenu}
-            className="hidden sm:flex md:hidden h-8 w-8 items-center justify-center text-slate-400 hover:text-slate-700 cursor-pointer"
-          >
-            <Menu className="h-4 w-4" />
-          </button>
         </div>
       </header>
+
+      {/* Demo Mode Notification Ribbon (soft warning if in demo mode) */}
+      {isDemoMode && (
+        <div className="mx-4 sm:mx-6 lg:mx-8 mb-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-900 px-4 py-1.5 text-xs font-medium flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-2">
+            <span className="font-mono uppercase font-bold text-[10px] bg-amber-500/20 text-amber-900 px-1.5 py-0.5 rounded-md">
+              Demo Mode
+            </span>
+            <span className="text-[11px] font-medium text-amber-800">
+              Viewing sample trading portfolio data.
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Trade Modal */}
       <TradeModal

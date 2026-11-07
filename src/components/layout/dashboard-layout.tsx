@@ -10,56 +10,61 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-[#cbe5ff] via-[#dff0fe] to-[#b7ddfd] dark:from-[#071324] dark:via-[#0c1a2e] dark:to-[#0f243e] p-2 sm:p-4 lg:p-6 flex flex-col items-center justify-center transition-colors duration-300">
-      {/* Outer Glow & Ambient Light Orbs */}
-      <div className="fixed -top-24 -left-24 h-96 w-96 rounded-full bg-blue-300/30 dark:bg-blue-600/10 blur-3xl pointer-events-none" />
-      <div className="fixed -bottom-24 -right-24 h-96 w-96 rounded-full bg-cyan-300/30 dark:bg-cyan-600/10 blur-3xl pointer-events-none" />
+    <div className="relative flex min-h-screen bg-[#f8faf9] dark:bg-[#070d14] text-slate-800 dark:text-slate-100 overflow-hidden transition-colors duration-200">
+      {/* Background Organic Mint Wave Flourishes Matching Reference Images */}
+      <div className="fixed -bottom-10 -left-10 w-96 h-96 pointer-events-none opacity-40 dark:opacity-10 z-0">
+        <svg viewBox="0 0 400 400" className="w-full h-full fill-emerald-200/50 dark:fill-emerald-800/40">
+          <path d="M0,250 C120,200 180,350 350,280 C400,260 420,380 400,400 L0,400 Z" />
+        </svg>
+      </div>
+      <div className="fixed -bottom-16 -right-16 w-[500px] h-[400px] pointer-events-none opacity-45 dark:opacity-10 z-0">
+        <svg viewBox="0 0 500 400" className="w-full h-full fill-emerald-100/60 dark:fill-emerald-800/30">
+          <path d="M50,400 C150,280 250,380 400,260 C460,220 480,320 500,400 Z" />
+        </svg>
+      </div>
 
-      {/* Main Curved Dashboard Shell Container (Matching Reference UI) */}
-      <div className="relative w-full max-w-[1720px] bg-white dark:bg-[#0c141c] rounded-[28px] sm:rounded-[36px] shadow-[0_20px_60px_-15px_rgba(30,58,138,0.18)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] border border-white/90 dark:border-slate-800/80 flex overflow-hidden min-h-[92vh] z-10">
-        {/* Desktop Slim Icon Dock Sidebar */}
-        <div className="hidden md:flex shrink-0 border-r border-slate-100 dark:border-slate-800/80 bg-white dark:bg-[#0c141c] z-20">
-          <Sidebar />
-        </div>
+      {/* Desktop Persistent Sidebar */}
+      <div className="hidden md:block shrink-0 relative z-20">
+        <Sidebar />
+      </div>
 
-        {/* Mobile Drawer */}
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 flex md:hidden">
-            <div
-              className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="relative z-50 flex flex-col w-72 bg-white dark:bg-[#0c141c] shadow-2xl">
+            <button
               onClick={() => setMobileMenuOpen(false)}
-            />
-            <div className="relative z-50 flex flex-col w-72 bg-white dark:bg-[#0c141c] shadow-2xl">
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="absolute right-3 top-4 z-50 rounded-xl p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
-              </button>
-              <Sidebar isMobile onCloseMobile={() => setMobileMenuOpen(false)} />
-            </div>
+              className="absolute right-3 top-4 z-50 rounded-xl p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <Sidebar isMobile onCloseMobile={() => setMobileMenuOpen(false)} />
           </div>
-        )}
-
-        {/* Main Content Area */}
-        <div className="flex flex-1 flex-col overflow-hidden min-w-0 bg-[#fafcff] dark:bg-[#090f17]">
-          <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
-          <main className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 lg:px-8 space-y-6">
-            {children}
-          </main>
         </div>
+      )}
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 flex-col overflow-hidden min-w-0">
+        <Header onOpenMobileMenu={() => setMobileMenuOpen(true)} />
+        <main className="flex-1 overflow-y-auto px-4 py-3 sm:px-6 lg:px-8 max-w-7xl w-full mx-auto space-y-5">
+          {children}
+        </main>
       </div>
 
       {/* Floating AI Assistant Quick Trigger */}
       <Link
         href="/ai-coach"
-        className="fixed bottom-6 right-8 z-40 flex items-center gap-2 rounded-full border border-blue-200 dark:border-blue-700 bg-[#1e3a8a] hover:bg-[#1e40af] text-white px-4 py-2.5 shadow-xl shadow-blue-900/30 hover:scale-105 transition-all group cursor-pointer"
-        title="Open AI Assistant & Mentor"
+        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-emerald-300 dark:border-emerald-700 bg-[#064e3b] text-white px-4 py-2.5 shadow-lg shadow-emerald-950/25 hover:bg-[#043c2e] hover:scale-105 transition-all group cursor-pointer"
+        title="Open AI Assistant & Teacher Helper"
       >
-        <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
-        <Bot className="h-4 w-4 text-cyan-300 group-hover:rotate-12 transition-transform" />
-        <span className="text-xs font-bold tracking-tight">AI Mentor</span>
+        <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+        <Bot className="h-4 w-4 text-emerald-300 group-hover:rotate-12 transition-transform" />
+        <span className="text-xs font-bold tracking-tight">AI Assistant</span>
       </Link>
     </div>
   )
