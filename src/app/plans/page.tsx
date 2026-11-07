@@ -4,299 +4,362 @@ import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import { MetricCard } from '@/components/dashboard/metric-card'
+import { Modal } from '@/components/ui/modal'
+import { Button } from '@/components/ui/button'
 import {
   Sparkles,
+  ShieldAlert,
+  Clock,
+  Target,
+  CheckCircle2,
+  AlertTriangle,
+  PlusCircle,
+  Edit3,
+  Calendar,
+  Compass,
   Check,
-  Zap,
-  Shield,
-  Award,
-  Crown,
-  Lock,
+  Flame,
   ArrowRight,
   TrendingUp,
-  Database,
-  RefreshCw,
-  HelpCircle,
-  ShieldCheck,
-  Star,
-  CheckCircle2,
+  Award,
+  Lock,
+  ListChecks,
+  Sliders,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { formatCurrency, cn } from '@/lib/utils'
+import { useTrading } from '@/context/trading-context'
 
-export default function PlansPage() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual')
-  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro' | 'institutional'>('pro')
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+export default function TraderPlanPage() {
+  const { activeAccount } = useTrading()
+  const currency = activeAccount?.currency || 'USD'
 
-  const plans = [
-    {
-      id: 'starter',
-      name: 'Starter Plan',
-      tagline: 'Ideal for manual journaling and beginner discipline building',
-      priceMonthly: 0,
-      priceAnnual: 0,
-      badge: 'Free Forever',
-      badgeColor: 'bg-slate-100 text-slate-700 border-slate-200',
-      popular: false,
-      features: [
-        '1 Connected Trading Account',
-        'Manual CSV Statement Uploads',
-        'Daily Realized P&L & Balance Curve',
-        'Trading Calendar with Win/Loss Days',
-        'Discipline & Psychology Reflection Logs',
-        '30-Day Historical Data Retention',
-        'Standard Community Support',
-      ],
-      notIncluded: [
-        'Automated MT4/MT5 Webhook Bridge',
-        'Prop Firm Challenge Rule Engine',
-        'Unlimited Strategy Playbooks',
-        'Multi-Currency Balance Reconciliation',
-      ],
-      cta: 'Current Plan',
-      ctaActive: false,
-    },
-    {
-      id: 'pro',
-      name: 'Pro Trader',
-      tagline: 'Full power for active traders, prop-firm challenges, and systematic edges',
-      priceMonthly: 29,
-      priceAnnual: 24,
-      badge: 'MOST POPULAR',
-      badgeColor: 'bg-[#064e3b] text-white border-emerald-600',
-      popular: true,
-      features: [
-        'Unlimited Trading Accounts (Brokers & Prop Firms)',
-        'Real-time MT4 & MT5 Webhook Bridge Sync',
-        'Universal Prop Firm Challenge Tracker & Guards',
-        'Full Strategy Playbook Audit Engine',
-        'Deep Statistical Analytics & Session Breakdowns',
-        'Multi-Currency P&L Reconciliation (USD, EUR, GBP, JPY)',
-        'Export Institutional PDF Statements & CSVs',
-        'Lifetime Historical Trade Data Retention',
-        'Priority Technical & Integration Support',
-      ],
-      notIncluded: [
-        'Dedicated Private Webhook Relay IP',
-      ],
-      cta: 'Upgrade to Pro Trader',
-      ctaActive: true,
-    },
-    {
-      id: 'institutional',
-      name: 'Institutional Fund',
-      tagline: 'Engineered for prop firms, money managers, and multi-trader syndicates',
-      priceMonthly: 79,
-      priceAnnual: 64,
-      badge: 'Enterprise Edge',
-      badgeColor: 'bg-purple-100 text-purple-800 border-purple-200',
-      popular: false,
-      features: [
-        'Everything in Pro Trader included',
-        'Multi-User Team Management & Sub-Accounts',
-        'Combined Portfolio Drawdown Kill-Switch Alerts',
-        'Dedicated High-Frequency Webhook Relay IP',
-        'Custom Broker API Ingestion & Statement Parser',
-        'Tax-Ready Audited P&L Reporting & Logs',
-        '1-on-1 Dedicated Systems Architect Onboarding',
-        '24/7 SLA Priority Phone & Telegram Support',
-      ],
-      notIncluded: [],
-      cta: 'Contact Institutional Sales',
-      ctaActive: true,
-    },
-  ]
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
+  // Plan parameters state
+  const [maxRiskPerTradePct, setMaxRiskPerTradePct] = useState('1.0')
+  const [maxDailyLossPct, setMaxDailyLossPct] = useState('2.5')
+  const [dailyProfitGoalPct, setDailyProfitGoalPct] = useState('3.0')
+  const [maxConsecutiveLosses, setMaxConsecutiveLosses] = useState('2')
+  const [maxOpenTrades, setMaxOpenTrades] = useState('2')
+  const [minRiskReward, setMinRiskReward] = useState('1:2.0')
+  const [selectedSessions, setSelectedSessions] = useState<string[]>(['London Session', 'New York Session'])
+  const [selectedSymbols, setSelectedSymbols] = useState<string[]>(['EURUSD', 'GBPUSD', 'XAUUSD', 'NAS100'])
+
+  // Checklist states
+  const [routineChecks, setRoutineChecks] = useState<{ [key: string]: boolean }>({
+    news: true,
+    levels: true,
+    sizing: true,
+    mindset: true,
+    hardStop: true,
+    beRule: false,
+    journalDone: false,
+  })
+
+  const toggleCheck = (id: string) => {
+    setRoutineChecks((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const handleSavePlan = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsEditModalOpen(false)
+  }
+
+  const initialBalance = Number(activeAccount?.current_balance || activeAccount?.initial_balance || 10000)
+  const maxDailyLossAmount = initialBalance * (parseFloat(maxDailyLossPct) / 100)
+  const dailyProfitGoalAmount = initialBalance * (parseFloat(dailyProfitGoalPct) / 100)
 
   return (
     <DashboardLayout>
       <div className="space-y-6 max-w-6xl mx-auto select-none">
         {/* 1. Page Hero Banner */}
         <PageHeroBanner
-          title="Subscription & Membership Plans"
-          subtitle="Choose the optimal tier for automated MT4/MT5 syncing, prop-firm analytics, and institutional execution edge."
-          icon={Crown}
-          quote="Invest in your trading infrastructure; compound your edge."
+          title="Trading Plan & Execution Blueprint"
+          subtitle="Define capital protection rules, daily loss guardrails, allowed market sessions, and future roadmap milestones."
+          icon={Compass}
+          quote="Fail to plan, plan to fail. Execute your rules without emotion."
           middleContent={
-            <div className="flex items-center gap-1.5 p-1 rounded-full bg-white/95 border border-slate-200 shadow-2xs">
-              <button
-                type="button"
-                onClick={() => setBillingCycle('monthly')}
-                className={cn(
-                  'px-4 py-1.5 rounded-full text-xs font-semibold transition-all',
-                  billingCycle === 'monthly'
-                    ? 'bg-[#064e3b] text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                )}
-              >
-                Monthly
-              </button>
-              <button
-                type="button"
-                onClick={() => setBillingCycle('annual')}
-                className={cn(
-                  'flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all',
-                  billingCycle === 'annual'
-                    ? 'bg-[#064e3b] text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                )}
-              >
-                <span>Annual Billing</span>
-                <span className="rounded-full bg-emerald-100 text-emerald-800 px-2 py-0.5 text-[10px] font-bold">
-                  SAVE 20%
-                </span>
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsEditModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+            >
+              <Edit3 className="h-3.5 w-3.5" />
+              <span>Configure Trading Plan</span>
+              <span className="font-bold">&gt;</span>
+            </button>
           }
         />
 
         {/* 2. Top Metric Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard
-            title="Current Membership"
-            value="Pro Trader"
-            subtitle="Active evaluation trial"
-            icon={Crown}
+            title="Trading Plan Status"
+            value="Active & Enforced"
+            subtitle="Daily guardrails enabled"
+            icon={ShieldAlert}
             color="emerald"
             infoTooltip
           />
           <MetricCard
-            title="Billing Cadence"
-            value={billingCycle === 'annual' ? 'Annual (Save 20%)' : 'Monthly'}
-            subtitle="Next renewal: Nov 2027"
-            icon={RefreshCw}
-            color="blue"
+            title="Max Daily Loss Cap"
+            value={`-${maxDailyLossPct}%`}
+            subtitle={formatCurrency(maxDailyLossAmount, currency)}
+            icon={Flame}
+            color="rose"
             infoTooltip
           />
           <MetricCard
-            title="Connected Accounts"
-            value="Unlimited"
-            subtitle="Broker & Prop Firm slots"
-            icon={Database}
-            color="purple"
-            infoTooltip
-          />
-          <MetricCard
-            title="MT5 Bridge Status"
-            value="Active Sync"
-            subtitle="Secure SHA-256 webhook"
-            icon={Zap}
+            title="Risk Per Execution"
+            value={`${maxRiskPerTradePct}%`}
+            subtitle="Fixed position sizing"
+            icon={Target}
             color="amber"
+            infoTooltip
+          />
+          <MetricCard
+            title="Min Target Edge"
+            value={minRiskReward}
+            subtitle="Required Risk-to-Reward"
+            icon={TrendingUp}
+            color="blue"
             infoTooltip
           />
         </div>
 
-        {/* 3. Pricing Tier Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-          {plans.map((plan) => {
-            const price = billingCycle === 'annual' ? plan.priceAnnual : plan.priceMonthly
-            const isSelected = selectedPlan === plan.id
-
-            return (
-              <div
-                key={plan.id}
-                className={cn(
-                  'relative flex flex-col justify-between rounded-3xl border bg-white p-7 transition-all shadow-xs',
-                  plan.popular
-                    ? 'border-2 border-emerald-500 shadow-lg shadow-emerald-900/10 ring-4 ring-emerald-500/10'
-                    : 'border-slate-200/90 hover:border-slate-300'
-                )}
-              >
-                {/* Popular Pill Badge */}
-                {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] text-white px-4 py-1 text-[11px] font-bold uppercase tracking-wider shadow-md">
-                      <Sparkles className="h-3.5 w-3.5 text-emerald-300" />
-                      {plan.badge}
-                    </span>
+        {/* 3. Main Trading Plan Blueprint Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column (7 cols): Risk Guardrails & Sessions */}
+          <div className="lg:col-span-7 space-y-6">
+            {/* 3.1 Capital Preservation Guardrails Card */}
+            <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+                    <ShieldAlert className="h-5 w-5" />
                   </div>
-                )}
-
-                <div>
-                  {/* Tier Title & Tagline */}
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <h3 className="text-xl font-bold font-sans text-slate-900">{plan.name}</h3>
-                    {!plan.popular && (
-                      <span className={cn('text-[10px] font-bold px-2.5 py-0.5 rounded-full border', plan.badgeColor)}>
-                        {plan.badge}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-500 min-h-[34px] leading-relaxed font-medium">
-                    {plan.tagline}
-                  </p>
-
-                  {/* Price Block */}
-                  <div className="my-6 pb-6 border-b border-slate-100">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-extrabold font-mono text-slate-900 tracking-tight">
-                        ${price}
-                      </span>
-                      <span className="text-xs text-slate-500 font-semibold">
-                        / month {billingCycle === 'annual' && price > 0 ? '(billed annually)' : ''}
-                      </span>
-                    </div>
-                    {billingCycle === 'annual' && price > 0 && (
-                      <p className="text-[11px] text-emerald-600 font-semibold mt-1">
-                        Billed as ${price * 12}/year (save ${(plan.priceMonthly - plan.priceAnnual) * 12})
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Feature Checklist */}
-                  <div className="space-y-3 mb-6">
-                    <p className="text-[11px] font-bold uppercase text-slate-400 tracking-wider">
-                      Included with {plan.name}:
-                    </p>
-                    <ul className="space-y-2.5 text-xs text-slate-700">
-                      {plan.features.map((feat, i) => (
-                        <li key={i} className="flex items-start gap-2.5">
-                          <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 mt-0.5">
-                            <Check className="h-3 w-3 stroke-[3]" />
-                          </div>
-                          <span className="leading-tight font-medium text-slate-800">{feat}</span>
-                        </li>
-                      ))}
-                      {plan.notIncluded.map((feat, i) => (
-                        <li key={i} className="flex items-start gap-2.5 opacity-40">
-                          <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-400 mt-0.5">
-                            <span className="text-[10px] font-bold">✕</span>
-                          </div>
-                          <span className="leading-tight line-through font-medium text-slate-500">{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900">Capital Preservation Guardrails</h3>
+                    <p className="text-[11px] text-slate-500 font-medium">Non-negotiable risk rules to protect against drawdown</p>
                   </div>
                 </div>
+                <span className="rounded-full bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
+                  HARD RULES
+                </span>
+              </div>
 
-                {/* Bottom CTA Button */}
-                <div className="pt-4 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSelectedPlan(plan.id as any)
-                      setShowUpgradeModal(true)
-                    }}
-                    className={cn(
-                      'w-full py-3 px-5 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all shadow-xs',
-                      plan.popular
-                        ? 'bg-[#064e3b] hover:bg-[#043c2e] text-white shadow-emerald-950/20 hover:scale-[1.02]'
-                        : plan.id === 'starter'
-                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                        : 'border border-slate-300 hover:border-slate-400 bg-white text-slate-800'
-                    )}
-                  >
-                    <span>{plan.cta}</span>
-                    <ArrowRight className="h-4 w-4 stroke-[2.5]" />
-                  </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                <div className="p-4 rounded-2xl border border-slate-100 bg-slate-50/70 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-600">Max Risk Per Trade</span>
+                    <span className="font-mono font-bold text-slate-900">{maxRiskPerTradePct}%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Never risk more than 1% of equity on any single order.</p>
+                </div>
+
+                <div className="p-4 rounded-2xl border border-slate-100 bg-slate-50/70 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-600">Daily Stop Loss Limit</span>
+                    <span className="font-mono font-bold text-rose-600">-{maxDailyLossPct}%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Terminal shutdown immediately if daily drawdown is reached.</p>
+                </div>
+
+                <div className="p-4 rounded-2xl border border-slate-100 bg-slate-50/70 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-600">Daily Profit Milestone</span>
+                    <span className="font-mono font-bold text-emerald-600">+{dailyProfitGoalPct}%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Protect profits once target is reached; no overtrading.</p>
+                </div>
+
+                <div className="p-4 rounded-2xl border border-slate-100 bg-slate-50/70 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-600">Consecutive Loss Rule</span>
+                    <span className="font-mono font-bold text-slate-900">{maxConsecutiveLosses} Trades</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400">Mandatory 2-hour timeout after consecutive losses to prevent tilt.</p>
                 </div>
               </div>
-            )
-          })}
+            </div>
+
+            {/* 3.2 Market Focus & Session Windows Card */}
+            <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-5">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                    <Clock className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900">Market Focus & Session Windows</h3>
+                    <p className="text-[11px] text-slate-500 font-medium">Trade only when liquidity and volatility support your edge</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-xs">
+                {/* Active Trading Sessions */}
+                <div className="space-y-2">
+                  <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400">
+                    Approved Trading Windows:
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-emerald-200/80 bg-emerald-50/50">
+                      <div className="flex items-center gap-2 font-bold text-emerald-900">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>London Session</span>
+                      </div>
+                      <span className="font-mono text-[11px] text-emerald-700 font-semibold">07:00 – 11:00 UTC</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-blue-200/80 bg-blue-50/50">
+                      <div className="flex items-center gap-2 font-bold text-blue-900">
+                        <span className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
+                        <span>New York Session</span>
+                      </div>
+                      <span className="font-mono text-[11px] text-blue-700 font-semibold">13:00 – 17:00 UTC</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Approved Instruments */}
+                <div className="space-y-2 pt-2">
+                  <span className="text-[11px] uppercase tracking-wider font-bold text-slate-400">
+                    Approved Setup Watchlist:
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedSymbols.map((sym) => (
+                      <span
+                        key={sym}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white font-mono font-bold text-slate-800 shadow-2xs text-xs"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        {sym}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Blackout Times Notice */}
+                <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/60 text-amber-900 text-xs flex items-start gap-2.5">
+                  <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                  <p className="leading-relaxed font-medium">
+                    <strong>High-Impact News Blackout:</strong> No new executions 15 minutes before or after CPI, NFP, or FOMC rate decisions. Flat positions preferred.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column (5 cols): Pre/Post Checklist & Roadmap */}
+          <div className="lg:col-span-5 space-y-6">
+            {/* 3.3 Daily Discipline Checklist Card */}
+            <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-4">
+              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100">
+                  <ListChecks className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">Execution Protocol Checklist</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Daily compliance checks for each session</p>
+                </div>
+              </div>
+
+              <div className="space-y-2.5 text-xs">
+                {[
+                  { id: 'news', label: 'Checked high-impact economic calendar events' },
+                  { id: 'levels', label: 'Marked Daily & 4H Key Support / Resistance' },
+                  { id: 'sizing', label: 'Position size calculated before order entry' },
+                  { id: 'mindset', label: 'Calm & focused mindset (No revenge / fear)' },
+                  { id: 'hardStop', label: 'Hard stop-loss set immediately upon execution' },
+                  { id: 'beRule', label: 'Trail stop to breakeven only at 1:1.5 R:R' },
+                  { id: 'journalDone', label: 'Logged trade screenshots and psychology notes' },
+                ].map((item) => (
+                  <label
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className={cn(
+                      'flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer',
+                      routineChecks[item.id]
+                        ? 'border-emerald-200 bg-emerald-50/40 text-emerald-950 font-semibold'
+                        : 'border-slate-100 bg-slate-50/50 text-slate-600 hover:border-slate-200'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors',
+                        routineChecks[item.id]
+                          ? 'border-emerald-600 bg-emerald-600 text-white'
+                          : 'border-slate-300 bg-white'
+                      )}
+                    >
+                      {routineChecks[item.id] && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                    </div>
+                    <span className="leading-tight">{item.label}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* 3.4 Future Trader Roadmap Milestones Card */}
+            <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-4">
+              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 text-purple-700 border border-purple-100">
+                  <Award className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">Trader Growth Roadmap</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Future stages toward funded institutional scale</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-xs relative pl-3 before:absolute before:left-5 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200">
+                <div className="relative flex items-start gap-3 pl-6">
+                  <div className="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-white text-[9px] font-bold">
+                    ✓
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block">Phase 1: Capital Preservation (Current)</span>
+                    <p className="text-slate-500 text-[11px]">Strict 1% risk discipline, zero breach days, consistent 45%+ win-rate.</p>
+                  </div>
+                </div>
+
+                <div className="relative flex items-start gap-3 pl-6">
+                  <div className="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold">
+                    2
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block">Phase 2: Prop Firm Evaluation Pass</span>
+                    <p className="text-slate-500 text-[11px]">Hit 10% Phase 1 and 5% Phase 2 profit milestones under rule limits.</p>
+                  </div>
+                </div>
+
+                <div className="relative flex items-start gap-3 pl-6">
+                  <div className="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-slate-300 text-slate-700 text-[9px] font-bold">
+                    3
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block">Phase 3: First Funded Payout</span>
+                    <p className="text-slate-500 text-[11px]">Achieve first bi-weekly profit split on 100K live funded capital.</p>
+                  </div>
+                </div>
+
+                <div className="relative flex items-start gap-3 pl-6">
+                  <div className="absolute left-0 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-slate-300 text-slate-700 text-[9px] font-bold">
+                    4
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-900 block">Phase 4: Multi-Account Portfolio Scale</span>
+                    <p className="text-slate-500 text-[11px]">Operate multiple aggregated accounts across brokers with automated bridge.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* 4. Bottom Feature Trust Banner */}
         <div className="relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 p-4 shadow-xs select-none">
-          {/* Watermark bar chart on right */}
           <svg
             className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 text-emerald-600"
             viewBox="0 0 120 60"
@@ -312,102 +375,133 @@ export default function PlansPage() {
           <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 gap-3 sm:gap-0">
             <div className="flex items-center gap-3 sm:px-4">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
-                <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
+                <ShieldAlert className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Zero Lock-In</p>
-                <p className="text-[11px] text-slate-500 font-medium">Switch or cancel anytime in 1-click</p>
+                <p className="text-xs font-bold text-slate-800">Risk Guardrails</p>
+                <p className="text-[11px] text-slate-500 font-medium">Hard daily stop-loss boundaries</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
-                <Lock className="h-4 w-4 stroke-[2.5]" />
+                <Clock className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Encrypted & Safe</p>
-                <p className="text-[11px] text-slate-500 font-medium">Read-only API & HMAC SHA-256</p>
+                <p className="text-xs font-bold text-slate-800">Session Timing</p>
+                <p className="text-[11px] text-slate-500 font-medium">High liquidity window alignment</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
-                <TrendingUp className="h-4 w-4 stroke-[2.5]" />
+                <ListChecks className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Universal Sync</p>
-                <p className="text-[11px] text-slate-500 font-medium">MetaTrader, cTrader & CSV</p>
+                <p className="text-xs font-bold text-slate-800">Routine Checklist</p>
+                <p className="text-[11px] text-slate-500 font-medium">Standardized pre/post market audit</p>
               </div>
             </div>
 
             <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
-                <Award className="h-4 w-4 stroke-[2.5]" />
+                <Target className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">14-Day Guarantee</p>
-                <p className="text-[11px] text-slate-500 font-medium">Full refund if not satisfied</p>
+                <p className="text-xs font-bold text-slate-800">Milestone Roadmap</p>
+                <p className="text-[11px] text-slate-500 font-medium">Clear stages to funded trader</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 5. Upgrade Dialog / Toast Notification */}
-        {showUpgradeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
-            <div className="relative w-full max-w-md rounded-3xl border border-slate-100 bg-white p-7 shadow-2xl text-center space-y-4">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                <Crown className="h-7 w-7" />
-              </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">
-                  {selectedPlan === 'pro'
-                    ? 'Pro Trader Subscription'
-                    : selectedPlan === 'institutional'
-                    ? 'Institutional Fund Tier'
-                    : 'Starter Free Plan'}
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Your account is currently running in full Pro trial evaluation mode with unlimited accounts and automated MT5 bridge sync.
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-4 text-xs text-left space-y-2">
-                <div className="flex items-center justify-between font-semibold text-slate-800">
-                  <span>Selected Tier:</span>
-                  <span className="font-mono text-emerald-800 font-bold uppercase">{selectedPlan}</span>
+        {/* 5. Configure Trading Plan Modal */}
+        {isEditModalOpen && (
+          <Modal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            title="Configure Trading Plan & Risk Blueprint"
+            description="Adjust your capital protection limits, session windows, and mandatory rules."
+            maxWidth="md"
+          >
+            <form onSubmit={handleSavePlan} className="space-y-4 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-800">Max Risk Per Trade (%)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={maxRiskPerTradePct}
+                    onChange={(e) => setMaxRiskPerTradePct(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono"
+                    required
+                  />
                 </div>
-                <div className="flex items-center justify-between font-semibold text-slate-800">
-                  <span>Billing Interval:</span>
-                  <span className="font-mono text-emerald-800 font-bold capitalize">{billingCycle}</span>
-                </div>
-                <div className="flex items-center justify-between font-semibold text-slate-800 border-t border-emerald-200/60 pt-2">
-                  <span>Total Due Today:</span>
-                  <span className="font-mono text-base font-bold text-[#064e3b]">
-                    ${selectedPlan === 'starter' ? 0 : billingCycle === 'annual' ? (selectedPlan === 'pro' ? 24 * 12 : 64 * 12) : (selectedPlan === 'pro' ? 29 : 79)}
-                  </span>
+
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-800">Daily Stop Loss Cap (%)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    value={maxDailyLossPct}
+                    onChange={(e) => setMaxDailyLossPct(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono text-rose-600"
+                    required
+                  />
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowUpgradeModal(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-800">Daily Profit Goal (%)</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    value={dailyProfitGoalPct}
+                    onChange={(e) => setDailyProfitGoalPct(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono text-emerald-600"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-800">Consecutive Loss Timeout</label>
+                  <select
+                    value={maxConsecutiveLosses}
+                    onChange={(e) => setMaxConsecutiveLosses(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2"
+                  >
+                    <option value="1">1 Loss (Conservative)</option>
+                    <option value="2">2 Losses (Recommended)</option>
+                    <option value="3">3 Losses (Aggressive)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="font-semibold text-slate-800">Minimum Required R:R Ratio</label>
+                <select
+                  value={minRiskReward}
+                  onChange={(e) => setMinRiskReward(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono"
                 >
-                  Close
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowUpgradeModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#064e3b] hover:bg-[#043c2e] text-white text-xs font-bold shadow-xs"
-                >
-                  Confirm Subscription
-                </button>
+                  <option value="1:1.5">1:1.5 (Quick Scalping)</option>
+                  <option value="1:2.0">1:2.0 (Standard Edge)</option>
+                  <option value="1:2.5">1:2.5 (High Yield)</option>
+                  <option value="1:3.0">1:3.0 (Trend Following)</option>
+                </select>
               </div>
-            </div>
-          </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsEditModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" className="bg-[#064e3b] hover:bg-[#043c2e] text-white font-semibold">
+                  Save Plan Guardrails
+                </Button>
+              </div>
+            </form>
+          </Modal>
         )}
       </div>
     </DashboardLayout>
