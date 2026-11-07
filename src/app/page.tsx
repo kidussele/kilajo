@@ -9,6 +9,7 @@ import { RecentTradesTable } from '@/components/dashboard/recent-trades-table'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatPercent } from '@/lib/utils'
 import { buildEquityCurve, buildDailyPerformance, buildCategoryBreakdown } from '@/lib/calculations/financial'
+import { convertCurrency } from '@/lib/calculations/currency'
 import {
   Wallet,
   TrendingUp,
@@ -39,8 +40,14 @@ export default function DashboardPage() {
     if (activeAccount) {
       return Number(activeAccount.initial_balance)
     }
-    return totalBalance - metrics.netProfit
-  }, [activeAccount, totalBalance, metrics.netProfit])
+    if (accounts.length > 0) {
+      return accounts.reduce(
+        (sum, acc) => sum + convertCurrency(Number(acc.initial_balance), acc.currency, currency),
+        0
+      )
+    }
+    return 10000
+  }, [activeAccount, accounts, currency])
 
   const equityData = useMemo(() => {
     return buildEquityCurve(filteredTrades, initialBalance)

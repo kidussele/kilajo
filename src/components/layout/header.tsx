@@ -157,18 +157,21 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
         </div>
       </header>
 
-      {/* Persistent Demo Mode Banner if active */}
+      {/* Demo Mode Notification Ribbon */}
       {isDemoMode && (
-        <div className="bg-amber-500 text-amber-950 px-4 py-1.5 text-xs font-medium flex items-center justify-between">
+        <div className="bg-amber-500/10 border-b border-amber-500/20 text-amber-800 dark:text-amber-300 px-4 py-1 text-xs font-medium flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="font-bold uppercase tracking-wider text-[10px] bg-amber-950 text-amber-100 px-1.5 py-0.5 rounded">
-              Demo Mode Active
+            <span className="font-mono uppercase font-bold text-[10px] bg-amber-500/20 text-amber-900 dark:text-amber-200 px-1.5 py-0.5 rounded">
+              Demo Mode
             </span>
-            <span>You are viewing isolated sample trading accounts and performance data.</span>
+            <span className="text-[11px]">Viewing isolated sample trading data. Production accounts are unaffected.</span>
           </div>
-          <span className="text-[11px] underline cursor-pointer" onClick={() => router.push('/settings')}>
-            Manage Data in Settings
-          </span>
+          <button
+            onClick={() => router.push('/settings')}
+            className="text-[11px] hover:underline font-semibold"
+          >
+            Manage Data
+          </button>
         </div>
       )}
 

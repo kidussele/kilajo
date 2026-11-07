@@ -39,9 +39,22 @@ export async function createAccountDB(
     .select('*')
     .single()
 
-  if (error) {
+  if (error || !data) {
     console.error('Error creating account:', error)
     return null
+  }
+
+  // Also record initial balance transaction in the ledger
+  if (data.initial_balance) {
+    await supabase.from('account_transactions').insert({
+      account_id: data.id,
+      user_id: user.id,
+      transaction_type: 'INITIAL_BALANCE',
+      amount: data.initial_balance,
+      currency: data.currency || 'USD',
+      description: `Initial balance for account ${data.account_name}`,
+      transaction_time: data.created_at,
+    })
   }
 
   return data as TradingAccount
@@ -91,47 +104,62 @@ export async function deleteAccountDB(id: string): Promise<boolean> {
 }
 
 /**
- * Reconciles the account balance mathematically from its initial balance + all closed trades.
- * This ensures no balance corruption happens during trade editing, deletions, or imports.
+ * Reconciles the account balance from the transaction ledger (account_transactions)
+ * as the primary source of truth. If no ledger entries exist, gracefully falls back to
+ * initial_balance + sum(closed trade net_pnl).
  */
 export async function reconcileAccountBalance(accountId: string): Promise<number | null> {
   const supabase = createBrowserSupabase()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
 
-  // 1. Get initial balance
-  const { data: acc, error: accErr } = await supabase
-    .from('trading_accounts')
-    .select('initial_balance')
-    .eq('id', accountId)
-    .eq('user_id', user.id)
-    .single()
-
-  if (accErr || !acc) return null
-
-  // 2. Sum net_pnl of all closed trades
-  const { data: trades, error: tradesErr } = await supabase
-    .from('trades')
-    .select('net_pnl')
+  // 1. Check account transactions ledger first (Primary Financial Source of Truth)
+  const { data: ledgerTxs, error: ledgerErr } = await supabase
+    .from('account_transactions')
+    .select('amount')
     .eq('account_id', accountId)
     .eq('user_id', user.id)
-    .eq('status', 'CLOSED')
 
-  if (tradesErr) return null
+  let reconciledBalance: number
 
-  const totalRealizedPnl = (trades || []).reduce((sum, t) => sum + Number(t.net_pnl || 0), 0)
-  const reconciledBalance = Number(acc.initial_balance) + totalRealizedPnl
+  if (!ledgerErr && ledgerTxs && ledgerTxs.length > 0) {
+    // Sum all ledger entries (INITIAL_BALANCE, DEPOSITS, WITHDRAWALS, REALIZED_PNL, ADJUSTMENTS)
+    reconciledBalance = ledgerTxs.reduce((sum, tx) => sum + Number(tx.amount || 0), 0)
+  } else {
+    // Fallback: Initial balance + Sum of closed trade net_pnl
+    const { data: acc, error: accErr } = await supabase
+      .from('trading_accounts')
+      .select('initial_balance')
+      .eq('id', accountId)
+      .eq('user_id', user.id)
+      .single()
 
-  // 3. Update account record
+    if (accErr || !acc) return null
+
+    const { data: trades, error: tradesErr } = await supabase
+      .from('trades')
+      .select('net_pnl')
+      .eq('account_id', accountId)
+      .eq('user_id', user.id)
+      .eq('status', 'CLOSED')
+
+    if (tradesErr) return null
+
+    const totalRealizedPnl = (trades || []).reduce((sum, t) => sum + Number(t.net_pnl || 0), 0)
+    reconciledBalance = Number(acc.initial_balance) + totalRealizedPnl
+  }
+
+  // 2. Update account record with reconciled balance
+  const roundedBalance = Number(reconciledBalance.toFixed(4))
   await supabase
     .from('trading_accounts')
     .update({
-      current_balance: Number(reconciledBalance.toFixed(4)),
+      current_balance: roundedBalance,
       updated_at: new Date().toISOString(),
     })
     .eq('id', accountId)
     .eq('user_id', user.id)
 
-  return reconciledBalance
+  return roundedBalance
 }
 

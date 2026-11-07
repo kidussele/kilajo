@@ -118,87 +118,83 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
         })}
       </div>
 
-      {/* User Session Bar */}
-      <div className="px-3 py-2 border-t">
+      {/* Footer: Trader Status & Mode Switcher */}
+      <div className="p-3 border-t bg-muted/20">
         {(!collapsed || isMobile) ? (
-          <div className="flex items-center justify-between text-xs">
-            {userProfile ? (
-              <div className="flex items-center justify-between w-full">
-                <div className="truncate mr-2">
-                  <p className="font-semibold text-foreground truncate">{userProfile.full_name || 'Verified Trader'}</p>
-                  <p className="text-[10px] text-muted-foreground">{userProfile.base_currency} • PostgreSQL</p>
+          <div className="rounded-lg border bg-card p-2.5 space-y-2 text-xs shadow-xs">
+            {/* User Row */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 truncate">
+                <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[11px] shrink-0 font-mono">
+                  {userProfile ? (userProfile.full_name?.[0] || 'T').toUpperCase() : 'G'}
                 </div>
+                <div className="truncate">
+                  <p className="font-semibold text-foreground text-[11px] truncate leading-tight">
+                    {userProfile?.full_name || 'Guest Trader'}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground leading-tight">
+                    {userProfile ? `${userProfile.base_currency} Account` : 'Offline / Preview'}
+                  </p>
+                </div>
+              </div>
+
+              {userProfile ? (
                 <button
                   onClick={signOut}
-                  className="text-[10px] text-muted-foreground hover:text-destructive underline"
+                  className="text-[10px] font-medium text-muted-foreground hover:text-destructive transition-colors shrink-0 px-1"
                 >
                   Sign Out
                 </button>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between w-full">
-                <span className="text-[11px] text-muted-foreground">Guest Mode</span>
-                <Link href="/login" className="text-xs font-semibold text-primary hover:underline">
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-[11px] font-semibold text-primary hover:underline shrink-0"
+                >
                   Sign In
                 </Link>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Mode Switcher Line */}
+            <div className="pt-2 border-t flex items-center justify-between text-[11px]">
+              <span className="flex items-center gap-1.5 text-muted-foreground">
+                <span
+                  className={cn(
+                    'h-1.5 w-1.5 rounded-full',
+                    isDemoMode ? 'bg-amber-500' : 'bg-emerald-500'
+                  )}
+                />
+                {isDemoMode ? 'Demo Data' : 'Live Data'}
+              </span>
+
+              <button
+                onClick={() => toggleDemoMode(!isDemoMode)}
+                className="text-[10px] font-semibold text-muted-foreground hover:text-foreground transition-colors underline"
+              >
+                {isDemoMode ? 'Switch to Live' : 'Switch to Demo'}
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="flex justify-center">
-            <Link href={userProfile ? "/settings" : "/login"} title={userProfile ? "Profile" : "Sign In"}>
-              <div className="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
-                {userProfile ? (userProfile.full_name?.[0] || 'T') : '?'}
-              </div>
+          <div className="flex flex-col items-center gap-2">
+            <Link
+              href={userProfile ? '/settings' : '/login'}
+              title={userProfile ? userProfile.full_name || 'Profile' : 'Sign In'}
+              className="h-7 w-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold font-mono"
+            >
+              {userProfile ? (userProfile.full_name?.[0] || 'T').toUpperCase() : 'G'}
             </Link>
-          </div>
-        )}
-      </div>
-
-      {/* Demo Mode / Environment Badge */}
-      <div className="p-3 border-t bg-muted/30">
-        {(!collapsed || isMobile) ? (
-          <div className="rounded-lg border bg-background p-3 shadow-xs">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                <FlaskConical className={cn('h-3.5 w-3.5', isDemoMode ? 'text-amber-500' : 'text-muted-foreground')} />
-                <span>Demo Data Mode</span>
-              </div>
+            <button
+              onClick={() => toggleDemoMode(!isDemoMode)}
+              title={isDemoMode ? 'Demo Mode Active' : 'Live Mode Active'}
+              className="p-1 rounded text-muted-foreground hover:text-foreground"
+            >
               <span
                 className={cn(
-                  'text-[10px] font-bold px-1.5 py-0.5 rounded uppercase',
-                  isDemoMode ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300' : 'bg-muted text-muted-foreground'
+                  'block h-2 w-2 rounded-full',
+                  isDemoMode ? 'bg-amber-500' : 'bg-emerald-500'
                 )}
-              >
-                {isDemoMode ? 'ACTIVE' : 'OFF'}
-              </span>
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed mb-2.5">
-              {isDemoMode
-                ? 'Sample accounts and trades loaded for demonstration.'
-                : 'Showing your isolated real production trading data.'}
-            </p>
-            <button
-              onClick={() => toggleDemoMode(!isDemoMode)}
-              className={cn(
-                'w-full text-xs font-medium py-1.5 px-2 rounded border transition-colors flex items-center justify-center gap-1.5',
-                isDemoMode
-                  ? 'border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200'
-                  : 'border-border bg-card hover:bg-accent text-foreground'
-              )}
-            >
-              <Sparkles className="h-3 w-3" />
-              {isDemoMode ? 'Exit Demo Mode' : 'Explore with Demo Data'}
-            </button>
-          </div>
-        ) : (
-          <div className="flex justify-center">
-            <button
-              onClick={() => toggleDemoMode(!isDemoMode)}
-              className="p-2 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground"
-              title={isDemoMode ? 'Exit Demo Mode' : 'Explore with Demo Data'}
-            >
-              <FlaskConical className={cn('h-4 w-4', isDemoMode ? 'text-amber-500' : '')} />
+              />
             </button>
           </div>
         )}

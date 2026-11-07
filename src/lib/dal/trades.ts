@@ -68,6 +68,21 @@ export async function addTradeDB(
     return null
   }
 
+  // Record realized P&L in the financial ledger if the trade is closed
+  if (data && data.status === 'CLOSED' && data.net_pnl !== null && data.net_pnl !== undefined) {
+    await supabase.from('account_transactions').insert({
+      account_id: data.account_id,
+      user_id: user.id,
+      trade_id: data.id,
+      transaction_type: 'REALIZED_PNL',
+      amount: Number(data.net_pnl),
+      currency: 'USD',
+      reference_ticket: data.source_ticket || data.id,
+      description: `Trade ${data.symbol} (${data.direction}) P&L`,
+      transaction_time: data.exit_time || data.created_at,
+    })
+  }
+
   // Reconcile account balance after addition
   if (tradeData.account_id) {
     await reconcileAccountBalance(tradeData.account_id)
@@ -87,7 +102,7 @@ export async function updateTradeDB(
   // Fetch the current trade to obtain its account_id
   const { data: currentTrade } = await supabase
     .from('trades')
-    .select('account_id')
+    .select('account_id, status')
     .eq('id', id)
     .eq('user_id', user.id)
     .single()
@@ -103,6 +118,49 @@ export async function updateTradeDB(
   if (error) {
     console.error('Error updating trade:', error)
     return null
+  }
+
+  // Synchronize transaction ledger with trade updates
+  if (data) {
+    if (data.status === 'CLOSED' && data.net_pnl !== null && data.net_pnl !== undefined) {
+      const { data: existingTx } = await supabase
+        .from('account_transactions')
+        .select('id')
+        .eq('trade_id', id)
+        .eq('transaction_type', 'REALIZED_PNL')
+        .maybeSingle()
+
+      if (existingTx) {
+        await supabase
+          .from('account_transactions')
+          .update({
+            account_id: data.account_id,
+            amount: Number(data.net_pnl),
+            transaction_time: data.exit_time || data.created_at,
+            description: `Trade ${data.symbol} (${data.direction}) P&L (Updated)`,
+          })
+          .eq('id', existingTx.id)
+      } else {
+        await supabase.from('account_transactions').insert({
+          account_id: data.account_id,
+          user_id: user.id,
+          trade_id: data.id,
+          transaction_type: 'REALIZED_PNL',
+          amount: Number(data.net_pnl),
+          currency: 'USD',
+          reference_ticket: data.source_ticket || data.id,
+          description: `Trade ${data.symbol} (${data.direction}) P&L`,
+          transaction_time: data.exit_time || data.created_at,
+        })
+      }
+    } else if (data.status === 'OPEN') {
+      // Reverted to open, remove realized P&L transaction
+      await supabase
+        .from('account_transactions')
+        .delete()
+        .eq('trade_id', id)
+        .eq('transaction_type', 'REALIZED_PNL')
+    }
   }
 
   // Reconcile account balance after update
@@ -126,6 +184,13 @@ export async function deleteTradeDB(id: string): Promise<boolean> {
     .eq('id', id)
     .eq('user_id', user.id)
     .single()
+
+  // Clean up any ledger transactions associated with this trade before deleting
+  await supabase
+    .from('account_transactions')
+    .delete()
+    .eq('trade_id', id)
+    .eq('user_id', user.id)
 
   const { error } = await supabase
     .from('trades')
@@ -185,10 +250,31 @@ export async function bulkAddTradesDB(
   })
 
   if (validPayloads.length > 0) {
-    const { error } = await supabase.from('trades').insert(validPayloads)
+    const { data: insertedTrades, error } = await supabase
+      .from('trades')
+      .insert(validPayloads)
+      .select('id, account_id, net_pnl, symbol, direction, source_ticket, status, exit_time, created_at')
+
     if (error) {
       console.error('Error during bulk trade insertion:', error)
       return { added: 0, duplicates: duplicateCount }
+    }
+
+    // Record realized P&L for any closed trades inserted
+    const closedTrades = (insertedTrades || []).filter((t: any) => t.status === 'CLOSED' && t.net_pnl !== null)
+    if (closedTrades.length > 0) {
+      const ledgerEntries = closedTrades.map((ct: any) => ({
+        account_id: ct.account_id,
+        user_id: user.id,
+        trade_id: ct.id,
+        transaction_type: 'REALIZED_PNL' as const,
+        amount: Number(ct.net_pnl),
+        currency: 'USD',
+        reference_ticket: ct.source_ticket || ct.id,
+        description: `Imported Trade ${ct.symbol} P&L`,
+        transaction_time: ct.exit_time || ct.created_at,
+      }))
+      await supabase.from('account_transactions').insert(ledgerEntries as any)
     }
 
     // Reconcile account balance

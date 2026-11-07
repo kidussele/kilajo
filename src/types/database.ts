@@ -436,6 +436,47 @@ export interface Database {
           updated_at?: string
         }
       }
+      account_transactions: {
+        Row: {
+          id: string
+          account_id: string
+          user_id: string
+          trade_id: string | null
+          transaction_type: 'INITIAL_BALANCE' | 'DEPOSIT' | 'WITHDRAWAL' | 'REALIZED_PNL' | 'COMMISSION' | 'SWAP' | 'FEE' | 'ADJUSTMENT'
+          amount: number
+          currency: string
+          description: string | null
+          reference_ticket: string | null
+          transaction_time: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          account_id: string
+          user_id: string
+          trade_id?: string | null
+          transaction_type: 'INITIAL_BALANCE' | 'DEPOSIT' | 'WITHDRAWAL' | 'REALIZED_PNL' | 'COMMISSION' | 'SWAP' | 'FEE' | 'ADJUSTMENT'
+          amount: number
+          currency?: string
+          description?: string | null
+          reference_ticket?: string | null
+          transaction_time?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          account_id?: string
+          user_id?: string
+          trade_id?: string | null
+          transaction_type?: 'INITIAL_BALANCE' | 'DEPOSIT' | 'WITHDRAWAL' | 'REALIZED_PNL' | 'COMMISSION' | 'SWAP' | 'FEE' | 'ADJUSTMENT'
+          amount?: number
+          currency?: string
+          description?: string | null
+          reference_ticket?: string | null
+          transaction_time?: string
+          created_at?: string
+        }
+      }
     }
   }
 }
