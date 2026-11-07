@@ -67,3 +67,4 @@ export async function signOutUser() {
   const supabase = createBrowserSupabase()
   await supabase.auth.signOut()
 }
+
