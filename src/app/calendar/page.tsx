@@ -193,7 +193,7 @@ export default function CalendarPage() {
             value={formatCurrency(monthMetrics.worstDay, currency, true)}
             subtitle="Largest daily drawdown"
             icon={Clock}
-            color="indigo"
+            color="purple"
           />
 
           <MetricCard
@@ -201,7 +201,7 @@ export default function CalendarPage() {
             value="Normal"
             subtitle="On track to build habit"
             icon={ShieldCheck}
-            color="teal"
+            color="emerald"
           />
         </div>
 

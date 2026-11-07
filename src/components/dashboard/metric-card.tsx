@@ -35,43 +35,51 @@ export function MetricCard({
 }: MetricCardProps) {
   const colorMap = {
     emerald: {
-      iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100',
-      waveFill: 'fill-emerald-500/10 stroke-emerald-500/20',
+      iconBg: 'bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]',
+      stroke: '#10b981',
+      secondaryStroke: '#34d399',
       textAccent: 'text-emerald-700',
     },
     purple: {
-      iconBg: 'bg-purple-50 text-purple-600 border border-purple-100',
-      waveFill: 'fill-purple-500/10 stroke-purple-500/20',
+      iconBg: 'bg-[#f5f3ff] text-[#7c3aed] border border-[#ddd6fe]',
+      stroke: '#a855f7',
+      secondaryStroke: '#c084fc',
       textAccent: 'text-purple-700',
     },
     amber: {
-      iconBg: 'bg-amber-50 text-amber-600 border border-amber-100',
-      waveFill: 'fill-amber-500/10 stroke-amber-500/20',
+      iconBg: 'bg-[#fffbeb] text-[#d97706] border border-[#fde68a]',
+      stroke: '#f59e0b',
+      secondaryStroke: '#fbbf24',
       textAccent: 'text-amber-700',
     },
     blue: {
-      iconBg: 'bg-blue-50 text-blue-600 border border-blue-100',
-      waveFill: 'fill-blue-500/10 stroke-blue-500/20',
+      iconBg: 'bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]',
+      stroke: '#3b82f6',
+      secondaryStroke: '#60a5fa',
       textAccent: 'text-blue-700',
     },
     teal: {
-      iconBg: 'bg-teal-50 text-teal-600 border border-teal-100',
-      waveFill: 'fill-teal-500/10 stroke-teal-500/20',
+      iconBg: 'bg-[#f0fdfa] text-[#0d9488] border border-[#99f6e4]',
+      stroke: '#14b8a6',
+      secondaryStroke: '#2dd4bf',
       textAccent: 'text-teal-700',
     },
     indigo: {
-      iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-100',
-      waveFill: 'fill-indigo-500/10 stroke-indigo-500/20',
+      iconBg: 'bg-[#eef2ff] text-[#4f46e5] border border-[#c7d2fe]',
+      stroke: '#8b5cf6',
+      secondaryStroke: '#a78bfa',
       textAccent: 'text-indigo-700',
     },
     rose: {
-      iconBg: 'bg-rose-50 text-rose-600 border border-rose-100',
-      waveFill: 'fill-rose-500/10 stroke-rose-500/20',
+      iconBg: 'bg-[#fff1f2] text-[#e11d48] border border-[#fecdd3]',
+      stroke: '#f43f5e',
+      secondaryStroke: '#fb7185',
       textAccent: 'text-rose-700',
     },
   }
 
   const activeColor = colorMap[color] || colorMap.emerald
+  const gradientId = `wave-grad-${color}-${title.toLowerCase().replace(/[^a-z0-9]/g, '')}`
 
   return (
     <div
@@ -139,17 +147,38 @@ export function MetricCard({
         </div>
       </div>
 
-      {/* Bottom Subtle Wave Decoration */}
-      <div className="absolute -bottom-1 -left-2 -right-2 h-7 pointer-events-none opacity-60">
+      {/* Bottom Fluid Colored Wave Decoration Matching Screenshot */}
+      <div className="absolute -bottom-0.5 left-0 right-0 h-10 pointer-events-none overflow-hidden select-none">
         <svg
           className="w-full h-full"
-          viewBox="0 0 200 40"
+          viewBox="0 0 200 45"
           preserveAspectRatio="none"
         >
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={activeColor.stroke} stopOpacity="0.32" />
+              <stop offset="100%" stopColor={activeColor.stroke} stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+
+          {/* Secondary background flowing wave */}
           <path
-            d="M0,25 C40,35 70,10 110,20 C150,30 180,15 200,22 L200,40 L0,40 Z"
-            className={activeColor.waveFill}
-            strokeWidth="1"
+            d="M0,26 C35,16 70,36 110,22 C150,12 175,28 200,18 L200,45 L0,45 Z"
+            fill={activeColor.secondaryStroke}
+            fillOpacity="0.18"
+          />
+
+          {/* Primary foreground wave with gradient and crisp stroke */}
+          <path
+            d="M0,30 C40,38 75,18 115,26 C155,34 178,20 200,26 L200,45 L0,45 Z"
+            fill={`url(#${gradientId})`}
+          />
+          <path
+            d="M0,30 C40,38 75,18 115,26 C155,34 178,20 200,26"
+            fill="none"
+            stroke={activeColor.stroke}
+            strokeWidth="1.8"
+            strokeLinecap="round"
           />
         </svg>
       </div>

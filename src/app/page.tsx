@@ -22,6 +22,7 @@ import {
   Clock,
   ArrowUpRight,
   Target,
+  FileText,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -131,7 +132,7 @@ export default function DashboardPage() {
             value={`-${formatCurrency(metrics.maxDrawdownAmount, currency)}`}
             subtitle={`${metrics.maxDrawdownPercentage}%`}
             icon={BarChart3}
-            color="indigo"
+            color="purple"
           />
         </div>
 
@@ -213,10 +214,19 @@ export default function DashboardPage() {
             <div className="py-5 min-h-[120px] flex items-center justify-center">
               {symbolBreakdown.length === 0 ? (
                 <div className="flex items-center gap-3 text-slate-400 text-xs">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400">
-                    📊
+                  <div className="flex items-center gap-1 text-emerald-500">
+                    <svg className="h-6 w-9 text-emerald-500" viewBox="0 0 36 24" fill="currentColor">
+                      <rect x="2" y="10" width="3.5" height="10" rx="0.5" />
+                      <line x1="3.75" y1="6" x2="3.75" y2="22" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="11" y="6" width="3.5" height="14" rx="0.5" />
+                      <line x1="12.75" y1="2" x2="12.75" y2="22" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="20" y="4" width="3.5" height="12" rx="0.5" />
+                      <line x1="21.75" y1="1" x2="21.75" y2="18" stroke="currentColor" strokeWidth="1.2" />
+                      <rect x="29" y="8" width="3.5" height="10" rx="0.5" />
+                      <line x1="30.75" y1="4" x2="30.75" y2="20" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
                   </div>
-                  <span>No trades yet. Start trading to see your most traded pairs.</span>
+                  <span className="font-medium text-slate-500">No trades yet. Start trading to see your most traded pairs.</span>
                 </div>
               ) : (
                 <div className="w-full space-y-2.5">
@@ -268,10 +278,10 @@ export default function DashboardPage() {
             <div className="py-5 min-h-[120px] flex items-center justify-center">
               {filteredTrades.length === 0 ? (
                 <div className="flex items-center gap-3 text-slate-400 text-xs">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400">
-                    ⏱️
+                  <div className="flex h-10 w-8 items-center justify-center rounded-lg bg-purple-50 text-purple-400 border border-purple-200/60 shadow-2xs">
+                    <FileText className="h-5 w-5 text-purple-400 stroke-[1.8]" />
                   </div>
-                  <span>Your latest trades will appear here once you start trading.</span>
+                  <span className="font-medium text-slate-500">Your latest trades will appear here once you start trading.</span>
                 </div>
               ) : (
                 <div className="w-full space-y-2">

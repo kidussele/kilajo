@@ -28,7 +28,7 @@ export function PageHeroBanner({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-emerald-100/90 bg-gradient-to-r from-emerald-50/95 via-teal-50/45 to-emerald-100/35 px-6 py-5 shadow-xs select-none',
+        'relative overflow-hidden rounded-3xl border border-[#a7f3d0] bg-gradient-to-r from-[#dcfce7]/90 via-[#f0fdf4]/75 to-[#dcfce7]/85 px-6 py-5 shadow-xs select-none',
         className
       )}
     >

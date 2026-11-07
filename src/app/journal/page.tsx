@@ -253,7 +253,7 @@ export default function JournalPage() {
             value={`${journalMetrics.winsCount}:${journalMetrics.lossesCount || 1}`}
             subtitle="Win/Loss Ratio"
             icon={Hourglass}
-            color="indigo"
+            color="purple"
           />
         </div>
 

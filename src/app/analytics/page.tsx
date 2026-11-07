@@ -161,7 +161,7 @@ export default function AnalyticsPage() {
             value={`-${formatCurrency(metrics.maxDrawdownAmount, currency)}`}
             subtitle={`${metrics.maxDrawdownPercentage}%`}
             icon={ShieldAlert}
-            color="amber"
+            color="rose"
           />
 
           <MetricCard
@@ -177,7 +177,7 @@ export default function AnalyticsPage() {
             value={`${metrics.totalTrades} Trades`}
             subtitle="Closed executions"
             icon={BarChart3}
-            color="indigo"
+            color="purple"
           />
         </div>
 

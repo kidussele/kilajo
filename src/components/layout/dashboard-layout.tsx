@@ -9,9 +9,21 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-[#f4f7f6] text-slate-800">
+    <div className="relative flex min-h-screen bg-[#f8faf9] text-slate-800 overflow-hidden">
+      {/* Background Organic Mint Wave Flourishes Matching Reference Images */}
+      <div className="fixed -bottom-10 -left-10 w-96 h-96 pointer-events-none opacity-40 z-0">
+        <svg viewBox="0 0 400 400" className="w-full h-full fill-emerald-200/50">
+          <path d="M0,250 C120,200 180,350 350,280 C400,260 420,380 400,400 L0,400 Z" />
+        </svg>
+      </div>
+      <div className="fixed -bottom-16 -right-16 w-[500px] h-[400px] pointer-events-none opacity-45 z-0">
+        <svg viewBox="0 0 500 400" className="w-full h-full fill-emerald-100/60">
+          <path d="M50,400 C150,280 250,380 400,260 C460,220 480,320 500,400 Z" />
+        </svg>
+      </div>
+
       {/* Desktop Persistent Sidebar */}
-      <div className="hidden md:block shrink-0">
+      <div className="hidden md:block shrink-0 relative z-20">
         <Sidebar />
       </div>
 
