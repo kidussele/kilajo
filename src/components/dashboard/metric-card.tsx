@@ -84,7 +84,7 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-100/90 bg-white p-4 shadow-xs transition-all hover:shadow-md hover:border-slate-200 select-none min-h-[120px]',
+        'relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-100/90 bg-white p-4 shadow-xs transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-slate-300/80 cursor-pointer select-none min-h-[120px] group',
         className
       )}
     >
@@ -92,14 +92,14 @@ export function MetricCard({
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           {Icon && (
-            <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-xl', activeColor.iconBg)}>
+            <div className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-xl shadow-2xs group-hover:scale-110 transition-transform duration-200', activeColor.iconBg)}>
               <Icon className="h-4 w-4 stroke-[2.2]" />
             </div>
           )}
           <div className="flex items-center gap-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-600 truncate">{title}</p>
+            <p className="text-xs font-semibold text-slate-600 group-hover:text-slate-900 transition-colors truncate">{title}</p>
             {infoTooltip && (
-              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-slate-400 hover:text-slate-600 border border-slate-300 cursor-pointer">
+              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-slate-400 hover:text-slate-600 border border-slate-300 cursor-pointer transition-colors">
                 i
               </span>
             )}
@@ -110,7 +110,7 @@ export function MetricCard({
           <button
             type="button"
             onClick={onActionClick}
-            className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors shrink-0"
+            className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 text-slate-400 group-hover:text-emerald-700 group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-all shrink-0 cursor-pointer"
           >
             <svg className="h-3 w-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />

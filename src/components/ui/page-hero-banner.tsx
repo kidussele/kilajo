@@ -158,7 +158,7 @@ export function PageHeroBanner({
           {iconElement ? (
             iconElement
           ) : Icon ? (
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#064e3b] via-[#047857] to-[#059669] text-white shadow-md shadow-emerald-900/20">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#064e3b] via-[#047857] to-[#059669] text-white shadow-md shadow-emerald-900/20 cursor-pointer hover:scale-105 transition-transform duration-200">
               <Icon className="h-7 w-7 text-white stroke-[2.2]" />
             </div>
           ) : null}
@@ -196,7 +196,7 @@ export function PageHeroBanner({
           )}
 
           {/* 3D Rising Trending Arrow Badge */}
-          <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#059669] via-emerald-500 to-teal-400 text-white shadow-md shadow-emerald-500/25 transition-transform hover:scale-105">
+          <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#059669] via-emerald-500 to-teal-400 text-white shadow-md shadow-emerald-500/25 transition-all duration-200 hover:scale-110 hover:shadow-lg active:scale-95 cursor-pointer">
             <svg
               className="h-6 w-6 text-white drop-shadow-sm"
               viewBox="0 0 24 24"

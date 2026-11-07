@@ -96,7 +96,7 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => handleSaveProfile()}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <Save className="h-4 w-4" />
               <span>Save Preferences</span>
@@ -154,10 +154,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('profile')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all',
+              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'profile'
                 ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             )}
           >
             <User className="h-3.5 w-3.5" />
@@ -167,10 +167,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('bridge')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all',
+              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'bridge'
                 ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             )}
           >
             <Key className="h-3.5 w-3.5" />
@@ -180,10 +180,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('data')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all',
+              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'data'
                 ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             )}
           >
             <Database className="h-3.5 w-3.5" />
@@ -193,7 +193,7 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('danger')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all',
+              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'danger'
                 ? 'bg-rose-600 text-white shadow-xs'
                 : 'text-rose-600 hover:bg-rose-50'
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                   <button
                     type="button"
                     onClick={handleCopyWebhook}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer"
                   >
                     {copiedWebhook ? (
                       <>

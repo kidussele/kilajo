@@ -81,7 +81,7 @@ export default function PsychologyPage() {
           middleContent={
             <button
               onClick={() => setIsLogModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <BarChart2 className="h-4 w-4" />
               <span>Log Daily Reflection</span>
@@ -147,26 +147,26 @@ export default function PsychologyPage() {
             <div className="flex items-center gap-1.5 p-1 rounded-full bg-slate-50 border border-slate-100 text-xs">
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] px-3.5 py-1.5 font-semibold text-white shadow-2xs"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] px-3.5 py-1.5 font-semibold text-white shadow-2xs cursor-pointer"
               >
                 <Calendar className="h-3.5 w-3.5" />
                 <span>Last 30 Days</span>
               </button>
               <button
                 type="button"
-                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-colors cursor-pointer"
               >
                 Last 90 Days
               </button>
               <button
                 type="button"
-                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 transition-colors hidden sm:inline-block"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-colors hidden sm:inline-block cursor-pointer"
               >
                 Last 6 Months
               </button>
               <button
                 type="button"
-                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-colors cursor-pointer"
               >
                 All Time
               </button>
@@ -238,7 +238,7 @@ export default function PsychologyPage() {
 
               <button
                 onClick={() => setIsLogModalOpen(true)}
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
               >
                 <PenLine className="h-3.5 w-3.5" />
                 <span>Log First Reflection</span>

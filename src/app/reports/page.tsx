@@ -107,7 +107,7 @@ export default function ReportsPage() {
               <div className="flex items-center gap-2 rounded-full bg-white/70 p-1 border border-slate-200/80 shadow-2xs">
                 <button
                   onClick={handleExportCsv}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <Download className="h-3.5 w-3.5 text-slate-600" />
                   <span>Export CSV</span>
@@ -115,7 +115,7 @@ export default function ReportsPage() {
                 </button>
                 <button
                   onClick={handlePrint}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-4 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-4 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
                 >
                   <Printer className="h-3.5 w-3.5 stroke-[2.2]" />
                   <span>Print PDF</span>

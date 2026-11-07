@@ -172,10 +172,10 @@ export default function DashboardPage() {
                   <button
                     key={tf}
                     onClick={() => setActiveTimeframe(tf)}
-                    className={`rounded-lg px-2.5 py-1 transition-all ${
+                    className={`rounded-lg px-2.5 py-1 transition-all cursor-pointer ${
                       activeTimeframe === tf
                         ? 'bg-[#064e3b] text-white shadow-xs font-bold'
-                        : 'hover:text-slate-900'
+                        : 'hover:text-slate-900 hover:bg-slate-200/60'
                     }`}
                   >
                     {tf}
@@ -198,10 +198,10 @@ export default function DashboardPage() {
         {/* 5. Bottom Summary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Top Traded Instruments */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-2xs group-hover:scale-110 transition-transform">
                   <TrendingUp className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <h3 className="font-bold text-sm text-slate-800 font-sans">
@@ -211,7 +211,7 @@ export default function DashboardPage() {
 
               <Link
                 href="/analytics"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-colors"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-all cursor-pointer hover:scale-110 shadow-2xs"
               >
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </Link>
@@ -239,7 +239,7 @@ export default function DashboardPage() {
                   {symbolBreakdown.map((item) => (
                     <div
                       key={item.category}
-                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70"
+                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70 hover:bg-emerald-50/50 transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-slate-800 font-mono">{item.category}</span>
@@ -262,10 +262,10 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Executed Trades */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 text-purple-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 text-purple-700 shadow-2xs group-hover:scale-110 transition-transform">
                   <Clock className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <h3 className="font-bold text-sm text-slate-800 font-sans">
@@ -275,7 +275,7 @@ export default function DashboardPage() {
 
               <Link
                 href="/journal"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-purple-50 text-slate-500 hover:text-purple-700 transition-colors"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-purple-50 text-slate-500 hover:text-purple-700 transition-all cursor-pointer hover:scale-110 shadow-2xs"
               >
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </Link>

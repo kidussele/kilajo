@@ -82,7 +82,7 @@ export default function TraderPlanPage() {
             <button
               type="button"
               onClick={() => setIsEditModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <Edit3 className="h-3.5 w-3.5" />
               <span>Configure Trading Plan</span>

@@ -27,18 +27,18 @@ import { cn } from '@/lib/utils'
 import { useTrading } from '@/context/trading-context'
 
 export const NAVIGATION_ITEMS = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Trade Journal', href: '/journal', icon: BookOpen },
-  { name: 'Analytics', href: '/analytics', icon: LineChart },
-  { name: 'Calendar', href: '/calendar', icon: CalendarDays },
-  { name: 'Reports', href: '/reports', icon: FileSpreadsheet },
-  { name: 'Export Data', href: '/import', icon: UploadCloud },
-  { name: 'Prop Firm Tracker', href: '/prop-firms', icon: ShieldAlert },
-  { name: 'Psychology & Discipline', href: '/psychology', icon: Brain },
-  { name: 'Strategies', href: '/strategies', icon: TrendingUp },
-  { name: 'Goals', href: '/goals', icon: Target },
-  { name: 'Plans', href: '/plans', icon: Sparkles },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard, color: 'text-emerald-600', iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100/80', badgeColor: 'bg-emerald-100 text-emerald-700' },
+  { name: 'Trade Journal', href: '/journal', icon: BookOpen, color: 'text-teal-600', iconBg: 'bg-teal-50 text-teal-600 border border-teal-100/80', badgeColor: 'bg-teal-100 text-teal-700' },
+  { name: 'Analytics', href: '/analytics', icon: LineChart, color: 'text-blue-600', iconBg: 'bg-blue-50 text-blue-600 border border-blue-100/80', badgeColor: 'bg-blue-100 text-blue-700' },
+  { name: 'Calendar', href: '/calendar', icon: CalendarDays, color: 'text-emerald-700', iconBg: 'bg-emerald-50 text-emerald-700 border border-emerald-100/80', badgeColor: 'bg-emerald-100 text-emerald-700' },
+  { name: 'Reports', href: '/reports', icon: FileSpreadsheet, color: 'text-purple-600', iconBg: 'bg-purple-50 text-purple-600 border border-purple-100/80', badgeColor: 'bg-purple-100 text-purple-700' },
+  { name: 'Export Data', href: '/import', icon: UploadCloud, color: 'text-sky-600', iconBg: 'bg-sky-50 text-sky-600 border border-sky-100/80', badgeColor: 'bg-sky-100 text-sky-700' },
+  { name: 'Prop Firm Tracker', href: '/prop-firms', icon: ShieldAlert, color: 'text-amber-600', iconBg: 'bg-amber-50 text-amber-600 border border-amber-100/80', badgeColor: 'bg-amber-100 text-amber-700' },
+  { name: 'Psychology & Discipline', href: '/psychology', icon: Brain, color: 'text-rose-600', iconBg: 'bg-rose-50 text-rose-600 border border-rose-100/80', badgeColor: 'bg-rose-100 text-rose-700' },
+  { name: 'Strategies', href: '/strategies', icon: TrendingUp, color: 'text-emerald-600', iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100/80', badgeColor: 'bg-emerald-100 text-emerald-700' },
+  { name: 'Goals', href: '/goals', icon: Target, color: 'text-indigo-600', iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-100/80', badgeColor: 'bg-indigo-100 text-indigo-700' },
+  { name: 'Plans', href: '/plans', icon: Sparkles, color: 'text-amber-600', iconBg: 'bg-amber-50 text-amber-600 border border-amber-100/80', badgeColor: 'bg-amber-100 text-amber-700' },
+  { name: 'Settings', href: '/settings', icon: Settings, color: 'text-slate-600', iconBg: 'bg-slate-100 text-slate-600 border border-slate-200/80', badgeColor: 'bg-slate-100 text-slate-700' },
 ]
 
 export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolean; onCloseMobile?: () => void }) {
@@ -146,18 +146,29 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
               href={item.href}
               onClick={onCloseMobile}
               className={cn(
-                'flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm font-medium transition-all group relative',
+                'flex items-center gap-3 rounded-2xl px-3 py-2 text-xs sm:text-sm font-medium transition-all group relative cursor-pointer',
                 isActive
-                  ? 'bg-[#064e3b] text-white shadow-sm shadow-[#064e3b]/20 font-semibold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-emerald-50/40'
+                  ? 'bg-[#064e3b] text-white shadow-md shadow-[#064e3b]/25 font-semibold translate-x-0.5'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/90 hover:translate-x-1 hover:shadow-2xs'
               )}
             >
-              <item.icon
+              {/* Colorful icon badge */}
+              <div
                 className={cn(
-                  'h-4 w-4 shrink-0 transition-colors',
-                  isActive ? 'text-white stroke-[2.2]' : 'text-slate-400 group-hover:text-slate-700 stroke-[1.8]'
+                  'flex h-7 w-7 items-center justify-center rounded-xl transition-all duration-200 shrink-0 group-hover:scale-110',
+                  isActive
+                    ? 'bg-white/15 text-white'
+                    : item.iconBg
                 )}
-              />
+              >
+                <item.icon
+                  className={cn(
+                    'h-3.5 w-3.5 transition-colors stroke-[2.2]',
+                    isActive ? 'text-white' : item.color
+                  )}
+                />
+              </div>
+
               {(!collapsed || isMobile) && <span className="truncate">{item.name}</span>}
 
               {/* Tooltip on collapsed state */}
@@ -176,12 +187,12 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
         {(!collapsed || isMobile) ? (
           <div className="space-y-3">
             {/* Motivational Trophy Card */}
-            <div className="rounded-2xl border border-emerald-200/60 bg-gradient-to-r from-emerald-50/90 to-teal-50/50 p-3 shadow-2xs flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600">
+            <div className="rounded-2xl border border-emerald-200/60 bg-gradient-to-r from-emerald-50/90 via-teal-50/40 to-amber-50/30 p-3 shadow-2xs flex items-center gap-3 cursor-pointer hover:shadow-md hover:scale-[1.02] hover:border-emerald-300 transition-all duration-200 group">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600 group-hover:scale-110 transition-transform shadow-2xs">
                 <Trophy className="h-5 w-5 text-amber-600 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-[11px] text-slate-800 leading-tight">
+                <p className="font-bold text-[11px] text-slate-800 leading-tight group-hover:text-emerald-800 transition-colors">
                   Discipline Today,
                 </p>
                 <p className="font-medium text-[10px] text-slate-500 leading-tight mt-0.5">
@@ -195,7 +206,7 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
               <button
                 onClick={() => toggleTheme(false)}
                 className={cn(
-                  'flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 text-xs transition-all',
+                  'flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 text-xs transition-all cursor-pointer',
                   !isDark
                     ? 'bg-white text-slate-900 shadow-xs'
                     : 'text-slate-500 hover:text-slate-900'
@@ -208,7 +219,7 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
               <button
                 onClick={() => toggleTheme(true)}
                 className={cn(
-                  'flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 text-xs transition-all',
+                  'flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 text-xs transition-all cursor-pointer',
                   isDark
                     ? 'bg-slate-800 text-white shadow-xs'
                     : 'text-slate-500 hover:text-slate-900'
@@ -228,12 +239,12 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600 cursor-pointer hover:scale-110 transition-transform">
               <Trophy className="h-5 w-5 text-amber-600" />
             </div>
             <button
               onClick={() => toggleTheme(!isDark)}
-              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100"
+              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 cursor-pointer transition-colors"
               title="Toggle theme"
             >
               {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4 text-amber-500" />}

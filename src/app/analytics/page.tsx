@@ -94,10 +94,10 @@ export default function AnalyticsPage() {
             <div className="flex items-center gap-1.5 rounded-full bg-white/70 p-1 border border-slate-200/80 shadow-2xs">
               <button
                 onClick={() => setActiveTab('performance')}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'performance'
                     ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
                 }`}
               >
                 <BarChart3 className="h-3.5 w-3.5" />
@@ -105,10 +105,10 @@ export default function AnalyticsPage() {
               </button>
               <button
                 onClick={() => setActiveTab('psychology')}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'psychology'
                     ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
                 }`}
               >
                 <Brain className="h-3.5 w-3.5" />
@@ -116,10 +116,10 @@ export default function AnalyticsPage() {
               </button>
               <button
                 onClick={() => setActiveTab('risk')}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'risk'
                     ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
                 }`}
               >
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -200,10 +200,10 @@ export default function AnalyticsPage() {
                   <button
                     key={tf}
                     onClick={() => setActiveTimeframe(tf)}
-                    className={`rounded-md px-2 py-0.5 transition-all ${
+                    className={`rounded-md px-2 py-0.5 transition-all cursor-pointer ${
                       activeTimeframe === tf
                         ? 'bg-white text-[#064e3b] font-bold shadow-2xs'
-                        : 'hover:text-white'
+                        : 'hover:text-white hover:bg-emerald-800/40'
                     }`}
                   >
                     {tf}
@@ -379,10 +379,10 @@ export default function AnalyticsPage() {
         {/* 5. Bottom Row (2 Cards): Performance by Direction & Day of Week */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Left: Performance by Direction (Buy vs. Sell) */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-2xs group-hover:scale-110 transition-transform">
                   <TrendingUp className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <h3 className="font-bold text-sm text-slate-800 font-sans">
@@ -390,14 +390,14 @@ export default function AnalyticsPage() {
                 </h3>
               </div>
 
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:text-emerald-700 group-hover:bg-emerald-50 transition-all cursor-pointer group-hover:scale-110 shadow-2xs">
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 py-4">
               {/* Buy Trades Box */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100/60">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100/60 hover:shadow-2xs hover:bg-emerald-50/80 transition-all cursor-pointer">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
                   <ShoppingCart className="h-5 w-5 stroke-[2.2]" />
                 </div>
@@ -410,7 +410,7 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Sell Trades Box */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-rose-50/50 border border-rose-100/60">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-rose-50/50 border border-rose-100/60 hover:shadow-2xs hover:bg-rose-50/80 transition-all cursor-pointer">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
                   <ShoppingCart className="h-5 w-5 stroke-[2.2]" />
                 </div>
@@ -425,10 +425,10 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Right: Performance by Day of Week */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-2xs group-hover:scale-110 transition-transform">
                   <Calendar className="h-4 w-4 stroke-[2.2]" />
                 </div>
                 <h3 className="font-bold text-sm text-slate-800 font-sans">
@@ -436,14 +436,14 @@ export default function AnalyticsPage() {
                 </h3>
               </div>
 
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:text-emerald-700 group-hover:bg-emerald-50 transition-all cursor-pointer group-hover:scale-110 shadow-2xs">
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </div>
             </div>
 
             <div className="grid grid-cols-7 gap-1.5 py-4 text-center">
               {weekdayStats.map((item) => (
-                <div key={item.day} className="rounded-xl bg-slate-50/80 p-2 border border-slate-100">
+                <div key={item.day} className="rounded-xl bg-slate-50/80 p-2 border border-slate-100 hover:bg-emerald-50/60 transition-colors cursor-pointer">
                   <span className="block text-[11px] font-bold text-slate-600">{item.day}</span>
                   <span className="font-mono text-xs font-semibold text-slate-400">{item.pct}%</span>
                 </div>

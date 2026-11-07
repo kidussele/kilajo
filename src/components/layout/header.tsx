@@ -42,7 +42,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           <div className="relative">
             <button
               onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 transition-all"
+              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
             >
               <Briefcase className="h-4 w-4 text-emerald-700 stroke-[2.2] shrink-0" />
               <span className="max-w-[130px] sm:max-w-[200px] truncate">
@@ -68,7 +68,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                       setActiveAccountId('ALL')
                       setIsAccountDropdownOpen(false)
                     }}
-                    className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 hover:bg-emerald-50/70 transition-colors text-left"
+                    className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 hover:bg-emerald-50/70 transition-colors text-left cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
                       <Briefcase className="h-3.5 w-3.5 text-emerald-600" />
@@ -94,7 +94,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                           setActiveAccountId(acc.id)
                           setIsAccountDropdownOpen(false)
                         }}
-                        className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium text-slate-800 hover:bg-emerald-50/70 transition-colors text-left"
+                        className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium text-slate-800 hover:bg-emerald-50/70 transition-colors text-left cursor-pointer"
                       >
                         <div className="truncate mr-2">
                           <p className="font-semibold text-slate-900 truncate">{acc.name}</p>
@@ -119,7 +119,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           {/* Quick Log Trade Button */}
           <button
             onClick={() => setIsTradeModalOpen(true)}
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100/70 shadow-2xs transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 hover:shadow-xs shadow-2xs transition-all cursor-pointer"
           >
             <PlusCircle className="h-3.5 w-3.5 text-emerald-700" />
             <span>Log Trade</span>
@@ -127,7 +127,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
 
           {/* Notification Bell Pill with Red Badge */}
           <button
-            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-slate-200/80 shadow-2xs text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
+            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-slate-200/80 shadow-2xs text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:shadow-xs transition-all cursor-pointer"
             title="Notifications"
           >
             <Bell className="h-4 w-4 stroke-[2]" />
@@ -137,7 +137,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           </button>
 
           {/* Date Selector Pill (in dark forest green bg-[#064e3b]) */}
-          <div className="flex items-center gap-2 rounded-xl bg-[#064e3b] text-white px-3.5 py-1.5 text-xs font-semibold shadow-xs">
+          <div className="flex items-center gap-2 rounded-xl bg-[#064e3b] text-white px-3.5 py-1.5 text-xs font-semibold shadow-xs hover:bg-[#075e46] transition-colors cursor-pointer">
             <Calendar className="h-3.5 w-3.5 text-emerald-300 stroke-[2.2]" />
             <span>{formattedDate}</span>
             <ChevronDown className="h-3 w-3 text-emerald-300 stroke-[2.5]" />

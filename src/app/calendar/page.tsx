@@ -136,7 +136,7 @@ export default function CalendarPage() {
           }
           middleContent={
             <div className="flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-1.5 shadow-2xs">
-              <button onClick={prevMonth} className="text-slate-500 hover:text-slate-900">
+              <button onClick={prevMonth} className="text-slate-500 hover:text-slate-900 cursor-pointer p-0.5 rounded-full hover:bg-slate-100 transition-colors">
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
@@ -144,7 +144,7 @@ export default function CalendarPage() {
                 <span>{monthName}</span>
                 <ChevronDown className="h-3 w-3 text-slate-400 stroke-[2.5]" />
               </div>
-              <button onClick={nextMonth} className="text-slate-500 hover:text-slate-900">
+              <button onClick={nextMonth} className="text-slate-500 hover:text-slate-900 cursor-pointer p-0.5 rounded-full hover:bg-slate-100 transition-colors">
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -213,13 +213,13 @@ export default function CalendarPage() {
               <div className="flex items-center gap-1">
                 <button
                   onClick={prevMonth}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={nextMonth}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
@@ -249,7 +249,7 @@ export default function CalendarPage() {
               {/* View Details Button */}
               <button
                 onClick={() => router.push('/journal')}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-4 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-4 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
               >
                 <BarChart3 className="h-3.5 w-3.5 stroke-[2.2]" />
                 <span>View Details →</span>
@@ -284,14 +284,14 @@ export default function CalendarPage() {
               return (
                 <div
                   key={item.dateStr}
-                  className={`h-24 p-2 flex flex-col justify-between transition-colors ${
+                  className={`h-24 p-2 flex flex-col justify-between transition-all cursor-pointer rounded-lg hover:shadow-2xs ${
                     isFirstDay ? 'border-2 border-emerald-500 rounded-sm' : ''
                   } ${
                     hasTrades
                       ? isPositive
-                        ? 'bg-emerald-50/60 hover:bg-emerald-100/50'
-                        : 'bg-rose-50/60 hover:bg-rose-100/50'
-                      : 'hover:bg-slate-50/70'
+                        ? 'bg-emerald-50/60 hover:bg-emerald-100/70'
+                        : 'bg-rose-50/60 hover:bg-rose-100/70'
+                      : 'hover:bg-slate-50/90'
                   }`}
                 >
                   <span className="font-mono text-xs font-bold text-slate-800">
@@ -352,7 +352,7 @@ export default function CalendarPage() {
 
           <button
             onClick={() => router.push('/journal')}
-            className="relative z-10 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 shrink-0"
+            className="relative z-10 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 shrink-0 cursor-pointer"
           >
             <span>Start Trading</span>
             <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />

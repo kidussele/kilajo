@@ -91,7 +91,7 @@ export default function StrategiesPage() {
           middleContent={
             <button
               onClick={() => setIsAddOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <PlusCircle className="h-4 w-4" />
               <span>Create Strategy</span>
@@ -242,7 +242,7 @@ export default function StrategiesPage() {
 
               <button
                 onClick={() => setIsAddOpen(true)}
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-6 py-2.5 text-xs sm:text-sm font-semibold shadow-md shadow-emerald-950/20 transition-all hover:scale-105"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-6 py-2.5 text-xs sm:text-sm font-semibold shadow-md shadow-emerald-950/20 transition-all hover:scale-105 cursor-pointer"
               >
                 <PlusCircle className="h-4 w-4" />
                 <span>Add Strategy</span>
@@ -266,8 +266,8 @@ export default function StrategiesPage() {
               </svg>
 
               <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 gap-3 sm:gap-0">
-                <div className="flex items-center gap-3 sm:px-4">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                <div className="flex items-center gap-3 sm:px-4 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
@@ -276,8 +276,8 @@ export default function StrategiesPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <TrendingUp className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
@@ -286,8 +286,8 @@ export default function StrategiesPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <BookOpen className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
@@ -296,8 +296,8 @@ export default function StrategiesPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <Trophy className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>

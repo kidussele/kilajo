@@ -199,7 +199,7 @@ export default function ImportPage() {
             <button
               type="button"
               onClick={handleDownloadSample}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-5 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-all hover:border-slate-300"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-5 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-all hover:border-slate-300 cursor-pointer hover:shadow-xs"
             >
               <Download className="h-4 w-4 text-emerald-800" />
               <span>Download Sample CSV</span>
