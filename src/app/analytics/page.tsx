@@ -2,505 +2,456 @@
 
 import React, { useState, useMemo } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { PageHeroBanner } from '@/components/ui/page-hero-banner'
+import { MetricCard } from '@/components/dashboard/metric-card'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatPercent } from '@/lib/utils'
-import { buildCategoryBreakdown, buildEquityCurve } from '@/lib/calculations/financial'
-import { MetricCard } from '@/components/dashboard/metric-card'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { buildCategoryBreakdown } from '@/lib/calculations/financial'
 import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Cell,
-  PieChart,
-  Pie,
-} from 'recharts'
-import { PageHeroBanner } from '@/components/ui/page-hero-banner'
-import {
-  LineChart as LineChartIcon,
-  Award,
-  Zap,
-  ShieldCheck,
+  Trophy,
+  TrendingUp,
+  DollarSign,
+  ShieldAlert,
+  Scale,
   BarChart3,
   PieChart as PieIcon,
-  Flame,
-  Scale,
+  Brain,
+  ShieldCheck,
+  LineChart,
+  Calendar,
+  ArrowUpRight,
+  ShoppingCart,
+  FileText,
+  ChevronDown,
 } from 'lucide-react'
-
-const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 export default function AnalyticsPage() {
   const { filteredTrades, metrics, activeAccount } = useTrading()
   const currency = activeAccount?.currency || 'USD'
 
-  const [activeTab, setActiveTab] = useState<'breakdown' | 'behavioral' | 'risk'>('breakdown')
+  const [activeTab, setActiveTab] = useState<'performance' | 'psychology' | 'risk'>('performance')
+  const [activeTimeframe, setActiveTimeframe] = useState('1M')
 
   // Breakdown calculations
   const instrumentBreakdown = useMemo(() => {
     return buildCategoryBreakdown(filteredTrades, (t) => t.symbol)
   }, [filteredTrades])
 
-  const sessionBreakdown = useMemo(() => {
-    return buildCategoryBreakdown(filteredTrades, (t) => t.session || 'Unspecified')
-  }, [filteredTrades])
-
   const directionBreakdown = useMemo(() => {
-    return buildCategoryBreakdown(filteredTrades, (t) => t.direction)
+    const buyTrades = filteredTrades.filter((t) => t.direction === 'BUY')
+    const sellTrades = filteredTrades.filter((t) => t.direction === 'SELL')
+    const total = filteredTrades.length || 1
+
+    return {
+      buyCount: buyTrades.length,
+      buyPct: ((buyTrades.length / total) * 100).toFixed(2),
+      sellCount: sellTrades.length,
+      sellPct: ((sellTrades.length / total) * 100).toFixed(2),
+    }
   }, [filteredTrades])
 
-  const weekdayBreakdown = useMemo(() => {
-    return buildCategoryBreakdown(filteredTrades, (t) => {
-      const d = new Date(t.exit_time || t.entry_time)
-      return isNaN(d.getTime()) ? 'Unknown' : WEEKDAYS[d.getDay()]
-    })
-  }, [filteredTrades])
-
-  // Behavioral & Mistakes analysis
-  const mistakesBreakdown = useMemo(() => {
-    const map = new Map<string, { count: number; totalLoss: number }>()
+  // Weekday distribution
+  const weekdayStats = useMemo(() => {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    const counts: { [key: string]: number } = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 }
     filteredTrades.forEach((t) => {
-      if (t.mistakes && t.mistakes.length > 0) {
-        t.mistakes.forEach((m) => {
-          const existing = map.get(m) || { count: 0, totalLoss: 0 }
-          existing.count++
-          if (Number(t.net_pnl) < 0) {
-            existing.totalLoss += Math.abs(Number(t.net_pnl))
-          }
-          map.set(m, existing)
-        })
-      }
+      const d = new Date(t.exit_time || t.entry_time)
+      const dayIdx = d.getDay() // 0 = Sun
+      const dayName = days[dayIdx === 0 ? 6 : dayIdx - 1]
+      if (counts[dayName] !== undefined) counts[dayName]++
     })
-    return Array.from(map.entries())
-      .map(([mistake, data]) => ({
-        mistake,
-        count: data.count,
-        totalLoss: Number(data.totalLoss.toFixed(2)),
-      }))
-      .sort((a, b) => b.totalLoss - a.totalLoss)
+    const total = filteredTrades.length || 1
+    return days.map((day) => ({
+      day,
+      pct: Math.round((counts[day] / total) * 100),
+    }))
   }, [filteredTrades])
 
-  // Emotion breakdown
-  const emotionBreakdown = useMemo(() => {
-    return buildCategoryBreakdown(filteredTrades, (t) => t.emotion_before || 'Neutral')
-  }, [filteredTrades])
-
-  // Win/Loss distribution pie data
-  const winLossPieData = [
-    { name: 'Wins', value: metrics.winningTrades, fill: '#10b981' },
-    { name: 'Losses', value: metrics.losingTrades, fill: '#ef4444' },
-    { name: 'Breakeven', value: metrics.breakevenTrades, fill: '#94a3b8' },
-  ].filter((d) => d.value > 0)
+  const winCount = metrics.winningTrades
+  const lossCount = metrics.losingTrades
+  const totalClosed = winCount + lossCount
+  const winPct = totalClosed > 0 ? ((winCount / totalClosed) * 100).toFixed(2) : '0.00'
+  const lossPct = totalClosed > 0 ? ((lossCount / totalClosed) * 100).toFixed(2) : '0.00'
 
   return (
     <DashboardLayout>
-      <div className="space-y-5">
-        {/* Page Hero Banner */}
+      <div className="space-y-4 sm:space-y-5">
+        {/* 1. Page Hero Banner */}
         <PageHeroBanner
           title="Analytics Center"
           subtitle="Deep statistical edge analysis, risk distribution, and behavioral patterns"
-          icon={LineChartIcon}
+          iconElement={
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#064e3b] to-emerald-600 text-white shadow-md shadow-emerald-900/20">
+              <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="3" y="14" width="3.5" height="7" rx="1.5" />
+                <rect x="8.5" y="10" width="3.5" height="11" rx="1.5" />
+                <rect x="14" y="6" width="3.5" height="15" rx="1.5" />
+                <rect x="19.5" y="2" width="3.5" height="19" rx="1.5" />
+              </svg>
+            </div>
+          }
+          middleContent={
+            <div className="flex items-center gap-1.5 rounded-full bg-white/70 p-1 border border-slate-200/80 shadow-2xs">
+              <button
+                onClick={() => setActiveTab('performance')}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                  activeTab === 'performance'
+                    ? 'bg-[#064e3b] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <BarChart3 className="h-3.5 w-3.5" />
+                <span>Performance</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('psychology')}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                  activeTab === 'psychology'
+                    ? 'bg-[#064e3b] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Brain className="h-3.5 w-3.5" />
+                <span>Psychology</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('risk')}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                  activeTab === 'risk'
+                    ? 'bg-[#064e3b] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <ShieldCheck className="h-3.5 w-3.5" />
+                <span>Risk & Drawdown</span>
+              </button>
+            </div>
+          }
           quote="Know your numbers, master your probability."
-        >
-          {/* Sub-view navigation tabs */}
-          <div className="flex rounded-full border border-slate-200 bg-white/90 p-1 text-xs shadow-2xs">
-            <button
-              onClick={() => setActiveTab('breakdown')}
-              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
-                activeTab === 'breakdown'
-                  ? 'bg-[#064e3b] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Performance
-            </button>
-            <button
-              onClick={() => setActiveTab('behavioral')}
-              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
-                activeTab === 'behavioral'
-                  ? 'bg-[#064e3b] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Psychology
-            </button>
-            <button
-              onClick={() => setActiveTab('risk')}
-              className={`px-3.5 py-1.5 rounded-full font-semibold transition-all ${
-                activeTab === 'risk'
-                  ? 'bg-[#064e3b] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Risk & Drawdown
-            </button>
-          </div>
-        </PageHeroBanner>
+        />
 
-        {/* Key Ratios Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        {/* 2. 6 Metric Cards Matching Screenshot 3 */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           <MetricCard
             title="Win Rate"
             value={`${metrics.winRate}%`}
             subtitle={`${metrics.winningTrades}W / ${metrics.losingTrades}L`}
-            icon={Award}
-            color="amber"
+            icon={Trophy}
+            color="emerald"
           />
+
           <MetricCard
             title="Profit Factor"
             value={metrics.profitFactor > 0 ? metrics.profitFactor.toString() : '0'}
-            subtitle={metrics.profitFactor >= 1.5 ? 'Institutional Edge' : 'Developing'}
-            icon={Flame}
-            color="blue"
+            subtitle={metrics.profitFactor >= 1.5 ? 'Institutional' : 'Developing'}
+            icon={TrendingUp}
+            color="purple"
           />
+
           <MetricCard
             title="Expectancy"
             value={formatCurrency(metrics.expectancy, currency, true)}
             subtitle="Per trade executed"
-            icon={Zap}
-            color="emerald"
+            icon={DollarSign}
+            color="teal"
           />
+
           <MetricCard
             title="Max Drawdown"
             value={`-${formatCurrency(metrics.maxDrawdownAmount, currency)}`}
             subtitle={`${metrics.maxDrawdownPercentage}%`}
-            icon={ShieldCheck}
-            color="indigo"
+            icon={ShieldAlert}
+            color="amber"
           />
+
           <MetricCard
             title="Avg Win / Loss"
             value={metrics.averageLoss > 0 ? (metrics.averageWin / metrics.averageLoss).toFixed(2) : '--'}
             subtitle="Payoff ratio"
             icon={Scale}
-            color="teal"
+            color="blue"
           />
+
           <MetricCard
             title="Total Volume"
             value={`${metrics.totalTrades} Trades`}
             subtitle="Closed executions"
             icon={BarChart3}
-            color="purple"
+            color="indigo"
           />
         </div>
 
-        {/* TAB 1: Breakdown View */}
-        {activeTab === 'breakdown' && (
-          <div className="space-y-6">
-            {/* Charts Row: Session P&L and Win/Loss Distribution */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card className="lg:col-span-2 shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-primary" />
-                    <span>Net Performance by Session</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={sessionBreakdown} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                      <XAxis dataKey="category" stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                      <YAxis stroke="hsl(var(--muted-foreground))" fontSize={11} tickLine={false} />
-                      <Tooltip
-                        content={({ active, payload }) => {
-                          if (active && payload && payload.length) {
-                            const d = payload[0].payload
-                            return (
-                              <div className="rounded-md border bg-popover p-2 text-xs font-sans shadow-md">
-                                <p className="font-bold">{d.category} Session</p>
-                                <p className="text-emerald-600 font-mono">Net PnL: {formatCurrency(d.netPnl, currency, true)}</p>
-                                <p className="text-muted-foreground">{d.tradesCount} trades • {d.winRate}% Win Rate</p>
-                              </div>
-                            )
-                          }
-                          return null
-                        }}
-                      />
-                      <Bar dataKey="netPnl" radius={[4, 4, 0, 0]}>
-                        {sessionBreakdown.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.netPnl >= 0 ? '#10b981' : '#ef4444'} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+        {/* 3. Middle Section: Net Performance by Session & Trade Distribution (2/3 and 1/3) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* Left (2/3): Net Performance by Session */}
+          <div className="lg:col-span-2 rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden flex flex-col justify-between">
+            {/* Dark green header bar */}
+            <div className="flex items-center justify-between bg-[#064e3b] text-white px-5 py-3.5">
+              <div className="flex items-center gap-2">
+                <LineChart className="h-4 w-4 text-emerald-300 stroke-[2.2]" />
+                <h3 className="font-bold text-xs sm:text-sm font-sans tracking-tight">
+                  Net Performance by Session
+                </h3>
+              </div>
 
-              {/* Win/Loss Pie Chart */}
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono flex items-center gap-2">
-                    <PieIcon className="h-4 w-4 text-primary" />
-                    <span>Trade Distribution</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="h-64 flex flex-col items-center justify-center">
-                  {winLossPieData.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic">No closed trades yet.</p>
-                  ) : (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={winLossPieData}
-                          dataKey="value"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={45}
-                          outerRadius={75}
-                          paddingAngle={3}
-                        >
-                          {winLossPieData.map((entry, index) => (
-                            <Cell key={`cell-pie-${index}`} fill={entry.fill} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  )}
-                  <div className="flex gap-4 text-xs font-mono">
-                    <span className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                      Wins ({metrics.winningTrades})
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-red-500" />
-                      Losses ({metrics.losingTrades})
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Timeframe selector pills */}
+              <div className="flex items-center gap-1 rounded-lg bg-emerald-900/60 p-0.5 text-[10px] font-semibold text-emerald-200">
+                {['1D', '1W', '1M', '3M', '6M', '1Y', 'ALL'].map((tf) => (
+                  <button
+                    key={tf}
+                    onClick={() => setActiveTimeframe(tf)}
+                    className={`rounded-md px-2 py-0.5 transition-all ${
+                      activeTimeframe === tf
+                        ? 'bg-white text-[#064e3b] font-bold shadow-2xs'
+                        : 'hover:text-white'
+                    }`}
+                  >
+                    {tf}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Performance by Instrument Table */}
-            <Card className="shadow-xs">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono">
-                  Detailed Breakdown by Symbol / Instrument
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="border-b bg-muted/40 text-muted-foreground font-semibold">
-                      <tr>
-                        <th className="py-2.5 px-4">Instrument</th>
-                        <th className="py-2.5 px-4">Trades</th>
-                        <th className="py-2.5 px-4">Win Rate</th>
-                        <th className="py-2.5 px-4">Net P&L</th>
-                        <th className="py-2.5 px-4">Profit Factor</th>
-                        <th className="py-2.5 px-4 text-right">Avg Trade P&L</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {instrumentBreakdown.map((item) => (
-                        <tr key={item.category} className="hover:bg-muted/30">
-                          <td className="py-2.5 px-4 font-mono font-bold text-foreground">{item.category}</td>
-                          <td className="py-2.5 px-4 font-mono text-muted-foreground">{item.tradesCount}</td>
-                          <td className="py-2.5 px-4 font-mono">
-                            <span className={item.winRate >= 50 ? 'text-emerald-600 font-bold' : 'text-red-500 font-bold'}>
-                              {item.winRate}%
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-4 font-mono font-bold">
-                            <span className={item.netPnl >= 0 ? 'text-emerald-600' : 'text-red-600'}>
-                              {formatCurrency(item.netPnl, currency, true)}
-                            </span>
-                          </td>
-                          <td className="py-2.5 px-4 font-mono text-foreground">{item.profitFactor}</td>
-                          <td className="py-2.5 px-4 font-mono text-right font-medium">
-                            {formatCurrency(item.averagePnl, currency, true)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+            {/* Chart Area */}
+            <div className="relative p-6 flex flex-col items-center justify-center min-h-[220px]">
+              {/* Soft background line and axes */}
+              <div className="absolute inset-0 flex flex-col justify-between p-6 pointer-events-none opacity-20">
+                <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                  <span>$1.0k</span>
+                  <div className="border-b border-dashed border-slate-300 flex-1 mx-2 mt-2" />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                  <span>$0.5k</span>
+                  <div className="border-b border-dashed border-slate-300 flex-1 mx-2 mt-2" />
+                </div>
+                <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+                  <span>$0</span>
+                  <div className="border-b border-slate-300 flex-1 mx-2 mt-2" />
+                </div>
+                <div className="flex justify-between text-[10px] text-slate-400 font-mono pt-1">
+                  <span className="pl-6">Week 1</span>
+                  <span>Week 2</span>
+                  <span>Week 3</span>
+                  <span>Week 4</span>
+                </div>
+              </div>
 
-            {/* Direction & Weekday Breakdowns Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* By Direction */}
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono">
-                    Performance by Direction (Buy vs. Sell)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 pt-2">
-                  {directionBreakdown.map((item) => (
-                    <div key={item.category} className="flex items-center justify-between border-b pb-2 last:border-b-0">
-                      <div>
-                        <span className="font-bold text-xs font-mono">{item.category}</span>
-                        <p className="text-[10px] text-muted-foreground">{item.tradesCount} trades • {item.winRate}% win</p>
-                      </div>
-                      <div className="text-right">
-                        <span className={`font-mono font-bold text-xs ${item.netPnl >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                          {formatCurrency(item.netPnl, currency, true)}
-                        </span>
-                        <p className="text-[10px] text-muted-foreground">PF: {item.profitFactor}</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+              {/* Center Empty State */}
+              <div className="relative z-10 flex flex-col items-center text-center max-w-xs">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 shadow-inner mb-3">
+                  <BarChart3 className="h-6 w-6 stroke-[2.2]" />
+                </div>
+                <h4 className="text-sm font-bold text-slate-800">
+                  No performance data yet!
+                </h4>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed font-medium">
+                  Start trading to see your performance chart here.
+                </p>
+              </div>
 
-              {/* By Weekday */}
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono">
-                    Performance by Day of Week
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3 pt-2">
-                  {weekdayBreakdown.map((item) => (
-                    <div key={item.category} className="flex items-center justify-between border-b pb-2 last:border-b-0">
-                      <div>
-                        <span className="font-bold text-xs">{item.category}</span>
-                        <p className="text-[10px] text-muted-foreground">{item.tradesCount} trades • {item.winRate}% win</p>
-                      </div>
-                      <div className="text-right">
-                        <span className={`font-mono font-bold text-xs ${item.netPnl >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                          {formatCurrency(item.netPnl, currency, true)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+              {/* Bottom Subtle Wave */}
+              <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-30">
+                <svg className="w-full h-full text-emerald-200" viewBox="0 0 400 40" preserveAspectRatio="none">
+                  <path d="M0,20 C100,35 250,5 400,25 L400,40 L0,40 Z" fill="currentColor" />
+                </svg>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* TAB 2: Behavioral & Psychology View */}
-        {activeTab === 'behavioral' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Cost of Trading Mistakes */}
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono flex items-center gap-2">
-                    <Flame className="h-4 w-4 text-red-500" />
-                    <span>Financial Impact of Mistakes</span>
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground">
-                    Quantified cumulative losses directly attributed to identified trading mistakes
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-3 pt-2">
-                  {mistakesBreakdown.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic py-6 text-center">
-                      No mistake tags logged. High discipline maintained!
-                    </p>
-                  ) : (
-                    mistakesBreakdown.map((item) => (
-                      <div key={item.mistake} className="flex items-center justify-between border-b pb-2.5 last:border-b-0">
-                        <div>
-                          <span className="font-semibold text-xs text-foreground">{item.mistake}</span>
-                          <p className="text-[10px] text-muted-foreground">Occurred {item.count} times</p>
-                        </div>
-                        <div className="text-right">
-                          <span className="font-mono font-bold text-xs text-red-600">
-                            -{formatCurrency(item.totalLoss, currency)}
-                          </span>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </CardContent>
-              </Card>
+          {/* Right (1/3): Trade Distribution */}
+          <div className="lg:col-span-1 rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden flex flex-col justify-between">
+            {/* Dark green header bar */}
+            <div className="flex items-center gap-2 bg-[#064e3b] text-white px-5 py-3.5">
+              <PieIcon className="h-4 w-4 text-emerald-300 stroke-[2.2]" />
+              <h3 className="font-bold text-xs sm:text-sm font-sans tracking-tight">
+                Trade Distribution
+              </h3>
+            </div>
 
-              {/* Emotion Before Trade Impact */}
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold tracking-tight uppercase font-mono flex items-center gap-2">
-                    <Scale className="h-4 w-4 text-primary" />
-                    <span>Emotion vs. Trading Edge</span>
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground">
-                    How your pre-execution psychological state correlates with net returns
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-3 pt-2">
-                  {emotionBreakdown.map((item) => (
-                    <div key={item.category} className="flex items-center justify-between border-b pb-2.5 last:border-b-0">
-                      <div>
-                        <span className="font-semibold text-xs text-foreground">{item.category}</span>
-                        <p className="text-[10px] text-muted-foreground">{item.tradesCount} executions • {item.winRate}% Win Rate</p>
-                      </div>
-                      <div className="text-right">
-                        <span className={`font-mono font-bold text-xs ${item.netPnl >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                          {formatCurrency(item.netPnl, currency, true)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+            {/* Circular Donut Graphic */}
+            <div className="p-6 flex flex-col items-center justify-center flex-1">
+              <div className="flex items-center justify-center gap-6">
+                {/* Donut ring */}
+                <div className="relative flex h-28 w-28 items-center justify-center">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                    {/* Background circle */}
+                    <path
+                      className="text-slate-100"
+                      strokeWidth="3.8"
+                      stroke="currentColor"
+                      fill="none"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    {totalClosed > 0 && (
+                      <path
+                        className="text-emerald-500"
+                        strokeDasharray={`${winPct}, 100`}
+                        strokeWidth="3.8"
+                        stroke="currentColor"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                    )}
+                  </svg>
+                  <div className="absolute flex flex-col items-center justify-center">
+                    <span className="font-bold font-mono text-base text-slate-800">{totalClosed}</span>
+                    <span className="text-[10px] text-slate-400 font-semibold">Trades</span>
+                  </div>
+                </div>
+
+                {/* Legend on right */}
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                    <span className="font-semibold text-slate-700">Win ({winCount})</span>
+                    <span className="font-mono text-slate-400 text-[11px]">{winPct}%</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+                    <span className="font-semibold text-slate-700">Loss ({lossCount})</span>
+                    <span className="font-mono text-slate-400 text-[11px]">{lossPct}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center text-xs text-slate-400">
+                <span className="font-medium">No closed trades yet ℹ️</span>
+                <p className="text-[11px] text-slate-400 mt-0.5">Your trade distribution will appear here.</p>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* TAB 3: Risk & Drawdown View */}
-        {activeTab === 'risk' && (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xs font-semibold uppercase font-mono text-muted-foreground">
-                    Peak Drawdown Level
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold font-mono text-red-600">
-                    -{formatCurrency(metrics.maxDrawdownAmount, currency)}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {metrics.maxDrawdownPercentage}% drawdown from peak balance
-                  </p>
-                </CardContent>
-              </Card>
+        {/* 4. Detailed Breakdown by Symbol / Instrument */}
+        <div className="rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden">
+          {/* Dark green header bar */}
+          <div className="flex items-center gap-2 bg-[#064e3b] text-white px-5 py-3.5">
+            <BarChart3 className="h-4 w-4 text-emerald-300 stroke-[2.2]" />
+            <h3 className="font-bold text-xs sm:text-sm font-sans tracking-tight">
+              Detailed Breakdown by Symbol / Instrument
+            </h3>
+          </div>
 
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xs font-semibold uppercase font-mono text-muted-foreground">
-                    Consecutive Loss Streak
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold font-mono text-foreground">
-                    {metrics.maxConsecutiveLosses} Trades
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Current active loss streak: {metrics.consecutiveLosses}
-                  </p>
-                </CardContent>
-              </Card>
+          {/* Table Header (subtle gray bar) */}
+          <div className="grid grid-cols-6 border-b border-slate-100 bg-slate-50/80 px-5 py-3 text-xs font-bold text-slate-600">
+            <span>Instrument</span>
+            <span>Trades</span>
+            <span>Win Rate</span>
+            <span>Net P&L</span>
+            <span>Profit Factor</span>
+            <span className="text-right">Avg Trade P&L</span>
+          </div>
 
-              <Card className="shadow-xs">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-xs font-semibold uppercase font-mono text-muted-foreground">
-                    Recovery Factor
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold font-mono text-emerald-600">
-                    {metrics.recoveryFactor}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Ratio of cumulative net profit to maximum drawdown
-                  </p>
-                </CardContent>
-              </Card>
+          {/* Table Body / Empty State */}
+          {instrumentBreakdown.length === 0 ? (
+            <div className="relative p-12 flex flex-col items-center justify-center text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 mb-2">
+                <FileText className="h-6 w-6 stroke-[1.8]" />
+              </div>
+              <h4 className="text-sm font-bold text-slate-800">No data available</h4>
+              <p className="text-xs text-slate-400 mt-0.5">Trade some instruments to see the breakdown.</p>
+
+              {/* Soft mint wave at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-25">
+                <svg className="w-full h-full text-emerald-300" viewBox="0 0 600 40" preserveAspectRatio="none">
+                  <path d="M0,25 C150,35 350,10 600,30 L600,40 L0,40 Z" fill="currentColor" />
+                </svg>
+              </div>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {instrumentBreakdown.map((row) => (
+                <div key={row.category} className="grid grid-cols-6 px-5 py-3.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+                  <span className="font-bold font-mono text-slate-900">{row.category}</span>
+                  <span className="font-mono">{row.tradesCount}</span>
+                  <span className="font-mono">{row.winRate}%</span>
+                  <span className={`font-mono font-bold ${row.netPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    {formatCurrency(row.netPnl, currency, true)}
+                  </span>
+                  <span className="font-mono">{row.profitFactor}</span>
+                  <span className="font-mono text-right">{formatCurrency(row.averagePnl, currency, true)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 5. Bottom Row (2 Cards): Performance by Direction & Day of Week */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Left: Performance by Direction (Buy vs. Sell) */}
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                  <TrendingUp className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                  Performance by Direction (Buy vs. Sell)
+                </h3>
+              </div>
+
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+                <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 py-4">
+              {/* Buy Trades Box */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100/60">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                  <ShoppingCart className="h-5 w-5 stroke-[2.2]" />
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-slate-800">Buy Trades</span>
+                  <span className="font-mono text-xs text-slate-500 font-medium">
+                    {directionBreakdown.buyCount} Trades • {directionBreakdown.buyPct}%
+                  </span>
+                </div>
+              </div>
+
+              {/* Sell Trades Box */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-rose-50/50 border border-rose-100/60">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
+                  <ShoppingCart className="h-5 w-5 stroke-[2.2]" />
+                </div>
+                <div>
+                  <span className="block text-xs font-bold text-slate-800">Sell Trades</span>
+                  <span className="font-mono text-xs text-slate-500 font-medium">
+                    {directionBreakdown.sellCount} Trades • {directionBreakdown.sellPct}%
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-        )}
+
+          {/* Right: Performance by Day of Week */}
+          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                  <Calendar className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                  Performance by Day of Week
+                </h3>
+              </div>
+
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400">
+                <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-7 gap-1.5 py-4 text-center">
+              {weekdayStats.map((item) => (
+                <div key={item.day} className="rounded-xl bg-slate-50/80 p-2 border border-slate-100">
+                  <span className="block text-[11px] font-bold text-slate-600">{item.day}</span>
+                  <span className="font-mono text-xs font-semibold text-slate-400">{item.pct}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   )
 }
-

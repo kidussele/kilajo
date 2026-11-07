@@ -65,7 +65,6 @@ export default function DashboardPage() {
   }, [filteredTrades])
 
   const pnlPercent = initialBalance > 0 ? (metrics.netProfit / initialBalance) * 100 : 0
-  const isPnlPositive = metrics.netProfit >= 0
 
   return (
     <DashboardLayout>
@@ -74,7 +73,13 @@ export default function DashboardPage() {
         <PageHeroBanner
           title="Portfolio Overview"
           subtitle="Track your performance and stay on top of your trading journey"
-          icon={Target}
+          iconElement={
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white border-2 border-emerald-800/80 shadow-xs">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
+                <Target className="h-6 w-6 text-emerald-800 stroke-[2.5]" />
+              </div>
+            </div>
+          }
           quote="Plan Well, Trade Smart, Grow Steady."
         />
 
