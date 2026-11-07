@@ -231,17 +231,17 @@ export default function JournalPage() {
             value={journalMetrics.total.toString()}
             subtitle={`${journalMetrics.openCount} open positions`}
             icon={BarChart3}
-            color="emerald"
+            color="brand"
           />
 
           <MetricCard
             title="Realized P&L"
             value={formatCurrency(journalMetrics.netPnl, currency, true)}
-            subtitle="▲ Profit • Net Profit/Loss"
+            subtitle="▲ Net Profit / Loss"
             trend={journalMetrics.netPnl >= 0 ? '▲ Profit' : '▼ Loss'}
             trendPositive={journalMetrics.netPnl >= 0}
             icon={TrendingUp}
-            color="purple"
+            color="profit"
           />
 
           <MetricCard
@@ -249,7 +249,7 @@ export default function JournalPage() {
             value={`${journalMetrics.winRate}%`}
             subtitle={`${journalMetrics.winsCount}W / ${journalMetrics.lossesCount}L`}
             icon={Trophy}
-            color="amber"
+            color="analytics"
           />
 
           <MetricCard
@@ -257,7 +257,7 @@ export default function JournalPage() {
             value={journalMetrics.profitFactor > 0 ? journalMetrics.profitFactor.toString() : '0'}
             subtitle={journalMetrics.profitFactor >= 1.5 ? 'Institutional Edge' : 'Developing...'}
             icon={Settings}
-            color="blue"
+            color="brand"
           />
 
           <MetricCard
@@ -265,7 +265,7 @@ export default function JournalPage() {
             value={journalMetrics.openCount.toString()}
             subtitle="Active market view"
             icon={Crosshair}
-            color="teal"
+            color="warning"
           />
 
           <MetricCard
@@ -273,7 +273,7 @@ export default function JournalPage() {
             value={`${journalMetrics.winsCount}:${journalMetrics.lossesCount || 1}`}
             subtitle="Win/Loss Ratio"
             icon={Hourglass}
-            color="purple"
+            color="analytics"
           />
         </div>
 

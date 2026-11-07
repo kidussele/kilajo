@@ -228,9 +228,9 @@ export default function AiCoachPage() {
               type="button"
               onClick={handleRunMistakeAudit}
               disabled={isAuditing}
-              className="inline-flex items-center gap-2 rounded-full border border-emerald-300 dark:border-emerald-800 bg-[#064e3b] dark:bg-emerald-950 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#043c2e] transition-all cursor-pointer hover:scale-105 disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-bold shadow-xs transition-all cursor-pointer hover:scale-105 disabled:opacity-50"
             >
-              <Sparkles className="h-4 w-4 text-emerald-300" />
+              <Sparkles className="h-4 w-4 text-blue-200" />
               <span>{isAuditing ? 'Analyzing Mistakes...' : 'Run Deep Mistake Diagnostic'}</span>
             </button>
           }
@@ -240,10 +240,10 @@ export default function AiCoachPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <MetricCard
             title="AI Coach Engine"
-            value="Gemini 3.8 Flash"
+            value="Gemini Flash"
             subtitle="Deep reasoning active"
             icon={Bot}
-            color="emerald"
+            color="brand"
             infoTooltip
           />
           <MetricCard
@@ -251,7 +251,7 @@ export default function AiCoachPage() {
             value={totalTradesCount.toString()}
             subtitle={`${winRate}% Win Rate`}
             icon={BookOpen}
-            color="blue"
+            color="analytics"
             infoTooltip
           />
           <MetricCard
@@ -259,15 +259,15 @@ export default function AiCoachPage() {
             value={formatCurrency(netPnl, currency, true)}
             subtitle="Overall performance"
             icon={TrendingUp}
-            color={netPnl >= 0 ? 'emerald' : 'rose'}
+            color={netPnl >= 0 ? 'profit' : 'loss'}
             infoTooltip
           />
           <MetricCard
             title="Mistake Shield"
-            value="Fail-Closed"
+            value="Active"
             subtitle="Hard risk boundaries"
             icon={ShieldAlert}
-            color="purple"
+            color="warning"
             infoTooltip
           />
         </div>

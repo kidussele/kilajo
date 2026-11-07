@@ -91,11 +91,10 @@ export default function StrategiesPage() {
           middleContent={
             <button
               onClick={() => setIsAddOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <PlusCircle className="h-4 w-4" />
               <span>Create Strategy</span>
-              <span className="font-bold">&gt;</span>
             </button>
           }
         />
@@ -105,10 +104,9 @@ export default function StrategiesPage() {
           <MetricCard
             title="Total Setups"
             value={strategies.length.toString()}
-            trend="▲ No setups yet"
-            trendPositive={true}
+            subtitle="Configured playbooks"
             icon={Crosshair}
-            color="emerald"
+            color="brand"
             infoTooltip
           />
           <MetricCard
@@ -116,16 +114,15 @@ export default function StrategiesPage() {
             value={bestStrategy ? bestStrategy.name : '--'}
             subtitle={bestStrategy ? formatCurrency(bestStrategy.netPnl, currency, true) : 'No trades yet'}
             icon={Trophy}
-            color="purple"
+            color="profit"
             infoTooltip
           />
           <MetricCard
             title="Playbook Trades"
             value={totalStratTrades.toString()}
-            trend="▲ Systematic executions"
-            trendPositive={true}
+            subtitle="Systematic executions"
             icon={Layers}
-            color="amber"
+            color="analytics"
             infoTooltip
           />
           <MetricCard
@@ -133,7 +130,7 @@ export default function StrategiesPage() {
             value={bestStrategy ? `${bestStrategy.winRate}%` : '--'}
             subtitle="Highest setup edge"
             icon={BarChart2}
-            color="blue"
+            color="warning"
             infoTooltip
           />
         </div>

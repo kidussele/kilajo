@@ -138,15 +138,15 @@ export default function AccountsPage() {
         >
           <button
             onClick={() => setIsAddAccountOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
           >
-            <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
+            <PlusCircle className="h-3.5 w-3.5 stroke-[2.2]" />
             <span>Connect Account</span>
           </button>
         </PageHeroBanner>
 
         {/* 5 Explicit Category Filter Pills in Exact Requested Order */}
-        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-[#0c141c] border border-slate-100 dark:border-slate-800 shadow-2xs">
+        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-white dark:bg-[#0D1424] border border-[#E7EBF2] dark:border-slate-800 shadow-2xs">
           {ACCOUNT_CATEGORIES.map((cat) => {
             const isActive = selectedCategory === cat.id
             const count = categoryCounts[cat.id] || 0
@@ -165,8 +165,8 @@ export default function AccountsPage() {
                 }}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? cat.activeBgClass
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#3157D5] text-white shadow-xs font-bold'
+                    : 'text-[#64748B] hover:text-[#172033] dark:hover:text-white hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -175,7 +175,7 @@ export default function AccountsPage() {
                   className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold font-mono ${
                     isActive
                       ? 'bg-white/25 text-white'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                      : 'bg-[#F6F8FC] dark:bg-slate-800 text-[#64748B] dark:text-slate-400'
                   }`}
                 >
                   {count}
@@ -196,28 +196,28 @@ export default function AccountsPage() {
                 : `${categoryCounts[selectedCategory]} in ${selectedCategory}`
             }
             icon={Wallet}
-            color="emerald"
+            color="brand"
           />
           <MetricCard
             title="Total Capital"
             value={formatCurrency(totalCapital, 'USD')}
             subtitle={selectedCategory === 'ALL' ? 'Combined equity' : `${getScopeLabel(activeAccountId, accounts)} equity`}
             icon={CheckCircle}
-            color="purple"
+            color="profit"
           />
           <MetricCard
             title="Category Scope"
             value={ACCOUNT_CATEGORIES.find((c) => c.id === selectedCategory)?.shortLabel || 'All'}
             subtitle={ACCOUNT_CATEGORIES.find((c) => c.id === selectedCategory)?.description || 'Unified view'}
             icon={ShieldAlert}
-            color="amber"
+            color="analytics"
           />
           <MetricCard
             title="Active Scope"
             value={getScopeLabel(activeAccountId, accounts)}
             subtitle="Global filter applied"
             icon={Radio}
-            color="blue"
+            color="brand"
           />
         </div>
 

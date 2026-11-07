@@ -215,13 +215,13 @@ export default function ImportPage() {
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 1 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
+              step === 1 ? 'bg-[#3157D5] text-white shadow-xs' : 'text-[#64748B] dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 1 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
+                step === 1 ? 'bg-white/20 text-white' : 'border border-[#E7EBF2] dark:border-slate-700 text-[#64748B] dark:text-slate-400'
               )}
             >
               1
@@ -230,18 +230,18 @@ export default function ImportPage() {
             <span>Upload File</span>
           </div>
 
-          <span className="text-slate-300 dark:text-slate-600 font-bold">&gt;</span>
+          <span className="text-[#64748B] dark:text-slate-600 font-bold">&gt;</span>
 
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 2 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
+              step === 2 ? 'bg-[#3157D5] text-white shadow-xs' : 'text-[#64748B] dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 2 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
+                step === 2 ? 'bg-white/20 text-white' : 'border border-[#E7EBF2] dark:border-slate-700 text-[#64748B] dark:text-slate-400'
               )}
             >
               2
@@ -250,18 +250,18 @@ export default function ImportPage() {
             <span>Map Columns</span>
           </div>
 
-          <span className="text-slate-300 dark:text-slate-600 font-bold">&gt;</span>
+          <span className="text-[#64748B] dark:text-slate-600 font-bold">&gt;</span>
 
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 3 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
+              step === 3 ? 'bg-[#3157D5] text-white shadow-xs' : 'text-[#64748B] dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 3 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
+                step === 3 ? 'bg-white/20 text-white' : 'border border-[#E7EBF2] dark:border-slate-700 text-[#64748B] dark:text-slate-400'
               )}
             >
               3
@@ -270,18 +270,18 @@ export default function ImportPage() {
             <span>Validate & Preview</span>
           </div>
 
-          <span className="text-slate-300 dark:text-slate-600 font-bold">&gt;</span>
+          <span className="text-[#64748B] dark:text-slate-600 font-bold">&gt;</span>
 
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 4 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
+              step === 4 ? 'bg-[#3157D5] text-white shadow-xs' : 'text-[#64748B] dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 4 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
+                step === 4 ? 'bg-white/20 text-white' : 'border border-[#E7EBF2] dark:border-slate-700 text-[#64748B] dark:text-slate-400'
               )}
             >
               4

@@ -82,11 +82,10 @@ export default function TraderPlanPage() {
             <button
               type="button"
               onClick={() => setIsEditModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <Edit3 className="h-3.5 w-3.5" />
               <span>Configure Trading Plan</span>
-              <span className="font-bold">&gt;</span>
             </button>
           }
         />
@@ -98,7 +97,7 @@ export default function TraderPlanPage() {
             value="Active & Enforced"
             subtitle="Daily guardrails enabled"
             icon={ShieldAlert}
-            color="emerald"
+            color="brand"
             infoTooltip
           />
           <MetricCard
@@ -106,7 +105,7 @@ export default function TraderPlanPage() {
             value={`-${maxDailyLossPct}%`}
             subtitle={formatCurrency(maxDailyLossAmount, currency)}
             icon={Flame}
-            color="rose"
+            color="loss"
             infoTooltip
           />
           <MetricCard
@@ -114,7 +113,7 @@ export default function TraderPlanPage() {
             value={`${maxRiskPerTradePct}%`}
             subtitle="Fixed position sizing"
             icon={Target}
-            color="amber"
+            color="analytics"
             infoTooltip
           />
           <MetricCard
@@ -122,7 +121,7 @@ export default function TraderPlanPage() {
             value={minRiskReward}
             subtitle="Required Risk-to-Reward"
             icon={TrendingUp}
-            color="blue"
+            color="profit"
             infoTooltip
           />
         </div>

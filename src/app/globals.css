@@ -4,88 +4,89 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    /* KILAJO Light-First Design Tokens */
+    --background: 220 43% 98%; /* #F6F8FC Main Background */
+    --foreground: 221 38% 15%; /* #172033 Primary Text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%; /* #FFFFFF Primary Surface */
+    --card-foreground: 221 38% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 221 38% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 226 66% 52%; /* #3157D5 Primary Brand */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 27% 95%;
+    --secondary-foreground: 221 38% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 215 16% 47%; /* #64748B Secondary Text */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 226 66% 96%;
+    --accent-foreground: 226 66% 52%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 354 71% 60%; /* #E05260 Negative / Loss */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 27% 93%; /* #E7EBF2 Borders */
+    --input: 220 27% 93%;
+    --ring: 226 66% 52%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
 
-    /* Financial Specific Tokens */
-    --success: 158 64% 40%;
+    /* Financial Specific Tokens (Strict KILAJO Palette) */
+    --success: 161 76% 35%; /* #159B72 Positive / Profit */
     --success-foreground: 0 0% 100%;
-    --success-subtle: 152 76% 96%;
+    --success-subtle: 161 50% 94%; /* #E8F7F2 */
 
-    --danger: 0 72% 51%;
+    --danger: 354 71% 60%; /* #E05260 Negative / Loss */
     --danger-foreground: 0 0% 100%;
-    --danger-subtle: 0 86% 97%;
+    --danger-subtle: 354 75% 96%; /* #FDEDEF */
 
-    --warning: 38 92% 50%;
+    --warning: 36 78% 56%; /* #E5A33B Warning */
     --warning-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 215 35% 6%;
+    --background: 222 35% 8%; /* Clean deep navy-slate */
     --foreground: 210 40% 98%;
 
-    --card: 215 32% 10%;
+    --card: 222 30% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 215 32% 10%;
+    --popover: 222 30% 12%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 158 64% 45%;
+    --primary: 226 75% 62%; /* Slightly brightened #3157D5 for dark contrast */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 25% 14%;
+    --secondary: 222 25% 16%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 25% 14%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 222 25% 16%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 215 25% 16%;
+    --accent: 222 25% 18%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 354 71% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 17%;
-    --input: 215 25% 17%;
-    --ring: 158 64% 45%;
+    --border: 222 25% 18%;
+    --input: 222 25% 18%;
+    --ring: 226 75% 62%;
 
-    --success: 158 64% 48%;
-    --success-foreground: 222.2 84% 4.9%;
-    --success-subtle: 160 50% 12%;
+    --success: 161 76% 45%;
+    --success-foreground: 0 0% 100%;
+    --success-subtle: 161 40% 15%;
 
-    --danger: 0 72% 56%;
-    --danger-foreground: 210 40% 98%;
-    --danger-subtle: 0 50% 14%;
+    --danger: 354 71% 60%;
+    --danger-foreground: 0 0% 100%;
+    --danger-subtle: 354 40% 16%;
 
-    --warning: 38 92% 55%;
-    --warning-foreground: 222.2 84% 4.9%;
+    --warning: 36 78% 56%;
+    --warning-foreground: 0 0% 100%;
   }
 }
 
@@ -118,4 +119,73 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+
+/* Institutional Fintech UI Utilities */
+.card-fintech {
+  background-color: #FFFFFF;
+  border: 1px solid #E7EBF2;
+  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.04), 0 1px 2px -1px rgba(16, 24, 40, 0.02);
+}
+
+.dark .card-fintech {
+  background-color: hsl(var(--card));
+  border-color: hsl(var(--border));
+  box-shadow: none;
+}
+
+.badge-profit {
+  background-color: #E8F7F2;
+  color: #159B72;
+  border: 1px solid rgba(21, 155, 114, 0.18);
+}
+.dark .badge-profit {
+  background-color: rgba(21, 155, 114, 0.15);
+  color: #34d399;
+  border-color: rgba(21, 155, 114, 0.3);
+}
+
+.badge-loss {
+  background-color: #FDEDEF;
+  color: #E05260;
+  border: 1px solid rgba(224, 82, 96, 0.18);
+}
+.dark .badge-loss {
+  background-color: rgba(224, 82, 96, 0.15);
+  color: #f87171;
+  border-color: rgba(224, 82, 96, 0.3);
+}
+
+.badge-brand {
+  background-color: #EEF2FD;
+  color: #3157D5;
+  border: 1px solid rgba(49, 87, 213, 0.18);
+}
+.dark .badge-brand {
+  background-color: rgba(49, 87, 213, 0.15);
+  color: #818cf8;
+  border-color: rgba(49, 87, 213, 0.3);
+}
+
+.badge-warning {
+  background-color: #FEF7EC;
+  color: #E5A33B;
+  border: 1px solid rgba(229, 163, 59, 0.2);
+}
+.dark .badge-warning {
+  background-color: rgba(229, 163, 59, 0.15);
+  color: #fbbf24;
+  border-color: rgba(229, 163, 59, 0.3);
+}
+
+.badge-analytics {
+  background-color: #F2F0FB;
+  color: #6657C8;
+  border: 1px solid rgba(102, 87, 200, 0.18);
+}
+.dark .badge-analytics {
+  background-color: rgba(102, 87, 200, 0.15);
+  color: #a78bfa;
+  border-color: rgba(102, 87, 200, 0.3);
+}
+
 

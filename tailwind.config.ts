@@ -64,6 +64,41 @@ const config: Config = {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
+        // Official KILAJO Design Tokens
+        kilajo: {
+          bg: "#F6F8FC",
+          surface: "#FFFFFF",
+          text: "#172033",
+          textMuted: "#64748B",
+          brand: "#3157D5",
+          brandDark: "#2745AE",
+          analytics: "#6657C8",
+          profit: "#159B72",
+          profitBg: "#E8F7F2",
+          loss: "#E05260",
+          lossBg: "#FDEDEF",
+          warning: "#E5A33B",
+          warningBg: "#FEF7EC",
+          neutral: "#6484A8",
+          border: "#E7EBF2",
+        },
+        brand: {
+          DEFAULT: "#3157D5",
+          dark: "#2745AE",
+          light: "#EEF2FD",
+        },
+        profit: {
+          DEFAULT: "#159B72",
+          subtle: "#E8F7F2",
+        },
+        loss: {
+          DEFAULT: "#E05260",
+          subtle: "#FDEDEF",
+        },
+        analytics: {
+          DEFAULT: "#6657C8",
+          subtle: "#F2F0FB",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

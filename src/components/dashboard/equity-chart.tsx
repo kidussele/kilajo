@@ -25,28 +25,20 @@ export function EquityChart({ data, currency = 'USD' }: EquityChartProps) {
 
   if (!data || data.length <= 1) {
     return (
-      <div className="relative flex h-72 w-full flex-col items-center justify-center rounded-2xl overflow-hidden bg-slate-50/40 p-6 text-center select-none">
-        {/* Subtle Background Axis Mock */}
-        <div className="absolute inset-0 flex flex-col justify-between p-4 pointer-events-none opacity-20">
-          <div className="border-b border-dashed border-slate-300 w-full" />
-          <div className="border-b border-dashed border-slate-300 w-full" />
-          <div className="border-b border-dashed border-slate-300 w-full" />
-          <div className="border-b border-dashed border-slate-300 w-full" />
-        </div>
-
+      <div className="relative flex h-72 w-full flex-col items-center justify-center rounded-2xl overflow-hidden bg-[#F6F8FC] dark:bg-slate-900/40 p-6 text-center select-none border border-dashed border-[#E7EBF2] dark:border-slate-800">
         <div className="relative z-10 flex flex-col items-center max-w-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 shadow-inner mb-3">
-            <TrendingUp className="h-6 w-6 stroke-[2.5]" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EEF2FD] dark:bg-blue-950 text-[#3157D5] dark:text-blue-300 shadow-xs mb-3 border border-[#3157D5]/20">
+            <TrendingUp className="h-6 w-6 stroke-[2.2]" />
           </div>
-          <h4 className="text-base font-bold text-slate-800 font-sans">
+          <h4 className="text-base font-bold text-[#172033] dark:text-white font-sans">
             No performance data yet!
           </h4>
-          <p className="text-xs text-slate-500 mt-1 mb-4 leading-relaxed font-medium">
-            Start trading to see your equity curve here.
+          <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1 mb-4 leading-relaxed font-medium">
+            Start logging trades or connect a broker to view your real-time equity curve.
           </p>
           <button
             onClick={() => router.push('/journal')}
-            className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-sm transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-5 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105"
           >
             <span>Start Trading</span>
             <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
@@ -66,17 +58,17 @@ export function EquityChart({ data, currency = 'USD' }: EquityChartProps) {
             <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="5%"
-                stopColor={isProfitable ? '#10b981' : '#ef4444'}
+                stopColor={isProfitable ? '#159B72' : '#E05260'}
                 stopOpacity={0.25}
               />
               <stop
                 offset="95%"
-                stopColor={isProfitable ? '#10b981' : '#ef4444'}
+                stopColor={isProfitable ? '#159B72' : '#E05260'}
                 stopOpacity={0.0}
               />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f3" />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E7EBF2" />
           <XAxis
             dataKey="date"
             tickFormatter={(val) => formatDate(val)}
@@ -96,31 +88,31 @@ export function EquityChart({ data, currency = 'USD' }: EquityChartProps) {
               if (active && payload && payload.length) {
                 const item = payload[0].payload as EquityPoint
                 return (
-                  <div className="rounded-2xl border border-slate-100 bg-white p-3 shadow-lg text-xs font-sans space-y-1">
-                    <p className="font-bold text-slate-800">
+                  <div className="rounded-xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3 shadow-lg text-xs font-sans space-y-1">
+                    <p className="font-bold text-[#172033] dark:text-white">
                       Trade #{item.tradeNumber} • {item.symbol}
                     </p>
-                    <p className="text-slate-400">{formatDate(item.date)}</p>
-                    <div className="border-t border-slate-100 pt-1 space-y-0.5">
+                    <p className="text-[#64748B] dark:text-slate-400">{formatDate(item.date)}</p>
+                    <div className="border-t border-[#E7EBF2] dark:border-slate-800 pt-1 space-y-0.5">
                       <p className="flex justify-between gap-4">
-                        <span className="text-slate-400">Account Balance:</span>
-                        <span className="font-mono font-bold text-slate-800">
+                        <span className="text-[#64748B] dark:text-slate-400">Account Balance:</span>
+                        <span className="font-mono font-bold text-[#172033] dark:text-white">
                           {formatCurrency(item.balance, currency)}
                         </span>
                       </p>
                       <p className="flex justify-between gap-4">
-                        <span className="text-slate-400">Trade P&L:</span>
+                        <span className="text-[#64748B] dark:text-slate-400">Trade P&L:</span>
                         <span
                           className={`font-mono font-bold ${
-                            item.netPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                            item.netPnl >= 0 ? 'text-[#159B72]' : 'text-[#E05260]'
                           }`}
                         >
                           {formatCurrency(item.netPnl, currency, true)}
                         </span>
                       </p>
                       <p className="flex justify-between gap-4">
-                        <span className="text-slate-400">Drawdown:</span>
-                        <span className="font-mono text-rose-500 font-semibold">
+                        <span className="text-[#64748B] dark:text-slate-400">Drawdown:</span>
+                        <span className="font-mono text-[#E05260] font-semibold">
                           -{formatCurrency(item.drawdown, currency)} ({item.drawdownPct}%)
                         </span>
                       </p>
@@ -134,7 +126,7 @@ export function EquityChart({ data, currency = 'USD' }: EquityChartProps) {
           <Area
             type="monotone"
             dataKey="balance"
-            stroke={isProfitable ? '#10b981' : '#ef4444'}
+            stroke={isProfitable ? '#159B72' : '#E05260'}
             strokeWidth={2.5}
             fillOpacity={1}
             fill="url(#equityGradient)"

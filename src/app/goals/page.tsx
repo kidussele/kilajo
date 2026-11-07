@@ -69,11 +69,10 @@ export default function GoalsPage() {
           middleContent={
             <button
               onClick={() => setIsAddOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <PlusCircle className="h-4 w-4" />
               <span>Set New Goal</span>
-              <span className="font-bold">&gt;</span>
             </button>
           }
         />
@@ -85,7 +84,7 @@ export default function GoalsPage() {
             value={goals.length.toString()}
             subtitle="Configured milestones"
             icon={Trophy}
-            color="emerald"
+            color="brand"
             infoTooltip
             actionArrow
             onActionClick={() => setIsAddOpen(true)}
@@ -95,7 +94,7 @@ export default function GoalsPage() {
             value={completedCount.toString()}
             subtitle="Completed targets"
             icon={CheckCircle2}
-            color="purple"
+            color="profit"
             infoTooltip
             actionArrow
           />
@@ -104,7 +103,7 @@ export default function GoalsPage() {
             value={goals.filter((g) => g.period === 'MONTHLY').length.toString()}
             subtitle="Monthly timeframe"
             icon={Calendar}
-            color="blue"
+            color="analytics"
             infoTooltip
             actionArrow
           />
@@ -113,7 +112,7 @@ export default function GoalsPage() {
             value={goals.length > 0 ? `${Math.round((completedCount / goals.length) * 100)}%` : '0%'}
             subtitle="Success index"
             icon={TrendingUp}
-            color="amber"
+            color="warning"
             infoTooltip
             actionArrow
           />

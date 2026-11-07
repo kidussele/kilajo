@@ -91,7 +91,7 @@ export default function PropFirmPage() {
             value={propAccounts.length.toString()}
             subtitle="Track your active challenges"
             icon={Zap}
-            color="emerald"
+            color="brand"
             actionArrow
           />
           <MetricCard
@@ -99,7 +99,7 @@ export default function PropFirmPage() {
             value={formatCurrency(totalPropCapital, 'USD')}
             subtitle="Combined starting balance"
             icon={DollarSign}
-            color="teal"
+            color="profit"
             actionArrow
           />
           <MetricCard
@@ -107,7 +107,7 @@ export default function PropFirmPage() {
             value="10.0%"
             subtitle="Standard profit milestone"
             icon={Target}
-            color="blue"
+            color="analytics"
             actionArrow
           />
           <MetricCard
@@ -115,7 +115,7 @@ export default function PropFirmPage() {
             value="10.0%"
             subtitle="Hard breach boundary"
             icon={Shield}
-            color="purple"
+            color="loss"
             actionArrow
           />
         </div>

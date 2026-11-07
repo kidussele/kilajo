@@ -104,15 +104,15 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           <div className="relative">
             <button
               onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer"
+              className="flex items-center gap-2 rounded-xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-[#172033] dark:text-slate-100 shadow-2xs hover:bg-[#F6F8FC] dark:hover:bg-slate-800/80 transition-all cursor-pointer"
             >
               {React.createElement(currentCategoryIcon, {
-                className: 'h-4 w-4 text-emerald-600 dark:text-emerald-400 stroke-[2.2] shrink-0',
+                className: 'h-4 w-4 text-[#3157D5] dark:text-blue-400 stroke-[2.2] shrink-0',
               })}
               <span className="max-w-[130px] sm:max-w-[200px] truncate">
                 {currentScopeTitle}
               </span>
-              <ChevronDown className="h-3.5 w-3.5 text-slate-400 stroke-[2.5]" />
+              <ChevronDown className="h-3.5 w-3.5 text-[#64748B] stroke-[2.5]" />
             </button>
 
             {isAccountDropdownOpen && (
@@ -121,13 +121,13 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                   className="fixed inset-0 z-30"
                   onClick={() => setIsAccountDropdownOpen(false)}
                 />
-                <div className="absolute left-0 top-full mt-2 w-80 max-h-[82vh] overflow-y-auto rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-2.5 shadow-2xl z-40 animate-in fade-in zoom-in-95 scrollbar-thin">
+                <div className="absolute left-0 top-full mt-2 w-80 max-h-[82vh] overflow-y-auto rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-2.5 shadow-xl z-40 animate-in fade-in zoom-in-95 scrollbar-thin">
                   {/* Category Header */}
-                  <div className="px-2.5 py-1.5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 mb-2">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  <div className="px-2.5 py-1.5 flex items-center justify-between border-b border-[#E7EBF2] dark:border-slate-800/80 mb-2">
+                    <span className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
                       Trading Categories & Accounts
                     </span>
-                    <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-semibold text-[#3157D5] dark:text-blue-400 bg-[#EEF2FD] dark:bg-blue-950/60 px-2 py-0.5 rounded-full">
                       {accounts.length} Total
                     </span>
                   </div>
@@ -139,19 +139,19 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                         setActiveAccountId('ALL')
                         setIsAccountDropdownOpen(false)
                       }}
-                      className={`flex w-full items-center justify-between rounded-2xl px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      className={`flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
                         activeAccountId === 'ALL'
-                          ? 'bg-[#064e3b] text-white shadow-xs'
-                          : 'text-slate-800 dark:text-slate-200 hover:bg-emerald-50/70 dark:hover:bg-slate-800/80'
+                          ? 'bg-[#3157D5] text-white shadow-xs'
+                          : 'text-[#172033] dark:text-slate-200 hover:bg-[#EEF2FD] dark:hover:bg-slate-800/80'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className={`p-1.5 rounded-xl ${activeAccountId === 'ALL' ? 'bg-white/20' : 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600'}`}>
+                        <div className={`p-1.5 rounded-lg ${activeAccountId === 'ALL' ? 'bg-white/20' : 'bg-[#EEF2FD] dark:bg-blue-950/50 text-[#3157D5]'}`}>
                           <Briefcase className="h-3.5 w-3.5 stroke-[2.2]" />
                         </div>
                         <div className="text-left">
                           <p className="font-bold">All Accounts</p>
-                          <p className={`text-[10px] ${activeAccountId === 'ALL' ? 'text-emerald-100' : 'text-slate-400'}`}>
+                          <p className={`text-[10px] ${activeAccountId === 'ALL' ? 'text-blue-100' : 'text-[#64748B]'}`}>
                             Unified multi-broker portfolio ({accounts.length})
                           </p>
                         </div>
@@ -161,7 +161,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                   </div>
 
                   {/* 2 to 5 Concrete Categories in Requested Order */}
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {ACCOUNT_CATEGORIES.filter((c) => c.id !== 'ALL').map((category) => {
                       const catAccounts = accountsByCategory[category.id as 'DEMO' | 'BACKTEST' | 'PROP' | 'LIVE']
                       const isCatActive = activeAccountId === `CAT:${category.id}`
@@ -170,18 +170,18 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                       return (
                         <div
                           key={category.id}
-                          className="rounded-2xl border border-slate-100 dark:border-slate-800/80 p-2 bg-slate-50/50 dark:bg-slate-900/50"
+                          className="rounded-xl border border-[#E7EBF2] dark:border-slate-800/80 p-2 bg-[#F6F8FC] dark:bg-slate-900/50"
                         >
-                          {/* Category Header Row (Clickable to filter all accounts in this category) */}
+                          {/* Category Header Row */}
                           <button
                             onClick={() => {
                               setActiveAccountId(`CAT:${category.id}`)
                               setIsAccountDropdownOpen(false)
                             }}
-                            className={`flex w-full items-center justify-between rounded-xl px-2.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                            className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
                               isCatActive
-                                ? 'bg-slate-800 text-white dark:bg-slate-700'
-                                : 'text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800'
+                                ? 'bg-[#172033] text-white dark:bg-slate-700'
+                                : 'text-[#172033] dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800'
                             }`}
                           >
                             <div className="flex items-center gap-2">
@@ -190,7 +190,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                               <span className="font-bold">{category.label}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                              <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                              <span className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold bg-[#E7EBF2] dark:bg-slate-800 text-[#172033] dark:text-slate-300">
                                 {catAccounts.length}
                               </span>
                               {isCatActive && <Check className="h-3.5 w-3.5 text-emerald-400 shrink-0 font-bold" />}
@@ -198,9 +198,9 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                           </button>
 
                           {/* Individual Accounts in this Category */}
-                          <div className="mt-1 space-y-1 pl-2">
+                          <div className="mt-1 space-y-0.5 pl-2">
                             {catAccounts.length === 0 ? (
-                              <p className="text-[10px] text-slate-400 italic py-1 pl-2">
+                              <p className="text-[10px] text-[#64748B] italic py-1 pl-2">
                                 No accounts configured yet.
                               </p>
                             ) : (
@@ -213,20 +213,20 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                                       setActiveAccountId(acc.id)
                                       setIsAccountDropdownOpen(false)
                                     }}
-                                    className={`flex w-full items-center justify-between rounded-xl px-2.5 py-1.5 text-xs font-medium transition-colors text-left cursor-pointer ${
+                                    className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors text-left cursor-pointer ${
                                       isAccActive
-                                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-200 font-semibold'
-                                        : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white'
+                                        ? 'bg-[#EEF2FD] dark:bg-blue-950/60 text-[#3157D5] dark:text-blue-200 font-semibold'
+                                        : 'text-[#64748B] dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800/80 hover:text-[#172033] dark:hover:text-white'
                                     }`}
                                   >
                                     <div className="truncate mr-2">
                                       <p className="truncate text-[11px] font-semibold">{acc.name}</p>
-                                      <p className="text-[9px] text-slate-400">
+                                      <p className="text-[9px] text-[#64748B]">
                                         {acc.broker} • ${Number(acc.current_balance || 0).toLocaleString()}
                                       </p>
                                     </div>
                                     {isAccActive && (
-                                      <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 font-bold" />
+                                      <Check className="h-3.5 w-3.5 text-[#3157D5] shrink-0 font-bold" />
                                     )}
                                   </button>
                                 )
@@ -239,13 +239,13 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                   </div>
 
                   {/* Add New Account Quick Action */}
-                  <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="mt-2 pt-2 border-t border-[#E7EBF2] dark:border-slate-800">
                     <button
                       onClick={() => {
                         setIsAccountDropdownOpen(false)
                         setIsAccountModalOpen(true)
                       }}
-                      className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-emerald-600/40 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/30 py-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100/60 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer"
+                      className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-[#3157D5]/40 dark:border-blue-800/60 bg-[#EEF2FD]/50 dark:bg-blue-950/30 py-2 text-xs font-semibold text-[#3157D5] dark:text-blue-300 hover:bg-[#EEF2FD] dark:hover:bg-blue-900/40 transition-colors cursor-pointer"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>Connect New Trading Account</span>
@@ -262,28 +262,28 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           {/* Quick Log Trade Button */}
           <button
             onClick={() => setIsTradeModalOpen(true)}
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:shadow-xs shadow-2xs transition-all cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-[#3157D5] text-white px-3.5 py-1.5 text-xs font-bold hover:bg-[#2745AE] shadow-xs hover:shadow-md transition-all cursor-pointer"
           >
-            <PlusCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
+            <PlusCircle className="h-3.5 w-3.5 text-blue-200" />
             <span>Log Trade</span>
           </button>
 
-          {/* Notification Bell Pill with Red Badge */}
+          {/* Notification Bell Pill */}
           <button
-            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-xs transition-all cursor-pointer"
+            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white dark:bg-[#0D1424] border border-[#E7EBF2] dark:border-slate-800 shadow-2xs text-[#64748B] dark:text-slate-300 hover:text-[#172033] dark:hover:text-white hover:bg-[#F6F8FC] dark:hover:bg-slate-800 transition-all cursor-pointer"
             title="Notifications"
           >
             <Bell className="h-4 w-4 stroke-[2]" />
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-xs">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#E05260] text-[9px] font-bold text-white shadow-xs">
               3
             </span>
           </button>
 
-          {/* Date Selector Pill (in dark forest green bg-[#064e3b]) */}
-          <div className="flex items-center gap-2 rounded-xl bg-[#064e3b] text-white px-3.5 py-1.5 text-xs font-semibold shadow-xs hover:bg-[#075e46] transition-colors cursor-pointer">
-            <Calendar className="h-3.5 w-3.5 text-emerald-300 stroke-[2.2]" />
+          {/* Date Selector Pill */}
+          <div className="flex items-center gap-2 rounded-xl bg-white dark:bg-[#0D1424] border border-[#E7EBF2] dark:border-slate-800 text-[#172033] dark:text-slate-200 px-3 py-1.5 text-xs font-semibold shadow-2xs hover:bg-[#F6F8FC] transition-colors cursor-pointer">
+            <Calendar className="h-3.5 w-3.5 text-[#3157D5] stroke-[2.2]" />
             <span>{formattedDate}</span>
-            <ChevronDown className="h-3 w-3 text-emerald-300 stroke-[2.5]" />
+            <ChevronDown className="h-3 w-3 text-[#64748B] stroke-[2.5]" />
           </div>
         </div>
       </header>

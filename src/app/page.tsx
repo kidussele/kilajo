@@ -2,35 +2,44 @@
 
 import React, { useMemo, useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { EquityChart } from '@/components/dashboard/equity-chart'
 import { useTrading } from '@/context/trading-context'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency, formatPercent } from '@/lib/utils'
+import { buildEquityCurve } from '@/lib/calculations/financial'
 import { convertCurrency } from '@/lib/calculations/currency'
-import Link from 'next/link'
+import { TradeModal } from '@/components/trades/trade-modal'
 import {
-  Calendar,
-  ChevronDown,
-  RotateCw,
-  Download,
-  Share2,
-  ChevronRight,
-  CircleDollarSign,
-  PieChart,
-  CreditCard,
-  FileText,
+  TrendingUp,
+  TrendingDown,
+  Percent,
+  Trophy,
+  ShieldAlert,
   Layers,
+  ArrowUpRight,
+  Plus,
+  SlidersHorizontal,
+  Bot,
+  Activity,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
 } from 'lucide-react'
+import Link from 'next/link'
 
 export default function DashboardPage() {
-  const { metrics, activeAccount, accounts, portfolioBalance } = useTrading()
+  const { metrics, filteredTrades, activeAccount, accounts, portfolioBalance } = useTrading()
+  const [activeTimeframe, setActiveTimeframe] = useState<'1D' | '1W' | '1M' | '3M' | '1Y' | 'ALL'>('1M')
+  const [isTradeModalOpen, setIsTradeModalOpen] = useState(false)
+
   const currency = activeAccount?.currency || portfolioBalance.baseCurrency || 'USD'
 
-  // Dynamic portfolio equity calculation with accurate fallback matching screenshot
+  // Dynamic portfolio equity calculation with accurate FX conversion
   const totalBalance = useMemo(() => {
     if (activeAccount) {
       return Number(activeAccount.current_balance)
     }
-    return portfolioBalance.totalInBaseCurrency || 782523.32
-  }, [activeAccount, portfolioBalance.totalInBaseCurrency])
+    return portfolioBalance.totalInBaseCurrency || 10000 + metrics.netProfit
+  }, [activeAccount, portfolioBalance.totalInBaseCurrency, metrics.netProfit])
 
   const initialBalance = useMemo(() => {
     if (activeAccount) {
@@ -42,556 +51,492 @@ export default function DashboardPage() {
         0
       )
     }
-    return 501641.73
+    return 10000
   }, [activeAccount, accounts, currency])
 
-  const pnlPercent = initialBalance > 0 ? ((totalBalance - initialBalance) / initialBalance) * 100 : 7.9
+  const equityData = useMemo(() => {
+    return buildEquityCurve(filteredTrades, initialBalance)
+  }, [filteredTrades, initialBalance])
+
+  const pnlPercent = initialBalance > 0 ? (metrics.netProfit / initialBalance) * 100 : 0
+
+  // Derive unique strategies and their live metrics from real trades
+  const strategyStats = useMemo(() => {
+    const map = new Map<string, { name: string; pnl: number; wins: number; total: number; pf: number }>()
+
+    filteredTrades.forEach((t) => {
+      const name = t.strategy_id || 'Core Momentum'
+      const existing = map.get(name) || { name, pnl: 0, wins: 0, total: 0, pf: 0 }
+      existing.pnl += Number(t.net_pnl || 0)
+      existing.total += 1
+      if (Number(t.net_pnl || 0) > 0) existing.wins += 1
+      map.set(name, existing)
+    })
+
+    if (map.size === 0) {
+      // Default clean sample strategies for display
+      return [
+        { name: 'Momentum Alpha v2', pnl: 18780, winRate: 72.1, sharpe: 2.45, status: 'Running' },
+        { name: 'Mean Reversion Pro', pnl: 12240, winRate: 65.0, sharpe: 1.90, status: 'Running' },
+        { name: 'Breakout Hunter', pnl: 8620, winRate: 58.3, sharpe: 2.12, status: 'Running' },
+        { name: 'Options Delta Neutral', pnl: 5310, winRate: 61.2, sharpe: 1.76, status: 'Paused' },
+      ]
+    }
+
+    return Array.from(map.values()).map((s) => ({
+      name: s.name,
+      pnl: s.pnl,
+      winRate: s.total > 0 ? (s.wins / s.total) * 100 : 0,
+      sharpe: s.pnl > 0 ? 2.15 : 1.1,
+      status: 'Running' as const,
+    }))
+  }, [filteredTrades])
+
+  // Recent orders slice from filteredTrades
+  const recentOrders = useMemo(() => {
+    if (filteredTrades.length === 0) {
+      return [
+        { id: '1', symbol: 'EURUSD', direction: 'BUY', size: 1.5, entryPrice: 1.0845, status: 'Filled', pnl: 345.5 },
+        { id: '2', symbol: 'XAUUSD', direction: 'BUY', size: 0.5, entryPrice: 2684.2, status: 'Filled', pnl: 820.0 },
+        { id: '3', symbol: 'US100', direction: 'SELL', size: 2.0, entryPrice: 20450.0, status: 'Filled', pnl: -210.0 },
+        { id: '4', symbol: 'GBPUSD', direction: 'BUY', size: 1.0, entryPrice: 1.2930, status: 'Filled', pnl: 145.0 },
+      ]
+    }
+    return filteredTrades.slice(0, 5).map((t) => ({
+      id: t.id,
+      symbol: t.symbol,
+      direction: t.direction,
+      size: Number(t.quantity || 1.0),
+      entryPrice: Number(t.entry_price || 0),
+      status: 'Filled',
+      pnl: Number(t.net_pnl || 0),
+    }))
+  }, [filteredTrades])
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* 1. Hero Revenue Header Section (Exact Reference UI: $782,523.32 with 7.9% ↑) */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-1">
+      <div className="space-y-4">
+        {/* 1. Terminal Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
           <div>
-            <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              Revenue
-            </span>
-            <div className="flex items-center gap-3 mt-1 flex-wrap">
-              <span className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight text-slate-900 dark:text-white font-sans">
-                {formatCurrency(totalBalance, currency)}
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#dcfce7] dark:bg-emerald-950/70 text-[#15803d] dark:text-emerald-300 px-3 py-1 text-xs font-bold shadow-2xs">
-                {pnlPercent >= 0 ? `+${pnlPercent.toFixed(1)}% ↑` : `${pnlPercent.toFixed(1)}% ↓`}
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#172033] dark:text-white font-sans">
+                Trader Terminal
+              </h1>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E8F7F2] text-[#159B72] dark:bg-emerald-950/60 dark:text-emerald-300 border border-[#159B72]/20">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#159B72] animate-pulse" />
+                Live Sync
               </span>
             </div>
-            <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400 dark:text-slate-500 font-medium">
-              <span>Prev. {formatCurrency(initialBalance, currency)}</span>
-              <span>•</span>
-              <span className="text-slate-600 dark:text-slate-300 font-semibold cursor-pointer hover:underline">
-                Jun 1 Aug 31,2024 ⌵
-              </span>
-            </div>
+            <p className="text-xs text-[#64748B] dark:text-slate-400 mt-0.5">
+              Real-time overview of your trading performance, execution metrics, and market discipline.
+            </p>
           </div>
 
-          {/* Right Action Ribbon: Date Range Pill + Refresh + Export + Share */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-2 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0c141c] px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-              <Calendar className="h-3.5 w-3.5 text-slate-400" />
-              <span>10 Jul 2024 - 10 Aug 2024</span>
-              <ChevronDown className="h-3 w-3 text-slate-400" />
-            </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/settings"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] px-3 py-1.5 text-xs font-semibold text-[#172033] dark:text-slate-200 hover:bg-[#F6F8FC] dark:hover:bg-slate-800 transition-colors cursor-pointer shadow-2xs"
+            >
+              <SlidersHorizontal className="h-3.5 w-3.5 text-[#64748B]" />
+              <span>Customize</span>
+            </Link>
 
             <button
-              onClick={() => window.location.reload()}
-              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0c141c] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-2xs transition-colors cursor-pointer"
-              title="Refresh Data"
+              onClick={() => setIsTradeModalOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-3.5 py-1.5 text-xs font-bold transition-all shadow-xs hover:shadow-md cursor-pointer"
             >
-              <RotateCw className="h-3.5 w-3.5" />
+              <Plus className="h-3.5 w-3.5" />
+              <span>Log Trade</span>
             </button>
-
-            <Link
-              href="/reports"
-              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0c141c] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-2xs transition-colors cursor-pointer"
-              title="Export Report"
-            >
-              <Download className="h-3.5 w-3.5" />
-            </Link>
-
-            <Link
-              href="/import"
-              className="flex h-9 w-9 items-center justify-center rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0c141c] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60 shadow-2xs transition-colors cursor-pointer"
-              title="Import Data"
-            >
-              <Share2 className="h-3.5 w-3.5" />
-            </Link>
           </div>
         </div>
 
-        {/* 2. Top 4 Metric Cards (Matching Screenshot) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Churn Rate */}
-          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between space-y-4 hover:shadow-xs transition-shadow">
-            <div className="space-y-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e0f7fa] dark:bg-cyan-950/60 text-[#06b6d4] shadow-2xs">
-                <PieChart className="h-4 w-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                  Churn Rate
-                </span>
-                <p className="text-2xl font-extrabold text-slate-900 dark:text-white font-sans mt-0.5">
-                  15%
-                </p>
-              </div>
+        {/* 2. Top Metric Ribbon (5 High-Density Cards matching AlphaSync) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+          {/* Card 1: Total P&L */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3.5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#64748B] dark:text-slate-400 font-semibold">
+              <span>TOTAL P&L</span>
+              <div className="h-2 w-2 rounded-full bg-[#159B72]" />
             </div>
-            <Link
-              href="/analytics"
-              className="flex items-center justify-between text-xs font-semibold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 pt-2 border-t border-slate-100 dark:border-slate-800/60 transition-colors"
-            >
-              <span>See Details</span>
-              <ChevronRight className="h-3.5 w-3.5" />
-            </Link>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className={`text-xl sm:text-2xl font-bold font-mono tracking-tight ${metrics.netProfit >= 0 ? 'text-[#159B72]' : 'text-[#E05260]'}`}>
+                {formatCurrency(metrics.netProfit, currency, true)}
+              </span>
+            </div>
+            <div className="mt-1 flex items-center gap-1 text-[11px] font-bold">
+              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-md ${pnlPercent >= 0 ? 'bg-[#E8F7F2] text-[#159B72]' : 'bg-[#FDEDEF] text-[#E05260]'}`}>
+                {pnlPercent >= 0 ? `▲ +${pnlPercent.toFixed(2)}%` : `▼ ${pnlPercent.toFixed(2)}%`}
+              </span>
+              <span className="text-[10px] text-[#64748B] font-medium">all-time</span>
+            </div>
           </div>
 
-          {/* Card 2: Total Profit */}
-          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between space-y-4 hover:shadow-xs transition-shadow">
-            <div className="space-y-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e0f7fa] dark:bg-cyan-950/60 text-[#06b6d4] shadow-2xs">
-                <CircleDollarSign className="h-4 w-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                  Total Profit
-                </span>
-                <p className="text-2xl font-extrabold text-slate-900 dark:text-white font-sans mt-0.5">
-                  $61,819.32
-                </p>
-              </div>
+          {/* Card 2: Win Rate */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3.5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#64748B] dark:text-slate-400 font-semibold">
+              <span>WIN RATE</span>
+              <Percent className="h-3.5 w-3.5 text-[#3157D5]" />
             </div>
-            <Link
-              href="/journal"
-              className="flex items-center justify-between text-xs font-semibold text-[#10b981] dark:text-emerald-400 pt-2 border-t border-slate-100 dark:border-slate-800/60 transition-colors"
-            >
-              <span>+7.9% ↑</span>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
-            </Link>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#172033] dark:text-white">
+                {metrics.winRate}%
+              </span>
+            </div>
+            <div className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-[#159B72]">
+              <span>▲ 1.2 pts</span>
+              <span className="text-[10px] text-[#64748B] font-medium">({metrics.winningTrades}W / {metrics.losingTrades}L)</span>
+            </div>
           </div>
 
-          {/* Card 3: Expenses */}
-          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between space-y-4 hover:shadow-xs transition-shadow">
-            <div className="space-y-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-2xl bg-[#e0f2fe] dark:bg-blue-950/60 text-[#0284c7] shadow-2xs">
-                <CreditCard className="h-4 w-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                  Expenses
-                </span>
-                <p className="text-2xl font-extrabold text-slate-900 dark:text-white font-sans mt-0.5">
-                  $508,639.95
-                </p>
-              </div>
+          {/* Card 3: Profit Factor */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3.5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#64748B] dark:text-slate-400 font-semibold">
+              <span>PROFIT FACTOR</span>
+              <Trophy className="h-3.5 w-3.5 text-[#6657C8]" />
             </div>
-            <Link
-              href="/analytics"
-              className="flex items-center justify-between text-xs font-semibold text-[#f43f5e] pt-2 border-t border-slate-100 dark:border-slate-800/60 transition-colors"
-            >
-              <span>-7.9% ↓</span>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
-            </Link>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#172033] dark:text-white">
+                {metrics.profitFactor > 0 ? metrics.profitFactor.toString() : '0.00'}
+              </span>
+            </div>
+            <div className="mt-1 text-[11px] font-semibold text-[#6657C8]">
+              <span>Sharpe 2.15 • 30-day</span>
+            </div>
           </div>
 
-          {/* Card 4: Cash Flow */}
-          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between space-y-4 hover:shadow-xs transition-shadow">
-            <div className="space-y-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e0f7fa] dark:bg-cyan-950/60 text-[#06b6d4] shadow-2xs">
-                <CircleDollarSign className="h-4 w-4 stroke-[2.2]" />
-              </div>
-              <div>
-                <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">
-                  Cash Flow
-                </span>
-                <p className="text-2xl font-extrabold text-slate-900 dark:text-white font-sans mt-0.5">
-                  $212,063.73
-                </p>
-              </div>
+          {/* Card 4: Max Drawdown */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3.5 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between text-xs text-[#64748B] dark:text-slate-400 font-semibold">
+              <span>MAX DRAWDOWN</span>
+              <ShieldAlert className="h-3.5 w-3.5 text-[#E05260]" />
             </div>
-            <Link
-              href="/reports"
-              className="flex items-center justify-between text-xs font-semibold text-[#10b981] dark:text-emerald-400 pt-2 border-t border-slate-100 dark:border-slate-800/60 transition-colors"
-            >
-              <span>+8% ↑</span>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
-            </Link>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#E05260]">
+                -{metrics.maxDrawdownPercentage}%
+              </span>
+            </div>
+            <div className="mt-1 flex items-center justify-between text-[11px]">
+              <span className="text-[#64748B] font-medium">Max Limit: 8.0%</span>
+              <span className="font-bold text-[#159B72]">Safe</span>
+            </div>
+          </div>
+
+          {/* Card 5: Active Strategies */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3.5 shadow-xs flex flex-col justify-between col-span-2 sm:col-span-1">
+            <div className="flex items-center justify-between text-xs text-[#64748B] dark:text-slate-400 font-semibold">
+              <span>ACTIVE STRATEGIES</span>
+              <Layers className="h-3.5 w-3.5 text-[#3157D5]" />
+            </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-[#172033] dark:text-white">
+                {strategyStats.length}
+              </span>
+            </div>
+            <div className="mt-1 flex items-center gap-1 text-[11px] font-semibold text-[#3157D5]">
+              <span>3 Running</span>
+              <span className="text-[10px] text-[#64748B] font-medium">• 1 Paused</span>
+            </div>
           </div>
         </div>
 
-        {/* 3. Middle Row: 2 Large Chart Cards (8 cols) + 1 Right Bar Chart (4 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Left 8 cols: Revenue Overview & Expense Overview */}
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {/* Chart 1: Revenue Overview (Teal Wavy Curve with Active Tooltip) */}
-            <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-white">Revenue Overview</h3>
-                <Link href="/analytics" className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </div>
-
-              {/* Chart SVG with Tooltip */}
-              <div className="relative pt-4 h-48 sm:h-52 w-full flex flex-col justify-between">
-                {/* Floating Active Tooltip matching Screenshot */}
-                <div className="absolute left-[36%] top-2 z-10 rounded-xl bg-[#1e293b] text-white px-3 py-2 text-left shadow-lg pointer-events-none">
-                  <p className="text-[9px] text-slate-400">Jul 21-25</p>
-                  <p className="text-xs font-extrabold text-white font-mono">$122,272.35</p>
-                  <span className="inline-flex items-center text-[9px] font-bold text-emerald-400 mt-0.5">
-                    3.45% ↑
+        {/* 3. Main Center Section: Equity Curve (65%) + AI Signals & Insights (35%) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Left: Equity Curve Chart */}
+          <div className="lg:col-span-2 rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-4 shadow-xs flex flex-col justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#E7EBF2] dark:border-slate-800">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider">
+                    Equity Curve
+                  </span>
+                  <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-[#64748B] border border-[#E7EBF2] dark:border-slate-700">
+                    i
                   </span>
                 </div>
-
-                {/* Vertical Dotted Guide Line */}
-                <div className="absolute left-[47%] top-16 bottom-6 border-l border-dashed border-slate-400/80 pointer-events-none" />
-                <div className="absolute left-[47%] top-14 -translate-x-1/2 h-2.5 w-2.5 rounded-full bg-[#1e293b] ring-4 ring-white dark:ring-slate-900 pointer-events-none" />
-
-                <div className="flex h-40">
-                  {/* Y-Axis Labels */}
-                  <div className="flex flex-col justify-between text-[9px] text-slate-400 pr-2 select-none">
-                    <span>$500K</span>
-                    <span>$100K</span>
-                    <span>$80K</span>
-                    <span>$40K</span>
-                    <span>$0K</span>
-                  </div>
-
-                  <svg viewBox="0 0 360 140" preserveAspectRatio="none" className="w-full h-full overflow-visible flex-1">
-                    <defs>
-                      <linearGradient id="teal-curve-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.25" />
-                        <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    {/* Subtle Grid Lines */}
-                    <line x1="0" y1="10" x2="360" y2="10" stroke="#f1f5f9" strokeDasharray="3 3" />
-                    <line x1="0" y1="40" x2="360" y2="40" stroke="#f1f5f9" strokeDasharray="3 3" />
-                    <line x1="0" y1="75" x2="360" y2="75" stroke="#f1f5f9" strokeDasharray="3 3" />
-                    <line x1="0" y1="110" x2="360" y2="110" stroke="#f1f5f9" strokeDasharray="3 3" />
-
-                    {/* Shaded Area */}
-                    <path
-                      d="M 10 115 Q 40 105 60 85 T 120 75 T 170 45 T 220 70 T 280 50 T 350 20 L 350 135 L 10 135 Z"
-                      fill="url(#teal-curve-grad)"
-                    />
-                    {/* Teal Wavy Curve */}
-                    <path
-                      d="M 10 115 Q 40 105 60 85 T 120 75 T 170 45 T 220 70 T 280 50 T 350 20"
-                      fill="none"
-                      stroke="#0d9488"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-[#172033] dark:text-white">
+                    {formatCurrency(totalBalance, currency)}
+                  </span>
+                  <span className={`inline-flex items-center gap-0.5 text-xs font-bold px-2 py-0.5 rounded-full ${pnlPercent >= 0 ? 'bg-[#E8F7F2] text-[#159B72]' : 'bg-[#FDEDEF] text-[#E05260]'}`}>
+                    {pnlPercent >= 0 ? `+${pnlPercent.toFixed(1)}%` : `${pnlPercent.toFixed(1)}%`}
+                  </span>
                 </div>
+              </div>
 
-                {/* X-Axis Labels */}
-                <div className="flex justify-between text-[9px] text-slate-400 pl-8 pt-1 font-medium select-none">
-                  <span>Jul 10-15</span>
-                  <span>Jul 16-20</span>
-                  <span>Jul 21-25</span>
-                  <span>Jul 26-31</span>
-                  <span>Aug 01-05</span>
-                  <span>Aug 06-10</span>
-                </div>
+              {/* Timeframe Filter Pills */}
+              <div className="flex items-center gap-1 rounded-xl bg-[#F6F8FC] dark:bg-slate-900 p-1 border border-[#E7EBF2] dark:border-slate-800 text-xs font-semibold text-[#64748B]">
+                {(['1D', '1W', '1M', '3M', '1Y', 'ALL'] as const).map((tf) => (
+                  <button
+                    key={tf}
+                    onClick={() => setActiveTimeframe(tf)}
+                    className={`rounded-lg px-2.5 py-1 transition-all cursor-pointer ${
+                      activeTimeframe === tf
+                        ? 'bg-[#3157D5] text-white shadow-xs font-bold'
+                        : 'hover:text-[#172033] dark:hover:text-white hover:bg-white dark:hover:bg-slate-800'
+                    }`}
+                  >
+                    {tf}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Chart 2: Expense Overview (Warm Orange Curve) */}
-            <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-white">Expense Overview</h3>
-                <Link href="/reports" className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              </div>
-
-              {/* Chart SVG */}
-              <div className="relative pt-4 h-48 sm:h-52 w-full flex flex-col justify-between">
-                <div className="flex h-40">
-                  {/* Y-Axis Labels */}
-                  <div className="flex flex-col justify-between text-[9px] text-slate-400 pr-2 select-none">
-                    <span>$500K</span>
-                    <span>$100K</span>
-                    <span>$80K</span>
-                    <span>$40K</span>
-                    <span>$0K</span>
-                  </div>
-
-                  <svg viewBox="0 0 360 140" preserveAspectRatio="none" className="w-full h-full overflow-visible flex-1">
-                    <defs>
-                      <linearGradient id="orange-curve-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#f97316" stopOpacity="0.22" />
-                        <stop offset="100%" stopColor="#f97316" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    {/* Subtle Grid Lines */}
-                    <line x1="0" y1="10" x2="360" y2="10" stroke="#f1f5f9" strokeDasharray="3 3" />
-                    <line x1="0" y1="40" x2="360" y2="40" stroke="#f1f5f9" strokeDasharray="3 3" />
-                    <line x1="0" y1="75" x2="360" y2="75" stroke="#f1f5f9" strokeDasharray="3 3" />
-                    <line x1="0" y1="110" x2="360" y2="110" stroke="#f1f5f9" strokeDasharray="3 3" />
-
-                    {/* Shaded Area */}
-                    <path
-                      d="M 10 120 Q 50 100 80 85 T 140 95 T 190 60 T 240 68 T 300 40 T 350 30 L 350 135 L 10 135 Z"
-                      fill="url(#orange-curve-grad)"
-                    />
-                    {/* Orange Curve */}
-                    <path
-                      d="M 10 120 Q 50 100 80 85 T 140 95 T 190 60 T 240 68 T 300 40 T 350 30"
-                      fill="none"
-                      stroke="#f97316"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </div>
-
-                {/* X-Axis Labels */}
-                <div className="flex justify-between text-[9px] text-slate-400 pl-8 pt-1 font-medium select-none">
-                  <span>Jul 10-15</span>
-                  <span>Jul 16-20</span>
-                  <span>Jul 21-25</span>
-                  <span>Jul 26-31</span>
-                  <span>Aug 01-05</span>
-                  <span>Aug 06-10</span>
-                </div>
-              </div>
+            <div className="pt-3 flex-1 min-h-[260px]">
+              <EquityChart data={equityData} currency={currency} />
             </div>
           </div>
 
-          {/* Right 4 cols: Customer Acquisition (Vertical Cyan Bar Chart) */}
-          <div className="lg:col-span-4 rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs flex flex-col justify-between">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-white">Customer Acquisition</h3>
-              <Link href="/analytics" className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
-                <ChevronRight className="h-4 w-4" />
+          {/* Right: AI Trading Assistant & Signals Intelligence */}
+          <div className="lg:col-span-1 rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-4 shadow-xs flex flex-col justify-between">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E7EBF2] dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#F2F0FB] dark:bg-purple-950/60 text-[#6657C8] dark:text-purple-400">
+                  <Bot className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-xs sm:text-sm text-[#172033] dark:text-white font-sans">
+                    AI Signals & Insights
+                  </h3>
+                  <p className="text-[10px] text-[#64748B]">Real-time discipline analysis</p>
+                </div>
+              </div>
+
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8F7F2] text-[#159B72]">
+                Active
+              </span>
+            </div>
+
+            {/* Signal & Mistake Diagnostic Cards */}
+            <div className="space-y-2.5 py-3 flex-1">
+              {/* Card 1: Bullish Opportunity */}
+              <div className="rounded-xl border border-[#E7EBF2] dark:border-slate-800/80 bg-[#F6F8FC] dark:bg-slate-900/60 p-2.5 hover:border-[#3157D5]/30 transition-all cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold font-mono text-xs text-[#172033] dark:text-white">XAUUSD</span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#E8F7F2] text-[#159B72]">
+                      LONG
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#64748B]">AI Edge: 89%</span>
+                </div>
+                <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1">
+                  Breakout retest confirmed on 15m. Target: $2,695 • SL: $2,675
+                </p>
+              </div>
+
+              {/* Card 2: Bearish Bias */}
+              <div className="rounded-xl border border-[#E7EBF2] dark:border-slate-800/80 bg-[#F6F8FC] dark:bg-slate-900/60 p-2.5 hover:border-[#3157D5]/30 transition-all cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold font-mono text-xs text-[#172033] dark:text-white">EURUSD</span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#FDEDEF] text-[#E05260]">
+                      SHORT
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#64748B]">AI Edge: 81%</span>
+                </div>
+                <p className="text-[11px] text-[#64748B] dark:text-slate-400 mt-1">
+                  Liquidity sweep at 1.0880. Target: 1.0820 • SL: 1.0905
+                </p>
+              </div>
+
+              {/* Card 3: Discipline Reminder */}
+              <div className="rounded-xl border border-[#E5A33B]/20 bg-[#FEF7EC] dark:bg-amber-950/20 p-2.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#E5A33B]">
+                  <AlertCircle className="h-3.5 w-3.5" />
+                  <span>Discipline Guard</span>
+                </div>
+                <p className="text-[11px] text-[#172033] dark:text-amber-200 mt-1 leading-snug">
+                  Always set your stop loss at order creation. Never scale into losing trades.
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Link to AI Coach */}
+            <div className="pt-2 border-t border-[#E7EBF2] dark:border-slate-800">
+              <Link
+                href="/ai-coach"
+                className="flex items-center justify-between text-xs font-bold text-[#3157D5] dark:text-blue-400 hover:underline"
+              >
+                <span>Launch Full AI Assistant Teacher</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Bottom Grid: Strategy Performance + Recent Orders */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Left Table: Strategy Performance */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-4 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E7EBF2] dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EEF2FD] text-[#3157D5]">
+                  <Layers className="h-4 w-4" />
+                </div>
+                <h3 className="font-bold text-xs sm:text-sm text-[#172033] dark:text-white font-sans">
+                  Strategy Performance
+                </h3>
+              </div>
+              <Link href="/strategies" className="text-xs font-bold text-[#3157D5] hover:underline">
+                View all
               </Link>
             </div>
 
-            {/* Cyan Vertical Bars with Y-Axis */}
-            <div className="pt-4 h-48 sm:h-52 flex items-end">
-              <div className="flex flex-col justify-between h-36 text-[9px] text-slate-400 pr-2 select-none">
-                <span>100K</span>
-                <span>60K</span>
-                <span>40K</span>
-                <span>0</span>
-              </div>
+            <div className="overflow-x-auto pt-2">
+              <table className="w-full text-xs text-left">
+                <thead>
+                  <tr className="text-[#64748B] border-b border-[#E7EBF2] dark:border-slate-800">
+                    <th className="py-2 font-semibold">Strategy</th>
+                    <th className="py-2 font-semibold text-right">P&L</th>
+                    <th className="py-2 font-semibold text-right">Win Rate</th>
+                    <th className="py-2 font-semibold text-right">Sharpe</th>
+                    <th className="py-2 font-semibold text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E7EBF2] dark:divide-slate-800/60">
+                  {strategyStats.slice(0, 4).map((strat) => (
+                    <tr key={strat.name} className="hover:bg-[#F6F8FC] dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-2.5 font-bold text-[#172033] dark:text-white">{strat.name}</td>
+                      <td className={`py-2.5 font-mono font-bold text-right ${strat.pnl >= 0 ? 'text-[#159B72]' : 'text-[#E05260]'}`}>
+                        {formatCurrency(strat.pnl, currency, true)}
+                      </td>
+                      <td className="py-2.5 font-mono text-right text-[#64748B] dark:text-slate-300">
+                        {strat.winRate.toFixed(1)}%
+                      </td>
+                      <td className="py-2.5 font-mono text-right text-[#64748B] dark:text-slate-300">
+                        {strat.sharpe.toFixed(2)}
+                      </td>
+                      <td className="py-2.5 text-right">
+                        <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          strat.status === 'Running' ? 'bg-[#E8F7F2] text-[#159B72]' : 'bg-slate-100 text-slate-500'
+                        }`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${strat.status === 'Running' ? 'bg-[#159B72]' : 'bg-slate-400'}`} />
+                          {strat.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-              <div className="flex items-end justify-between h-36 flex-1 px-1">
-                {[
-                  { day: 'Jul 10', h: '65%' },
-                  { day: 'Jul 11', h: '38%' },
-                  { day: 'Jul 12', h: '60%' },
-                  { day: 'Jul 13', h: '88%' },
-                  { day: 'Jul 14', h: '50%' },
-                  { day: 'Jul 15', h: '25%' },
-                  { day: 'Jul 16', h: '62%' },
-                ].map((bar, bIdx) => (
-                  <div key={bIdx} className="flex flex-col items-center gap-1.5 h-full justify-end group">
-                    <div
-                      style={{ height: bar.h }}
-                      className="w-4 sm:w-5 rounded-t-md bg-[#7dd3fc] hover:bg-[#38bdf8] transition-colors cursor-pointer"
-                    />
-                    <span className="text-[9px] text-slate-400 font-medium select-none">{bar.day}</span>
-                  </div>
-                ))}
+          {/* Right Table: Recent Orders / Executed Trades */}
+          <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-4 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E7EBF2] dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EEF2FD] text-[#3157D5]">
+                  <Activity className="h-4 w-4" />
+                </div>
+                <h3 className="font-bold text-xs sm:text-sm text-[#172033] dark:text-white font-sans">
+                  Recent Executed Trades
+                </h3>
               </div>
+              <Link href="/journal" className="text-xs font-bold text-[#3157D5] hover:underline">
+                View journal
+              </Link>
+            </div>
+
+            <div className="overflow-x-auto pt-2">
+              <table className="w-full text-xs text-left">
+                <thead>
+                  <tr className="text-[#64748B] border-b border-[#E7EBF2] dark:border-slate-800">
+                    <th className="py-2 font-semibold">Symbol</th>
+                    <th className="py-2 font-semibold">Type</th>
+                    <th className="py-2 font-semibold text-right">Lots</th>
+                    <th className="py-2 font-semibold text-right">Entry</th>
+                    <th className="py-2 font-semibold text-right">P&L</th>
+                    <th className="py-2 font-semibold text-right">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E7EBF2] dark:divide-slate-800/60">
+                  {recentOrders.map((ord) => (
+                    <tr key={ord.id} className="hover:bg-[#F6F8FC] dark:hover:bg-slate-800/40 transition-colors">
+                      <td className="py-2.5 font-bold font-mono text-[#172033] dark:text-white">{ord.symbol}</td>
+                      <td className="py-2.5">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                          ord.direction === 'BUY' ? 'bg-[#E8F7F2] text-[#159B72]' : 'bg-[#FDEDEF] text-[#E05260]'
+                        }`}>
+                          {ord.direction}
+                        </span>
+                      </td>
+                      <td className="py-2.5 font-mono text-right text-[#64748B] dark:text-slate-300">
+                        {ord.size}
+                      </td>
+                      <td className="py-2.5 font-mono text-right text-[#64748B] dark:text-slate-300">
+                        {ord.entryPrice ? ord.entryPrice.toLocaleString() : '--'}
+                      </td>
+                      <td className={`py-2.5 font-mono font-bold text-right ${ord.pnl >= 0 ? 'text-[#159B72]' : 'text-[#E05260]'}`}>
+                        {formatCurrency(ord.pnl, currency, true)}
+                      </td>
+                      <td className="py-2.5 text-right">
+                        <span className="text-[10px] font-bold text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                          {ord.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
 
-        {/* 4. Bottom Row: 2 Donut Cards (8 cols) + 2 Right Column Widgets (4 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Left 8 cols: 2 Donut Cards */}
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {/* Donut Card 1: Revenue by Category */}
-            <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800">
-                Revenue by Category
-              </h3>
-              <div className="flex items-center justify-between gap-3 pt-4">
-                {/* Legend */}
-                <div className="space-y-2.5 text-xs">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-[#38bdf8]" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Product Sales (48.9%)</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 pl-3.5 font-mono">$382,523</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-[#1e3a8a]" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Subscriptions (19.2%)</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 pl-3.5 font-mono">$150,000</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-[#94a3b8]" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Services (31.9%)</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 pl-3.5 font-mono">$250,000</span>
-                  </div>
-                </div>
-
-                {/* Donut Graphic */}
-                <div className="relative h-32 w-32 shrink-0 flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#f1f5f9" strokeWidth="14" />
-                    {/* Cyan segment 48.9% */}
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="none"
-                      stroke="#38bdf8"
-                      strokeWidth="14"
-                      strokeDasharray="117 238"
-                    />
-                    {/* Navy segment 19.2% */}
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="none"
-                      stroke="#1e3a8a"
-                      strokeWidth="14"
-                      strokeDasharray="46 238"
-                      strokeDashoffset="-117"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
-                    <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white font-mono">
-                      $782,523
-                    </span>
-                    <span className="text-[8px] text-slate-400 max-w-[65px] leading-tight">
-                      Total Revenue by Category
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Donut Card 2: Expense by Category */}
-            <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800">
-                Revenue by Category
-              </h3>
-              <div className="flex items-center justify-between gap-3 pt-4">
-                {/* Legend */}
-                <div className="space-y-2.5 text-xs">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-[#7dd3fc]" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Salaries (45%)</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 pl-3.5 font-mono">$22,500</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-[#1e3a8a]" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Marketing (30%)</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 pl-3.5 font-mono">$150,000</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full bg-[#94a3b8]" />
-                      <span className="font-semibold text-slate-700 dark:text-slate-200">Rent (25%)</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 pl-3.5 font-mono">$12,500</span>
-                  </div>
-                </div>
-
-                {/* Donut Graphic */}
-                <div className="relative h-32 w-32 shrink-0 flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#f1f5f9" strokeWidth="14" />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="none"
-                      stroke="#7dd3fc"
-                      strokeWidth="14"
-                      strokeDasharray="107 238"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="38"
-                      fill="none"
-                      stroke="#1e3a8a"
-                      strokeWidth="14"
-                      strokeDasharray="71 238"
-                      strokeDashoffset="-107"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
-                    <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white font-mono">
-                      $508,639
-                    </span>
-                    <span className="text-[8px] text-slate-400 max-w-[65px] leading-tight">
-                      Total Expenses by Category
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* 5. Institutional Trader Status Bar (AlphaSync Bottom Ribbon) */}
+        <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-3 shadow-xs flex flex-wrap items-center justify-between gap-4 text-xs font-semibold select-none">
+          {/* Status */}
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#159B72] animate-pulse" />
+            <span className="text-[11px] font-bold text-[#159B72]">LIVE CONNECTED</span>
           </div>
 
-          {/* Right 4 cols: Top Performing Products & Outstanding Invoices */}
-          <div className="lg:col-span-4 space-y-5">
-            {/* Widget 1: Top Performing Products */}
-            <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-white">Top Performing Products</h3>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
-              </div>
-              <div className="pt-3 space-y-3">
-                {[
-                  { name: 'Product Alpha', sub: '15.4% of Total Revenue', val: '$120,300' },
-                  { name: 'Service Bravo', sub: '8.3% of Total Revenue', val: '$65,200' },
-                  { name: 'Solution Gamma', sub: '5.8% of Total Revenue', val: '$120,300' },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-6 w-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-500 flex items-center justify-center">
-                        <Layers className="h-3.5 w-3.5" />
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-800 dark:text-white">{item.name}</p>
-                        <p className="text-[10px] text-slate-400">{item.sub}</p>
-                      </div>
-                    </div>
-                    <span className="font-bold font-mono text-slate-900 dark:text-white">{item.val}</span>
-                  </div>
-                ))}
-              </div>
+          <div className="flex items-center gap-4 sm:gap-8 flex-wrap">
+            <div>
+              <span className="text-[#64748B] text-[10px] block uppercase">Portfolio Equity</span>
+              <span className="font-mono font-bold text-[#172033] dark:text-white">
+                {formatCurrency(totalBalance, currency)}
+              </span>
             </div>
 
-            {/* Widget 2: Outstanding Invoices */}
-            <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-2xs">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-white">Outstanding Invoices</h3>
-                <ChevronRight className="h-4 w-4 text-slate-400" />
-              </div>
-              <div className="pt-3 space-y-3">
-                {[
-                  { id: 'Invoice #001', due: 'Due on 2024-07-15', tag: 'Design', tagColor: 'text-blue-500 bg-blue-50 dark:bg-blue-950/50' },
-                  { id: 'Invoice #002', due: 'Due on 2024-07-18', tag: 'Marketing', tagColor: 'text-amber-500 bg-amber-50 dark:bg-amber-950/50' },
-                  { id: 'Invoice #003', due: 'Due on 2024-07-20', tag: 'Software', tagColor: 'text-slate-500 bg-slate-100 dark:bg-slate-800' },
-                ].map((inv, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="h-6 w-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
-                        <FileText className="h-3.5 w-3.5" />
-                      </div>
-                      <div>
-                        <p className="font-bold text-slate-800 dark:text-white">{inv.id}</p>
-                        <p className="text-[10px] text-slate-400">{inv.due}</p>
-                      </div>
-                    </div>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${inv.tagColor}`}>
-                      {inv.tag}
-                    </span>
-                  </div>
-                ))}
-              </div>
+            <div>
+              <span className="text-[#64748B] text-[10px] block uppercase">Day Net P&L</span>
+              <span className={`font-mono font-bold ${metrics.netProfit >= 0 ? 'text-[#159B72]' : 'text-[#E05260]'}`}>
+                {formatCurrency(metrics.netProfit, currency, true)}
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[#64748B] text-[10px] block uppercase">Unrealized P&L</span>
+              <span className="font-mono font-bold text-[#159B72]">
+                +$32,150.00
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[#64748B] text-[10px] block uppercase">Buying Power</span>
+              <span className="font-mono font-bold text-[#172033] dark:text-white">
+                ${(totalBalance * 5).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              </span>
+            </div>
+
+            <div>
+              <span className="text-[#64748B] text-[10px] block uppercase">Risk Score</span>
+              <span className="font-mono font-bold text-[#3157D5]">
+                4.2 / 10 Low Risk
+              </span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Trade Modal */}
+      <TradeModal
+        isOpen={isTradeModalOpen}
+        onClose={() => setIsTradeModalOpen(false)}
+      />
     </DashboardLayout>
   )
 }

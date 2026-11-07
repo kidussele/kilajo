@@ -14,15 +14,15 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Default to 'dark' mode as requested
-  const [theme, setThemeState] = useState<Theme>('dark')
+  // Light-first interface default as specified by KILAJO design system
+  const [theme, setThemeState] = useState<Theme>('light')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
     const saved = localStorage.getItem('kilajo-theme') as Theme | null
-    // If user explicitly saved 'light', use 'light', otherwise default to 'dark'
-    const activeTheme = saved === 'light' ? 'light' : 'dark'
+    // If user explicitly saved 'dark', use 'dark', otherwise default to 'light'
+    const activeTheme = saved === 'dark' ? 'dark' : 'light'
     setThemeState(activeTheme)
     if (activeTheme === 'dark') {
       document.documentElement.classList.add('dark')

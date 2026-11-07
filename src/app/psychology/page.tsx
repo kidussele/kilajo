@@ -81,11 +81,10 @@ export default function PsychologyPage() {
           middleContent={
             <button
               onClick={() => setIsLogModalOpen(true)}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <BarChart2 className="h-4 w-4" />
               <span>Log Daily Reflection</span>
-              <span className="font-bold">&gt;</span>
             </button>
           }
         />
@@ -98,7 +97,7 @@ export default function PsychologyPage() {
             trend="▲ +0.2 vs last week"
             trendPositive={true}
             icon={Brain}
-            color="emerald"
+            color="brand"
             infoTooltip
           />
           <MetricCard
@@ -107,7 +106,7 @@ export default function PsychologyPage() {
             trend="▲ +0.1 vs last week"
             trendPositive={true}
             icon={Activity}
-            color="amber"
+            color="profit"
             infoTooltip
           />
           <MetricCard
@@ -116,7 +115,7 @@ export default function PsychologyPage() {
             trend="▲ +0.3h vs last week"
             trendPositive={true}
             icon={Hourglass}
-            color="blue"
+            color="analytics"
             infoTooltip
           />
           <MetricCard
@@ -124,7 +123,7 @@ export default function PsychologyPage() {
             value={psychologyLogs.length > 0 ? psychologyLogs.length.toString() : '12'}
             subtitle="This Month"
             icon={ClipboardCheck}
-            color="purple"
+            color="warning"
             infoTooltip
           />
         </div>

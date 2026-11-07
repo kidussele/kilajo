@@ -81,13 +81,13 @@ export default function AnalyticsPage() {
           title="Analytics Center"
           subtitle="Deep statistical edge analysis, risk distribution, and behavioral patterns"
           middleContent={
-            <div className="flex items-center gap-1.5 rounded-full bg-white/70 p-1 border border-slate-200/80 shadow-2xs">
+            <div className="flex items-center gap-1.5 rounded-full bg-white dark:bg-slate-900 p-1 border border-[#E7EBF2] dark:border-slate-800 shadow-2xs">
               <button
                 onClick={() => setActiveTab('performance')}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'performance'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
+                    ? 'bg-[#3157D5] text-white shadow-xs'
+                    : 'text-[#64748B] hover:text-[#172033] hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
                 }`}
               >
                 <BarChart3 className="h-3.5 w-3.5" />
@@ -97,8 +97,8 @@ export default function AnalyticsPage() {
                 onClick={() => setActiveTab('psychology')}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'psychology'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
+                    ? 'bg-[#3157D5] text-white shadow-xs'
+                    : 'text-[#64748B] hover:text-[#172033] hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
                 }`}
               >
                 <Brain className="h-3.5 w-3.5" />
@@ -108,8 +108,8 @@ export default function AnalyticsPage() {
                 onClick={() => setActiveTab('risk')}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'risk'
-                    ? 'bg-[#064e3b] text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/60'
+                    ? 'bg-[#3157D5] text-white shadow-xs'
+                    : 'text-[#64748B] hover:text-[#172033] hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
                 }`}
               >
                 <ShieldCheck className="h-3.5 w-3.5" />
@@ -120,14 +120,14 @@ export default function AnalyticsPage() {
           quote="Know your numbers, master your probability."
         />
 
-        {/* 2. 6 Metric Cards Matching Screenshot 3 */}
+        {/* 2. 6 Metric Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           <MetricCard
             title="Win Rate"
             value={`${metrics.winRate}%`}
             subtitle={`${metrics.winningTrades}W / ${metrics.losingTrades}L`}
             icon={Trophy}
-            color="emerald"
+            color="profit"
           />
 
           <MetricCard
@@ -135,7 +135,7 @@ export default function AnalyticsPage() {
             value={metrics.profitFactor > 0 ? metrics.profitFactor.toString() : '0'}
             subtitle={metrics.profitFactor >= 1.5 ? 'Institutional' : 'Developing'}
             icon={TrendingUp}
-            color="purple"
+            color="brand"
           />
 
           <MetricCard
@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
             value={formatCurrency(metrics.expectancy, currency, true)}
             subtitle="Per trade executed"
             icon={DollarSign}
-            color="teal"
+            color="analytics"
           />
 
           <MetricCard
@@ -151,7 +151,7 @@ export default function AnalyticsPage() {
             value={`-${formatCurrency(metrics.maxDrawdownAmount, currency)}`}
             subtitle={`${metrics.maxDrawdownPercentage}%`}
             icon={ShieldAlert}
-            color="rose"
+            color="loss"
           />
 
           <MetricCard
@@ -159,7 +159,7 @@ export default function AnalyticsPage() {
             value={metrics.averageLoss > 0 ? (metrics.averageWin / metrics.averageLoss).toFixed(2) : '--'}
             subtitle="Payoff ratio"
             icon={Scale}
-            color="blue"
+            color="brand"
           />
 
           <MetricCard
@@ -167,33 +167,35 @@ export default function AnalyticsPage() {
             value={`${metrics.totalTrades} Trades`}
             subtitle="Closed executions"
             icon={BarChart3}
-            color="purple"
+            color="analytics"
           />
         </div>
 
         {/* 3. Middle Section: Net Performance by Session & Trade Distribution (2/3 and 1/3) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {/* Left (2/3): Net Performance by Session */}
-          <div className="lg:col-span-2 rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] shadow-xs overflow-hidden flex flex-col justify-between transition-colors duration-200">
-            {/* Dark green header bar */}
-            <div className="flex items-center justify-between bg-[#064e3b] text-white px-5 py-3.5">
+          <div className="lg:col-span-2 rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] shadow-xs overflow-hidden flex flex-col justify-between transition-colors duration-200">
+            {/* Clean Header Bar */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#E7EBF2] dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <LineChart className="h-4 w-4 text-emerald-300 stroke-[2.2]" />
-                <h3 className="font-bold text-xs sm:text-sm font-sans tracking-tight">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#EEF2FD] text-[#3157D5]">
+                  <LineChart className="h-4 w-4 stroke-[2.2]" />
+                </div>
+                <h3 className="font-bold text-xs sm:text-sm text-[#172033] dark:text-white font-sans tracking-tight">
                   Net Performance by Session
                 </h3>
               </div>
 
               {/* Timeframe selector pills */}
-              <div className="flex items-center gap-1 rounded-lg bg-emerald-900/60 p-0.5 text-[10px] font-semibold text-emerald-200">
+              <div className="flex items-center gap-1 rounded-xl bg-[#F6F8FC] dark:bg-slate-900 p-1 border border-[#E7EBF2] dark:border-slate-800 text-[10px] font-semibold text-[#64748B]">
                 {['1D', '1W', '1M', '3M', '6M', '1Y', 'ALL'].map((tf) => (
                   <button
                     key={tf}
                     onClick={() => setActiveTimeframe(tf)}
                     className={`rounded-md px-2 py-0.5 transition-all cursor-pointer ${
                       activeTimeframe === tf
-                        ? 'bg-white text-[#064e3b] font-bold shadow-2xs'
-                        : 'hover:text-white hover:bg-emerald-800/40'
+                        ? 'bg-[#3157D5] text-white font-bold shadow-2xs'
+                        : 'hover:text-[#172033] dark:hover:text-white hover:bg-white dark:hover:bg-slate-800'
                     }`}
                   >
                     {tf}

@@ -99,18 +99,17 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => handleSaveProfile()}
-              className="inline-flex items-center gap-2 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-4 py-2 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <Save className="h-4 w-4" />
               <span>Save Preferences</span>
-              <span className="font-bold">&gt;</span>
             </button>
           }
         />
 
         {isSaved && (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-semibold text-emerald-800 flex items-center gap-2 shadow-2xs">
-            <CheckCircle className="h-4 w-4 text-emerald-600" />
+          <div className="rounded-2xl border border-[#159B72]/20 bg-[#E8F7F2] p-4 text-xs font-semibold text-[#159B72] flex items-center gap-2 shadow-2xs">
+            <CheckCircle className="h-4 w-4 text-[#159B72]" />
             <span>Settings saved successfully. All preferences applied.</span>
           </div>
         )}
@@ -122,7 +121,7 @@ export default function SettingsPage() {
             value={name}
             subtitle="Pro Trader Verified"
             icon={User}
-            color="emerald"
+            color="brand"
             infoTooltip
           />
           <MetricCard
@@ -130,7 +129,7 @@ export default function SettingsPage() {
             value={baseCurrency}
             subtitle="Universal ledger base"
             icon={Globe}
-            color="blue"
+            color="profit"
             infoTooltip
           />
           <MetricCard
@@ -138,7 +137,7 @@ export default function SettingsPage() {
             value="HMAC SHA-256"
             subtitle="Secret fail-closed active"
             icon={Key}
-            color="purple"
+            color="analytics"
             infoTooltip
           />
           <MetricCard
@@ -146,21 +145,21 @@ export default function SettingsPage() {
             value="Cloud Synced"
             subtitle="PostgreSQL & RLS Active"
             icon={Database}
-            color="amber"
+            color="warning"
             infoTooltip
           />
         </div>
 
         {/* 3. Settings Navigation Tabs Pill Bar */}
-        <div className="flex items-center gap-1.5 p-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs max-w-fit">
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white dark:bg-[#0D1424] border border-[#E7EBF2] dark:border-slate-800 shadow-xs max-w-fit flex-wrap">
           <button
             type="button"
             onClick={() => setActiveTab('profile')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'profile'
-                ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
+                ? 'bg-[#3157D5] text-white shadow-xs font-bold'
+                : 'text-[#64748B] hover:text-[#172033] dark:hover:text-white hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
             )}
           >
             <User className="h-3.5 w-3.5" />
@@ -170,10 +169,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('bridge')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'bridge'
-                ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
+                ? 'bg-[#3157D5] text-white shadow-xs font-bold'
+                : 'text-[#64748B] hover:text-[#172033] dark:hover:text-white hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
             )}
           >
             <Key className="h-3.5 w-3.5" />
@@ -183,10 +182,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('ai')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'ai'
-                ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
+                ? 'bg-[#3157D5] text-white shadow-xs font-bold'
+                : 'text-[#64748B] hover:text-[#172033] dark:hover:text-white hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
             )}
           >
             <Bot className="h-3.5 w-3.5" />
@@ -196,10 +195,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('data')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'data'
-                ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
+                ? 'bg-[#3157D5] text-white shadow-xs font-bold'
+                : 'text-[#64748B] hover:text-[#172033] dark:hover:text-white hover:bg-[#F6F8FC] dark:hover:bg-slate-800'
             )}
           >
             <Database className="h-3.5 w-3.5" />
@@ -209,10 +208,10 @@ export default function SettingsPage() {
             type="button"
             onClick={() => setActiveTab('danger')}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
+              'flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'danger'
-                ? 'bg-rose-600 text-white shadow-xs'
-                : 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                ? 'bg-[#E05260] text-white shadow-xs font-bold'
+                : 'text-[#E05260] hover:bg-[#FDEDEF] dark:hover:bg-rose-950/40'
             )}
           >
             <Trash2 className="h-3.5 w-3.5" />

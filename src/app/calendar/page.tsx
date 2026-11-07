@@ -147,40 +147,40 @@ export default function CalendarPage() {
           quote="Discipline today, Freedom tomorrow."
         />
 
-        {/* 2. 6 Metric Cards Matching Screenshot 4 */}
+        {/* 2. 6 Metric Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           <MetricCard
             title="Monthly Net P&L"
             value={formatCurrency(monthMetrics.netPnl, currency, true)}
-            subtitle="▲ +0.00% vs last month"
-            trend={monthMetrics.netPnl >= 0 ? '▲ +0.00%' : '▼ 0.00%'}
+            subtitle="▲ Net return this month"
+            trend={monthMetrics.netPnl >= 0 ? '▲ Profit' : '▼ Loss'}
             trendPositive={monthMetrics.netPnl >= 0}
             icon={TrendingUp}
-            color="purple"
+            color="profit"
           />
 
           <MetricCard
             title="Trading Days"
             value={monthMetrics.tradingDays.toString()}
-            subtitle="0% of 30 days"
+            subtitle="Days with closed trades"
             icon={CalendarDays}
-            color="emerald"
+            color="brand"
           />
 
           <MetricCard
             title="Day Win Rate"
             value={`${monthMetrics.winRate}%`}
-            subtitle="0W / 0L"
+            subtitle={`${monthMetrics.greenDays}G / ${monthMetrics.redDays}R`}
             icon={Percent}
-            color="amber"
+            color="analytics"
           />
 
           <MetricCard
             title="Best Day"
             value={formatCurrency(monthMetrics.bestDay, currency, true)}
-            subtitle="Highest session return"
+            subtitle="Highest daily return"
             icon={Trophy}
-            color="blue"
+            color="profit"
           />
 
           <MetricCard
@@ -188,55 +188,55 @@ export default function CalendarPage() {
             value={formatCurrency(monthMetrics.worstDay, currency, true)}
             subtitle="Largest daily drawdown"
             icon={Clock}
-            color="purple"
+            color="loss"
           />
 
           <MetricCard
             title="Consistency"
-            value="Normal"
-            subtitle="On track to build habit"
+            value="Disciplined"
+            subtitle="Execution consistency"
             icon={ShieldCheck}
-            color="emerald"
+            color="brand"
           />
         </div>
 
-        {/* 3. Main Calendar Card Matching Screenshot 4 */}
-        <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs overflow-hidden transition-colors duration-200">
+        {/* 3. Main Calendar Card */}
+        <div className="rounded-2xl border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-[#0D1424] p-5 shadow-xs overflow-hidden transition-colors duration-200">
           {/* Top Control Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
                 <button
                   onClick={prevMonth}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-slate-900 text-[#172033] dark:text-slate-300 hover:bg-[#F6F8FC] dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={nextMonth}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-[#E7EBF2] dark:border-slate-800 bg-white dark:bg-slate-900 text-[#172033] dark:text-slate-300 hover:bg-[#F6F8FC] dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white font-sans">
+              <h2 className="text-base font-bold text-[#172033] dark:text-white font-sans">
                 {monthName}
               </h2>
             </div>
 
             <div className="flex items-center gap-3">
               {/* Legend */}
-              <div className="flex items-center gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400">
+              <div className="flex items-center gap-3 text-xs font-semibold text-[#64748B] dark:text-slate-400">
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#159B72]" />
                   <span>Win</span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#E05260]" />
                   <span>Loss</span>
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#3157D5]" />
                   <span>Breakeven</span>
                 </span>
               </div>
@@ -244,7 +244,7 @@ export default function CalendarPage() {
               {/* View Details Button */}
               <button
                 onClick={() => router.push('/journal')}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-4 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#3157D5] hover:bg-[#2745AE] text-white px-3.5 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
               >
                 <BarChart3 className="h-3.5 w-3.5 stroke-[2.2]" />
                 <span>View Details →</span>
@@ -252,8 +252,8 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {/* Weekday Labels (Soft mint background with dark green font) */}
-          <div className="grid grid-cols-7 rounded-t-2xl bg-emerald-50/80 dark:bg-emerald-950/60 text-center text-xs font-bold text-[#064e3b] dark:text-emerald-300 py-2.5 border border-emerald-100/80 dark:border-emerald-800/50">
+          {/* Weekday Labels */}
+          <div className="grid grid-cols-7 rounded-t-xl bg-[#F6F8FC] dark:bg-slate-900 text-center text-xs font-bold text-[#172033] dark:text-slate-200 py-2.5 border border-[#E7EBF2] dark:border-slate-800">
             <span>SUN</span>
             <span>MON</span>
             <span>TUE</span>
@@ -264,10 +264,10 @@ export default function CalendarPage() {
           </div>
 
           {/* Days Grid */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-slate-100 dark:divide-slate-800 border-x border-b border-slate-100 dark:border-slate-800">
+          <div className="grid grid-cols-7 divide-x divide-y divide-[#E7EBF2] dark:divide-slate-800 border-x border-b border-[#E7EBF2] dark:border-slate-800">
             {calendarDays.map((item, idx) => {
               if (!item) {
-                return <div key={`empty-${idx}`} className="h-24 bg-slate-50/20 dark:bg-slate-900/20 p-2" />
+                return <div key={`empty-${idx}`} className="h-24 bg-[#F6F8FC]/40 dark:bg-slate-900/20 p-2" />
               }
 
               const dayData = dailyDataMap.get(item.dateStr)
@@ -280,16 +280,16 @@ export default function CalendarPage() {
                 <div
                   key={item.dateStr}
                   className={`h-24 p-2 flex flex-col justify-between transition-all cursor-pointer rounded-lg hover:shadow-2xs ${
-                    isFirstDay ? 'border-2 border-emerald-500 rounded-sm' : ''
+                    isFirstDay ? 'border-2 border-[#3157D5] rounded-sm' : ''
                   } ${
                     hasTrades
                       ? isPositive
-                        ? 'bg-emerald-50/60 dark:bg-emerald-950/50 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/50'
-                        : 'bg-rose-50/60 dark:bg-rose-950/50 hover:bg-rose-100/70 dark:hover:bg-rose-900/50'
-                      : 'hover:bg-slate-50/90 dark:hover:bg-slate-800/60'
+                        ? 'bg-[#E8F7F2]/60 dark:bg-emerald-950/40 hover:bg-[#E8F7F2]'
+                        : 'bg-[#FDEDEF]/60 dark:bg-rose-950/40 hover:bg-[#FDEDEF]'
+                      : 'hover:bg-[#F6F8FC] dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
+                  <span className="font-mono text-xs font-bold text-[#172033] dark:text-slate-200">
                     {item.day}
                   </span>
 
@@ -297,18 +297,18 @@ export default function CalendarPage() {
                     <div>
                       <div
                         className={`font-mono text-xs font-extrabold ${
-                          isPositive ? 'text-emerald-700 dark:text-emerald-400' : isNegative ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'
+                          isPositive ? 'text-[#159B72]' : isNegative ? 'text-[#E05260]' : 'text-[#172033] dark:text-slate-400'
                         }`}
                       >
                         {formatCurrency(dayData.netPnl, currency, true)}
                       </div>
-                      <div className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                      <div className="text-[10px] text-[#64748B] dark:text-slate-400 font-medium">
                         {dayData.count} {dayData.count === 1 ? 'trade' : 'trades'}
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1 text-[11px] text-slate-300 dark:text-slate-600 font-medium pb-1">
-                      <Calendar className="h-3 w-3 text-slate-300 dark:text-slate-600" />
+                    <div className="flex items-center gap-1 text-[11px] text-[#64748B]/50 dark:text-slate-600 font-medium pb-1">
+                      <Calendar className="h-3 w-3 text-[#64748B]/40 dark:text-slate-600" />
                       <span>No activity</span>
                     </div>
                   )}
