@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { PageHeroBanner } from '@/components/ui/page-hero-banner'
 import { MetricCard } from '@/components/dashboard/metric-card'
+import { AiDecoratedResponse } from '@/components/ai/ai-decorated-response'
 import { useTrading } from '@/context/trading-context'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
@@ -346,8 +347,8 @@ export default function AiCoachPage() {
                 <div
                   key={m.id}
                   className={cn(
-                    'flex gap-3 max-w-[90%]',
-                    m.role === 'user' ? 'ml-auto flex-row-reverse' : 'mr-auto'
+                    'flex gap-3 max-w-[95%] sm:max-w-[90%]',
+                    m.role === 'user' ? 'ml-auto flex-row-reverse' : 'mr-auto w-full'
                   )}
                 >
                   <div
@@ -355,24 +356,28 @@ export default function AiCoachPage() {
                       'flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-bold',
                       m.role === 'user'
                         ? 'bg-slate-800 text-white dark:bg-slate-700'
-                        : 'bg-emerald-600 text-white'
+                        : 'bg-gradient-to-tr from-[#064e3b] to-emerald-600 text-white shadow-xs'
                     )}
                   >
                     {m.role === 'user' ? 'ME' : <Bot className="h-4 w-4" />}
                   </div>
 
-                  <div className="space-y-1">
-                    <div
-                      className={cn(
-                        'rounded-2xl px-4 py-3 text-xs leading-relaxed',
-                        m.role === 'user'
-                          ? 'bg-[#064e3b] text-white rounded-tr-xs shadow-2xs'
-                          : 'bg-slate-50 dark:bg-slate-900/80 border border-slate-100 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-xs whitespace-pre-wrap'
-                      )}
-                    >
-                      {m.content}
-                    </div>
-                    <span className="text-[10px] text-slate-400 px-1">{m.timestamp}</span>
+                  <div className="space-y-1 flex-1 min-w-0">
+                    {m.role === 'user' ? (
+                      <div className="rounded-2xl px-4 py-3 text-xs leading-relaxed bg-[#064e3b] text-white rounded-tr-xs shadow-2xs inline-block max-w-full">
+                        {m.content}
+                      </div>
+                    ) : (
+                      <AiDecoratedResponse
+                        content={m.content}
+                        variant="chat"
+                        timestamp={m.timestamp}
+                        onAskFollowup={(q) => handleSendMessage(q)}
+                      />
+                    )}
+                    {m.role === 'user' && (
+                      <span className="text-[10px] text-slate-400 px-1 block text-right">{m.timestamp}</span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -446,8 +451,13 @@ export default function AiCoachPage() {
               </div>
 
               {auditResult ? (
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap max-h-[360px] overflow-y-auto">
-                  {auditResult}
+                <div className="max-h-[500px] overflow-y-auto scrollbar-thin">
+                  <AiDecoratedResponse
+                    content={auditResult}
+                    title="Deep Mistake Diagnostic Report"
+                    variant="card"
+                    onAskFollowup={(q) => handleSendMessage(q)}
+                  />
                 </div>
               ) : (
                 <div className="p-6 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 text-center space-y-3">
@@ -517,8 +527,13 @@ export default function AiCoachPage() {
                 </button>
 
                 {singleTradeResult && (
-                  <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-slate-900/80 border border-blue-100 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap max-h-[250px] overflow-y-auto">
-                    {singleTradeResult}
+                  <div className="max-h-[400px] overflow-y-auto scrollbar-thin">
+                    <AiDecoratedResponse
+                      content={singleTradeResult}
+                      title="Single Trade Execution Critic"
+                      variant="card"
+                      onAskFollowup={(q) => handleSendMessage(q)}
+                    />
                   </div>
                 )}
               </div>

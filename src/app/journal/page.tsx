@@ -10,6 +10,7 @@ import { formatCurrency, formatDateTime } from '@/lib/utils'
 import { TradeModal } from '@/components/trades/trade-modal'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
+import { AiDecoratedResponse } from '@/components/ai/ai-decorated-response'
 import { useRouter } from 'next/navigation'
 import {
   Search,
@@ -680,8 +681,12 @@ export default function JournalPage() {
               </div>
 
               {tradeAiAudit && (
-                <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-100 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap max-h-56 overflow-y-auto">
-                  {tradeAiAudit}
+                <div className="max-h-72 overflow-y-auto scrollbar-thin">
+                  <AiDecoratedResponse
+                    content={tradeAiAudit}
+                    title={`Trade Audit • ${tradeToView.symbol} (${tradeToView.direction})`}
+                    variant="card"
+                  />
                 </div>
               )}
             </div>
