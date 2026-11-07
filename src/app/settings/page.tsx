@@ -149,7 +149,7 @@ export default function SettingsPage() {
         </div>
 
         {/* 3. Settings Navigation Tabs Pill Bar */}
-        <div className="flex items-center gap-1.5 p-1 rounded-full bg-white border border-slate-200 shadow-xs max-w-fit">
+        <div className="flex items-center gap-1.5 p-1 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs max-w-fit">
           <button
             type="button"
             onClick={() => setActiveTab('profile')}
@@ -157,7 +157,7 @@ export default function SettingsPage() {
               'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'profile'
                 ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
             )}
           >
             <User className="h-3.5 w-3.5" />
@@ -170,7 +170,7 @@ export default function SettingsPage() {
               'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'bridge'
                 ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
             )}
           >
             <Key className="h-3.5 w-3.5" />
@@ -183,7 +183,7 @@ export default function SettingsPage() {
               'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'data'
                 ? 'bg-[#064e3b] text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800'
             )}
           >
             <Database className="h-3.5 w-3.5" />
@@ -196,7 +196,7 @@ export default function SettingsPage() {
               'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer',
               activeTab === 'danger'
                 ? 'bg-rose-600 text-white shadow-xs'
-                : 'text-rose-600 hover:bg-rose-50'
+                : 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
             )}
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -206,10 +206,10 @@ export default function SettingsPage() {
 
         {/* 4. Tab 1: Profile & Regional Preferences */}
         {activeTab === 'profile' && (
-          <div className="rounded-3xl border border-slate-100 bg-white p-7 sm:p-8 shadow-xs space-y-6">
-            <div className="border-b border-slate-100 pb-4">
-              <h3 className="text-base font-bold text-slate-900">Trader Profile & Regional Configuration</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-7 sm:p-8 shadow-xs space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Trader Profile & Regional Configuration</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Manage your public display name, email, account base currency, and time zone.
               </p>
             </div>
@@ -217,33 +217,33 @@ export default function SettingsPage() {
             <form onSubmit={handleSaveProfile} className="space-y-5 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="space-y-1.5">
-                  <label className="font-bold text-slate-800">Trader Display Name *</label>
+                  <label className="font-bold text-slate-800 dark:text-slate-200">Trader Display Name *</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 font-medium text-slate-800 shadow-2xs focus:border-emerald-600 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 font-medium text-slate-800 dark:text-slate-100 shadow-2xs focus:border-emerald-600 focus:outline-none"
                     required
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-bold text-slate-800">Email Address *</label>
+                  <label className="font-bold text-slate-800 dark:text-slate-200">Email Address *</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 font-medium text-slate-800 shadow-2xs focus:border-emerald-600 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 font-medium text-slate-800 dark:text-slate-100 shadow-2xs focus:border-emerald-600 focus:outline-none"
                     required
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-bold text-slate-800">Universal Base Ledger Currency</label>
+                  <label className="font-bold text-slate-800 dark:text-slate-200">Universal Base Ledger Currency</label>
                   <select
                     value={baseCurrency}
                     onChange={(e) => setBaseCurrency(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 font-medium text-slate-800 shadow-2xs focus:border-emerald-600 focus:outline-none cursor-pointer"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 font-medium text-slate-800 dark:text-slate-100 shadow-2xs focus:border-emerald-600 focus:outline-none cursor-pointer"
                   >
                     <option value="USD">USD ($) - US Dollar</option>
                     <option value="EUR">EUR (€) - Euro</option>
@@ -255,11 +255,11 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-bold text-slate-800">Primary Timezone</label>
+                  <label className="font-bold text-slate-800 dark:text-slate-200">Primary Timezone</label>
                   <select
                     value={timezone}
                     onChange={(e) => setTimezone(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 font-medium text-slate-800 shadow-2xs focus:border-emerald-600 focus:outline-none cursor-pointer"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2.5 font-medium text-slate-800 dark:text-slate-100 shadow-2xs focus:border-emerald-600 focus:outline-none cursor-pointer"
                   >
                     <option value="UTC">UTC (Universal Coordinated Time)</option>
                     <option value="America/New_York">EST / EDT (New York, US)</option>
@@ -270,7 +270,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end pt-4 border-t border-slate-100">
+              <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="submit"
                   className="rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-6 py-2.5 text-xs font-bold shadow-xs transition-all hover:scale-105"
@@ -284,17 +284,17 @@ export default function SettingsPage() {
 
         {/* 5. Tab 2: Bridge & Webhooks */}
         {activeTab === 'bridge' && (
-          <div className="rounded-3xl border border-slate-100 bg-white p-7 sm:p-8 shadow-xs space-y-6">
-            <div className="border-b border-slate-100 pb-4">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-7 sm:p-8 shadow-xs space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-bold text-slate-900">MT4 & MT5 Bridge Security & Webhooks</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">MT4 & MT5 Bridge Security & Webhooks</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Connect your MetaTrader terminal Expert Advisor (EA) with real-time, read-only sync.
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-[11px] font-bold text-emerald-800">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-3 py-1 text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                   READ-ONLY SECURED
                 </span>
               </div>
@@ -302,27 +302,27 @@ export default function SettingsPage() {
 
             <div className="space-y-5 text-xs">
               <div className="space-y-2">
-                <label className="font-bold text-slate-800">Live Universal Webhook URL Endpoint</label>
+                <label className="font-bold text-slate-800 dark:text-slate-200">Live Universal Webhook URL Endpoint</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     readOnly
                     value={webhookUrl}
-                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-xs text-slate-700 select-all"
+                    className="flex-1 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-3.5 py-2.5 font-mono text-xs text-slate-700 dark:text-emerald-400 select-all"
                   />
                   <button
                     type="button"
                     onClick={handleCopyWebhook}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2.5 font-semibold text-slate-700 dark:text-slate-300 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     {copiedWebhook ? (
                       <>
                         <Check className="h-4 w-4 text-emerald-600 stroke-[3]" />
-                        <span className="text-emerald-700 font-bold">Copied!</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-bold">Copied!</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="h-4 w-4 text-slate-600" />
+                        <Copy className="h-4 w-4 text-slate-600 dark:text-slate-400" />
                         <span>Copy URL</span>
                       </>
                     )}
@@ -330,24 +330,24 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-5 space-y-3">
-                <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+              <div className="rounded-2xl border border-emerald-100 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/30 p-5 space-y-3">
+                <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
                   <Lock className="h-4 w-4" />
                   <span>Enterprise Security & Token Validation</span>
                 </div>
-                <p className="text-slate-600 leading-relaxed font-medium">
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                   Kilajo enforces server-side <strong>HMAC SHA-256 token hashing</strong>. All incoming MetaTrader bridge
-                  requests require a valid signed bearer token with format <code className="bg-white/80 px-1.5 py-0.5 rounded border border-emerald-200 font-mono">kilajo_bridge_...</code>.
+                  requests require a valid signed bearer token with format <code className="bg-white/80 dark:bg-slate-900 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-slate-800 font-mono">kilajo_bridge_...</code>.
                   Endpoints fail closed if secrets are missing or malformed.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  <div className="p-3 rounded-xl bg-white/80 border border-emerald-200/60">
-                    <span className="text-[10px] uppercase font-bold text-emerald-800 block">Bridge Token Status</span>
-                    <span className="font-bold text-slate-800">Active & Verified</span>
+                  <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-emerald-200/60 dark:border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-emerald-800 dark:text-emerald-400 block">Bridge Token Status</span>
+                    <span className="font-bold text-slate-800 dark:text-white">Active & Verified</span>
                   </div>
-                  <div className="p-3 rounded-xl bg-white/80 border border-emerald-200/60">
-                    <span className="text-[10px] uppercase font-bold text-emerald-800 block">Execution Mode</span>
-                    <span className="font-bold text-slate-800">Strictly Read-Only (Audited)</span>
+                  <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-emerald-200/60 dark:border-slate-800">
+                    <span className="text-[10px] uppercase font-bold text-emerald-800 dark:text-emerald-400 block">Execution Mode</span>
+                    <span className="font-bold text-slate-800 dark:text-white">Strictly Read-Only (Audited)</span>
                   </div>
                 </div>
               </div>
@@ -357,34 +357,34 @@ export default function SettingsPage() {
 
         {/* 6. Tab 3: Data Management & Isolated Demo Mode */}
         {activeTab === 'data' && (
-          <div className="rounded-3xl border border-slate-100 bg-white p-7 sm:p-8 shadow-xs space-y-6">
-            <div className="border-b border-slate-100 pb-4">
-              <h3 className="text-base font-bold text-slate-900">Data Management & Isolated Demo Datasets</h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-7 sm:p-8 shadow-xs space-y-6">
+            <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Data Management & Isolated Demo Datasets</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Download comprehensive portfolio backups or toggle isolated demo testing data.
               </p>
             </div>
 
             <div className="space-y-5 text-xs">
               {/* Isolated Demo Mode */}
-              <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-r from-amber-50/70 to-orange-50/40 p-5 space-y-3">
+              <div className="rounded-2xl border border-amber-200/80 dark:border-amber-900/60 bg-gradient-to-r from-amber-50/70 to-orange-50/40 dark:from-amber-950/30 dark:to-slate-900 p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
-                    <Sparkles className="h-4 w-4 text-amber-600" />
+                  <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-bold text-sm">
+                    <Sparkles className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                     <span>Isolated Demo Mode Controller</span>
                   </div>
                   <span
                     className={cn(
                       'text-[10px] font-bold px-3 py-1 rounded-full uppercase border shadow-2xs',
                       isDemoMode
-                        ? 'bg-amber-200 text-amber-950 border-amber-300'
-                        : 'bg-white text-slate-600 border-slate-200'
+                        ? 'bg-amber-200 dark:bg-amber-900/60 text-amber-950 dark:text-amber-200 border-amber-300 dark:border-amber-700'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                     )}
                   >
                     {isDemoMode ? 'Active (Demo Dataset)' : 'Disabled (Production)'}
                   </span>
                 </div>
-                <p className="text-slate-600 leading-relaxed font-medium">
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                   Demo data is isolated and strictly partitioned from production trading logs.
                   Enabling Demo Mode populates sample accounts, realistic forex trades, and prop firm metrics for evaluation testing.
                 </p>
@@ -392,9 +392,9 @@ export default function SettingsPage() {
                   type="button"
                   onClick={() => toggleDemoMode(!isDemoMode)}
                   className={cn(
-                    'py-2 px-5 rounded-full text-xs font-bold transition-all shadow-xs',
+                    'py-2 px-5 rounded-full text-xs font-bold transition-all shadow-xs cursor-pointer',
                     isDemoMode
-                      ? 'bg-white hover:bg-slate-50 text-slate-800 border border-slate-300'
+                      ? 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-300 dark:border-slate-700'
                       : 'bg-amber-600 hover:bg-amber-700 text-white shadow-amber-900/10'
                   )}
                 >
@@ -403,19 +403,19 @@ export default function SettingsPage() {
               </div>
 
               {/* Backup Section */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl border border-slate-200 bg-slate-50/60">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60">
                 <div>
-                  <span className="font-bold text-slate-800 block">Full Portfolio Archive (JSON)</span>
-                  <p className="text-slate-500 text-[11px] mt-0.5">
+                  <span className="font-bold text-slate-800 dark:text-white block">Full Portfolio Archive (JSON)</span>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
                     Download complete snapshot of accounts, trades, executions, and strategies.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleExportAllData}
-                  className="inline-flex items-center gap-2 rounded-xl bg-white border border-slate-200 px-4 py-2 font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors shrink-0"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-2 font-semibold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shrink-0 cursor-pointer"
                 >
-                  <Download className="h-4 w-4 text-slate-600" />
+                  <Download className="h-4 w-4 text-slate-600 dark:text-slate-300" />
                   <span>Download Backup JSON</span>
                 </button>
               </div>
@@ -425,25 +425,25 @@ export default function SettingsPage() {
 
         {/* 7. Tab 4: Danger Zone */}
         {activeTab === 'danger' && (
-          <div className="rounded-3xl border border-rose-200 bg-white p-7 sm:p-8 shadow-xs space-y-6">
-            <div className="border-b border-rose-100 pb-4">
-              <h3 className="text-base font-bold text-rose-900">Danger Zone: Irreversible Actions</h3>
-              <p className="text-xs text-rose-600 mt-0.5">
+          <div className="rounded-3xl border border-rose-200 dark:border-rose-900/50 bg-white dark:bg-[#0c141c] p-7 sm:p-8 shadow-xs space-y-6">
+            <div className="border-b border-rose-100 dark:border-rose-900/40 pb-4">
+              <h3 className="text-base font-bold text-rose-900 dark:text-rose-300">Danger Zone: Irreversible Actions</h3>
+              <p className="text-xs text-rose-600 dark:text-rose-400 mt-0.5">
                 Permanently purge accounts, executions, and journal records. Exercise caution.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 rounded-2xl border border-rose-200 bg-rose-50/60 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 rounded-2xl border border-rose-200 dark:border-rose-900/50 bg-rose-50/60 dark:bg-rose-950/20 text-xs">
               <div className="space-y-1">
-                <span className="font-bold text-rose-900 text-sm block">Purge All Trading Journal Data</span>
-                <p className="text-rose-700 leading-relaxed font-medium">
+                <span className="font-bold text-rose-900 dark:text-rose-300 text-sm block">Purge All Trading Journal Data</span>
+                <p className="text-rose-700 dark:text-rose-400 leading-relaxed font-medium">
                   This will permanently wipe all trades, calculated balances, strategy tags, and prop firm records from database and local storage.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsResetConfirmOpen(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 font-bold shadow-xs shrink-0 transition-colors"
+                className="inline-flex items-center gap-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 font-bold shadow-xs shrink-0 transition-colors cursor-pointer"
               >
                 <Trash2 className="h-4 w-4" />
                 <span>Purge All Records</span>

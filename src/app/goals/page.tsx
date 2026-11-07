@@ -123,9 +123,9 @@ export default function GoalsPage() {
         {goals.length === 0 ? (
           <div className="space-y-5">
             {/* Main Empty State Container */}
-            <div className="relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-300/80 bg-gradient-to-b from-emerald-50/50 via-teal-50/20 to-emerald-50/50 p-10 sm:p-14 flex flex-col items-center justify-center text-center shadow-xs">
+            <div className="relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-300/80 dark:border-slate-800 bg-gradient-to-b from-emerald-50/50 via-teal-50/20 to-emerald-50/50 dark:bg-none dark:bg-[#0c141c] p-10 sm:p-14 flex flex-col items-center justify-center text-center shadow-xs">
               {/* Soft wave decorations at the bottom */}
-              <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40">
+              <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40 dark:opacity-10">
                 <svg className="w-full h-full" viewBox="0 0 600 60" preserveAspectRatio="none">
                   <path d="M0,40 C150,15 350,60 600,30 L600,60 L0,60 Z" fill="#10b981" fillOpacity="0.12" />
                   <path d="M0,50 C200,30 400,65 600,45 L600,60 L0,60 Z" fill="#059669" fillOpacity="0.18" />
@@ -136,7 +136,7 @@ export default function GoalsPage() {
               <div className="relative mb-3 flex items-center justify-center">
                 {/* Candlestick Watermark Behind Graphic */}
                 <svg
-                  className="absolute -top-4 h-32 w-80 pointer-events-none opacity-25 text-emerald-500"
+                  className="absolute -top-4 h-32 w-80 pointer-events-none opacity-25 dark:opacity-10 text-emerald-500"
                   viewBox="0 0 240 80"
                   fill="currentColor"
                 >
@@ -174,9 +174,9 @@ export default function GoalsPage() {
                   {/* Center Target Bullseye with Struck Arrow */}
                   <div className="relative flex items-center justify-center">
                     <svg className="w-28 h-28" viewBox="0 0 120 120" fill="none">
-                      <circle cx="60" cy="60" r="54" stroke="#059669" strokeWidth="7" fill="#ffffff" />
-                      <circle cx="60" cy="60" r="44" stroke="#10b981" strokeWidth="6" fill="#ecfdf5" />
-                      <circle cx="60" cy="60" r="30" stroke="#059669" strokeWidth="6" fill="#ffffff" />
+                      <circle cx="60" cy="60" r="54" stroke="#059669" strokeWidth="7" fill="#ffffff" className="dark:fill-slate-900" />
+                      <circle cx="60" cy="60" r="44" stroke="#10b981" strokeWidth="6" fill="#ecfdf5" className="dark:fill-emerald-950/40" />
+                      <circle cx="60" cy="60" r="30" stroke="#059669" strokeWidth="6" fill="#ffffff" className="dark:fill-slate-900" />
                       <circle cx="60" cy="60" r="16" fill="#047857" />
                       <circle cx="60" cy="60" r="7" fill="#ffffff" />
                       <line x1="88" y1="32" x2="63" y2="57" stroke="#10b981" strokeWidth="4.5" strokeLinecap="round" />
@@ -199,10 +199,10 @@ export default function GoalsPage() {
                 </div>
               </div>
 
-              <h3 className="text-lg sm:text-xl font-bold font-serif text-slate-900 tracking-tight">
+              <h3 className="text-lg sm:text-xl font-bold font-serif text-slate-900 dark:text-white tracking-tight">
                 No active goals configured
               </h3>
-              <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-md font-medium leading-relaxed">
+              <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md font-medium leading-relaxed">
                 Top traders set clear goals for their trading journey. Define your targets, track your progress, and achieve more.
               </p>
 
@@ -217,10 +217,10 @@ export default function GoalsPage() {
             </div>
 
             {/* Bottom Feature Strip (4 items) */}
-            <div className="relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 p-4 shadow-xs select-none">
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-emerald-900/50 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-900 p-4 shadow-xs select-none">
               {/* Ascending Bar Chart Watermark */}
               <svg
-                className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 text-emerald-600"
+                className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 dark:opacity-5 text-emerald-600"
                 viewBox="0 0 120 60"
                 fill="currentColor"
               >
@@ -231,44 +231,44 @@ export default function GoalsPage() {
                 <rect x="90" y="0" width="12" height="60" rx="2" />
               </svg>
 
-              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 gap-3 sm:gap-0">
-                <div className="flex items-center gap-3 sm:px-4 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 dark:divide-slate-800 gap-3 sm:gap-0">
+                <div className="flex items-center gap-3 sm:px-4 py-1.5 rounded-xl hover:bg-emerald-100/50 dark:hover:bg-slate-800/60 transition-all cursor-pointer group">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Stay Disciplined</p>
-                    <p className="text-[11px] text-slate-500 font-medium">Follow your plan and goals.</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Stay Disciplined</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Follow your plan and goals.</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 dark:hover:bg-slate-800/60 transition-all cursor-pointer group">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <TrendingUp className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Track Progress</p>
-                    <p className="text-[11px] text-slate-500 font-medium">See your achievements.</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Track Progress</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">See your achievements.</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 dark:hover:bg-slate-800/60 transition-all cursor-pointer group">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <Star className="h-4 w-4 stroke-[2.5] fill-white" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Reach Milestones</p>
-                    <p className="text-[11px] text-slate-500 font-medium">Turn goals into success.</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Reach Milestones</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Turn goals into success.</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 transition-all cursor-pointer group">
+                <div className="flex items-center gap-3 sm:px-4 pt-2 sm:pt-0 py-1.5 rounded-xl hover:bg-emerald-100/50 dark:hover:bg-slate-800/60 transition-all cursor-pointer group">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs group-hover:scale-110 transition-transform">
                     <Trophy className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Grow Consistently</p>
-                    <p className="text-[11px] text-slate-500 font-medium">Build a winning mindset.</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Grow Consistently</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Build a winning mindset.</p>
                   </div>
                 </div>
               </div>

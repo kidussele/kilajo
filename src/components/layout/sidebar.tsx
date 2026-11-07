@@ -25,43 +25,35 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTrading } from '@/context/trading-context'
+import { useTheme } from '@/context/theme-context'
 
 export const NAVIGATION_ITEMS = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard, color: 'text-emerald-600', iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100/80', badgeColor: 'bg-emerald-100 text-emerald-700' },
-  { name: 'Trade Journal', href: '/journal', icon: BookOpen, color: 'text-teal-600', iconBg: 'bg-teal-50 text-teal-600 border border-teal-100/80', badgeColor: 'bg-teal-100 text-teal-700' },
-  { name: 'Analytics', href: '/analytics', icon: LineChart, color: 'text-blue-600', iconBg: 'bg-blue-50 text-blue-600 border border-blue-100/80', badgeColor: 'bg-blue-100 text-blue-700' },
-  { name: 'Calendar', href: '/calendar', icon: CalendarDays, color: 'text-emerald-700', iconBg: 'bg-emerald-50 text-emerald-700 border border-emerald-100/80', badgeColor: 'bg-emerald-100 text-emerald-700' },
-  { name: 'Reports', href: '/reports', icon: FileSpreadsheet, color: 'text-purple-600', iconBg: 'bg-purple-50 text-purple-600 border border-purple-100/80', badgeColor: 'bg-purple-100 text-purple-700' },
-  { name: 'Export Data', href: '/import', icon: UploadCloud, color: 'text-sky-600', iconBg: 'bg-sky-50 text-sky-600 border border-sky-100/80', badgeColor: 'bg-sky-100 text-sky-700' },
-  { name: 'Prop Firm Tracker', href: '/prop-firms', icon: ShieldAlert, color: 'text-amber-600', iconBg: 'bg-amber-50 text-amber-600 border border-amber-100/80', badgeColor: 'bg-amber-100 text-amber-700' },
-  { name: 'Psychology & Discipline', href: '/psychology', icon: Brain, color: 'text-rose-600', iconBg: 'bg-rose-50 text-rose-600 border border-rose-100/80', badgeColor: 'bg-rose-100 text-rose-700' },
-  { name: 'Strategies', href: '/strategies', icon: TrendingUp, color: 'text-emerald-600', iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-100/80', badgeColor: 'bg-emerald-100 text-emerald-700' },
-  { name: 'Goals', href: '/goals', icon: Target, color: 'text-indigo-600', iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-100/80', badgeColor: 'bg-indigo-100 text-indigo-700' },
-  { name: 'Plans', href: '/plans', icon: Sparkles, color: 'text-amber-600', iconBg: 'bg-amber-50 text-amber-600 border border-amber-100/80', badgeColor: 'bg-amber-100 text-amber-700' },
-  { name: 'Settings', href: '/settings', icon: Settings, color: 'text-slate-600', iconBg: 'bg-slate-100 text-slate-600 border border-slate-200/80', badgeColor: 'bg-slate-100 text-slate-700' },
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard, color: 'text-emerald-500 dark:text-emerald-400', iconBg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100/80 dark:border-emerald-800/50', badgeColor: 'bg-emerald-100 text-emerald-700' },
+  { name: 'Trade Journal', href: '/journal', icon: BookOpen, color: 'text-teal-500 dark:text-teal-400', iconBg: 'bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 border border-teal-100/80 dark:border-teal-800/50', badgeColor: 'bg-teal-100 text-teal-700' },
+  { name: 'Analytics', href: '/analytics', icon: LineChart, color: 'text-blue-500 dark:text-blue-400', iconBg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100/80 dark:border-blue-800/50', badgeColor: 'bg-blue-100 text-blue-700' },
+  { name: 'Calendar', href: '/calendar', icon: CalendarDays, color: 'text-emerald-600 dark:text-emerald-400', iconBg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-100/80 dark:border-emerald-800/50', badgeColor: 'bg-emerald-100 text-emerald-700' },
+  { name: 'Reports', href: '/reports', icon: FileSpreadsheet, color: 'text-purple-500 dark:text-purple-400', iconBg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100/80 dark:border-purple-800/50', badgeColor: 'bg-purple-100 text-purple-700' },
+  { name: 'Export Data', href: '/import', icon: UploadCloud, color: 'text-sky-500 dark:text-sky-400', iconBg: 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-100/80 dark:border-sky-800/50', badgeColor: 'bg-sky-100 text-sky-700' },
+  { name: 'Prop Firm Tracker', href: '/prop-firms', icon: ShieldAlert, color: 'text-amber-500 dark:text-amber-400', iconBg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100/80 dark:border-amber-800/50', badgeColor: 'bg-amber-100 text-amber-700' },
+  { name: 'Psychology & Discipline', href: '/psychology', icon: Brain, color: 'text-rose-500 dark:text-rose-400', iconBg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100/80 dark:border-rose-800/50', badgeColor: 'bg-rose-100 text-rose-700' },
+  { name: 'Strategies', href: '/strategies', icon: TrendingUp, color: 'text-emerald-500 dark:text-emerald-400', iconBg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100/80 dark:border-emerald-800/50', badgeColor: 'bg-emerald-100 text-emerald-700' },
+  { name: 'Goals', href: '/goals', icon: Target, color: 'text-indigo-500 dark:text-indigo-400', iconBg: 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100/80 dark:border-indigo-800/50', badgeColor: 'bg-indigo-100 text-indigo-700' },
+  { name: 'Plans', href: '/plans', icon: Sparkles, color: 'text-amber-500 dark:text-amber-400', iconBg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100/80 dark:border-amber-800/50', badgeColor: 'bg-amber-100 text-amber-700' },
+  { name: 'Settings', href: '/settings', icon: Settings, color: 'text-slate-500 dark:text-slate-400', iconBg: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700', badgeColor: 'bg-slate-100 text-slate-700' },
 ]
 
 export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolean; onCloseMobile?: () => void }) {
   const pathname = usePathname()
   const [collapsed, setCollapsed] = useState(false)
-  const { userProfile, isDemoMode, toggleDemoMode } = useTrading()
-  const [isDark, setIsDark] = useState(false)
-
-  const toggleTheme = (dark: boolean) => {
-    setIsDark(dark)
-    if (dark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
+  const { userProfile } = useTrading()
+  const { isDark, setTheme, toggleTheme } = useTheme()
 
   const traderName = userProfile?.full_name || 'Kidus Seleshi'
 
   return (
     <aside
       className={cn(
-        'relative flex flex-col border-r border-[#e8eeea] bg-white transition-all duration-300 z-30 select-none overflow-hidden',
+        'relative flex flex-col border-r border-[#e8eeea] dark:border-slate-800/90 bg-white dark:bg-[#0c141c] transition-all duration-300 z-30 select-none overflow-hidden',
         isMobile ? 'w-72 h-full' : collapsed ? 'w-20' : 'w-64',
         'h-screen sticky top-0'
       )}
@@ -89,7 +81,7 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
 
           {(!collapsed || isMobile) && (
             <div className="flex flex-col">
-              <span className="font-extrabold tracking-tight text-xl text-slate-900 font-sans">
+              <span className="font-extrabold tracking-tight text-xl text-slate-900 dark:text-white font-sans">
                 KILAJO
               </span>
               <span className="text-[10px] text-slate-400 font-medium tracking-wide">
@@ -102,7 +94,7 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
         {!isMobile && (
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
             title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -113,24 +105,24 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
       {/* 2. User Profile Tile (under logo) */}
       {(!collapsed || isMobile) ? (
         <div className="px-4 py-3">
-          <div className="flex items-center gap-3 p-2 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer border border-transparent hover:border-slate-100">
-            <div className="relative h-10 w-10 shrink-0 rounded-full bg-emerald-100 border-2 border-emerald-300/60 overflow-hidden flex items-center justify-center font-bold text-emerald-800 text-sm">
+          <div className="flex items-center gap-3 p-2 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
+            <div className="relative h-10 w-10 shrink-0 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border-2 border-emerald-300/60 dark:border-emerald-700/60 overflow-hidden flex items-center justify-center font-bold text-emerald-800 dark:text-emerald-300 text-sm">
               {traderName.slice(0, 2).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-xs text-slate-900 truncate">
+              <p className="font-bold text-xs text-slate-900 dark:text-white truncate">
                 {traderName}
               </p>
-              <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+              <div className="flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
                 <span>Pro Trader</span>
-                <ChevronDown className="h-3 w-3 text-emerald-600 stroke-[2.5]" />
+                <ChevronDown className="h-3 w-3 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
               </div>
             </div>
           </div>
         </div>
       ) : (
         <div className="flex justify-center py-3">
-          <div className="h-10 w-10 rounded-full bg-emerald-100 border-2 border-emerald-300/60 flex items-center justify-center font-bold text-emerald-800 text-xs">
+          <div className="h-10 w-10 rounded-full bg-emerald-100 dark:bg-emerald-950/80 border-2 border-emerald-300/60 dark:border-emerald-700/60 flex items-center justify-center font-bold text-emerald-800 dark:text-emerald-300 text-xs">
             {traderName.slice(0, 2).toUpperCase()}
           </div>
         </div>
@@ -149,7 +141,7 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
                 'flex items-center gap-3 rounded-2xl px-3 py-2 text-xs sm:text-sm font-medium transition-all group relative cursor-pointer',
                 isActive
                   ? 'bg-[#064e3b] text-white shadow-md shadow-[#064e3b]/25 font-semibold translate-x-0.5'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50/90 hover:translate-x-1 hover:shadow-2xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50/90 dark:hover:bg-slate-800/60 hover:translate-x-1 hover:shadow-2xs'
               )}
             >
               {/* Colorful icon badge */}
@@ -187,29 +179,29 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
         {(!collapsed || isMobile) ? (
           <div className="space-y-3">
             {/* Motivational Trophy Card */}
-            <div className="rounded-2xl border border-emerald-200/60 bg-gradient-to-r from-emerald-50/90 via-teal-50/40 to-amber-50/30 p-3 shadow-2xs flex items-center gap-3 cursor-pointer hover:shadow-md hover:scale-[1.02] hover:border-emerald-300 transition-all duration-200 group">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600 group-hover:scale-110 transition-transform shadow-2xs">
-                <Trophy className="h-5 w-5 text-amber-600 stroke-[2.2]" />
+            <div className="rounded-2xl border border-emerald-200/60 dark:border-emerald-900/50 bg-gradient-to-r from-emerald-50/90 via-teal-50/40 to-amber-50/30 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-900 p-3 shadow-2xs flex items-center gap-3 cursor-pointer hover:shadow-md hover:scale-[1.02] hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-200 group">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform shadow-2xs">
+                <Trophy className="h-5 w-5 stroke-[2.2]" />
               </div>
               <div className="min-w-0">
-                <p className="font-bold text-[11px] text-slate-800 leading-tight group-hover:text-emerald-800 transition-colors">
+                <p className="font-bold text-[11px] text-slate-800 dark:text-slate-200 leading-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                   Discipline Today,
                 </p>
-                <p className="font-medium text-[10px] text-slate-500 leading-tight mt-0.5">
+                <p className="font-medium text-[10px] text-slate-500 dark:text-slate-400 leading-tight mt-0.5">
                   Freedom Tomorrow
                 </p>
               </div>
             </div>
 
             {/* Segmented Light / Dark Switch */}
-            <div className="flex items-center justify-between rounded-full bg-slate-100 p-1 border border-slate-200/50 text-xs font-semibold">
+            <div className="flex items-center justify-between rounded-full bg-slate-100 dark:bg-slate-900 p-1 border border-slate-200/50 dark:border-slate-800 text-xs font-semibold">
               <button
-                onClick={() => toggleTheme(false)}
+                onClick={() => setTheme('light')}
                 className={cn(
                   'flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 text-xs transition-all cursor-pointer',
                   !isDark
                     ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900'
+                    : 'text-slate-400 hover:text-white'
                 )}
               >
                 <Sun className={cn('h-3.5 w-3.5', !isDark ? 'text-amber-500' : 'text-slate-400')} />
@@ -217,7 +209,7 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
               </button>
 
               <button
-                onClick={() => toggleTheme(true)}
+                onClick={() => setTheme('dark')}
                 className={cn(
                   'flex flex-1 items-center justify-center gap-1.5 rounded-full py-1 text-xs transition-all cursor-pointer',
                   isDark
@@ -231,31 +223,31 @@ export function Sidebar({ isMobile = false, onCloseMobile }: { isMobile?: boolea
             </div>
 
             {/* Version & Brand Tag */}
-            <div className="flex items-center justify-center gap-2 pt-1 text-[11px] text-slate-400 font-medium">
+            <div className="flex items-center justify-center gap-2 pt-1 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
               <span>v1.0.0</span>
               <span>|</span>
-              <span className="font-semibold text-emerald-700">Kilajo</span>
+              <span className="font-semibold text-emerald-700 dark:text-emerald-400">Kilajo</span>
             </div>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600 cursor-pointer hover:scale-110 transition-transform">
-              <Trophy className="h-5 w-5 text-amber-600" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/20 text-amber-600 dark:text-amber-400 cursor-pointer hover:scale-110 transition-transform">
+              <Trophy className="h-5 w-5" />
             </div>
             <button
-              onClick={() => toggleTheme(!isDark)}
-              className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 cursor-pointer transition-colors"
+              onClick={toggleTheme}
+              className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
               title="Toggle theme"
             >
-              {isDark ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4 text-amber-500" />}
+              {isDark ? <Moon className="h-4 w-4 text-indigo-400" /> : <Sun className="h-4 w-4 text-amber-500" />}
             </button>
           </div>
         )}
 
         {/* Soft background mint wave decoration at bottom */}
-        <div className="absolute -bottom-2 -left-2 -right-2 h-10 pointer-events-none opacity-30 z-0">
+        <div className="absolute -bottom-2 -left-2 -right-2 h-10 pointer-events-none opacity-30 dark:opacity-10 z-0">
           <svg
-            className="w-full h-full text-emerald-300"
+            className="w-full h-full text-emerald-300 dark:text-emerald-800"
             viewBox="0 0 200 40"
             preserveAspectRatio="none"
           >

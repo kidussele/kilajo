@@ -32,7 +32,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenMobileMenu}
-            className="md:hidden rounded-xl p-2 text-slate-600 hover:bg-white hover:text-slate-900 border border-slate-200/60 shadow-xs"
+            className="md:hidden rounded-xl p-2 text-slate-600 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white border border-slate-200/60 dark:border-slate-800 shadow-xs cursor-pointer"
             aria-label="Open navigation menu"
           >
             <Menu className="h-5 w-5" />
@@ -42,9 +42,9 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           <div className="relative">
             <button
               onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
-              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer"
+              className="flex items-center gap-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer"
             >
-              <Briefcase className="h-4 w-4 text-emerald-700 stroke-[2.2] shrink-0" />
+              <Briefcase className="h-4 w-4 text-emerald-600 dark:text-emerald-400 stroke-[2.2] shrink-0" />
               <span className="max-w-[130px] sm:max-w-[200px] truncate">
                 {activeAccountId === 'ALL'
                   ? 'All Accounts'
@@ -59,7 +59,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                   className="fixed inset-0 z-30"
                   onClick={() => setIsAccountDropdownOpen(false)}
                 />
-                <div className="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-slate-100 bg-white p-2 shadow-xl z-40 animate-in fade-in zoom-in-95">
+                <div className="absolute left-0 top-full mt-2 w-64 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 shadow-xl z-40 animate-in fade-in zoom-in-95">
                   <div className="px-2 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     Select Scope
                   </div>
@@ -68,7 +68,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                       setActiveAccountId('ALL')
                       setIsAccountDropdownOpen(false)
                     }}
-                    className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 hover:bg-emerald-50/70 transition-colors text-left cursor-pointer"
+                    className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-emerald-50/70 dark:hover:bg-slate-800/80 transition-colors text-left cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
                       <Briefcase className="h-3.5 w-3.5 text-emerald-600" />
@@ -77,7 +77,7 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                     {activeAccountId === 'ALL' && <Check className="h-3.5 w-3.5 text-emerald-600 font-bold" />}
                   </button>
 
-                  <div className="my-1 border-t border-slate-100" />
+                  <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
 
                   <div className="px-2 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     Individual Accounts
@@ -94,10 +94,10 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
                           setActiveAccountId(acc.id)
                           setIsAccountDropdownOpen(false)
                         }}
-                        className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium text-slate-800 hover:bg-emerald-50/70 transition-colors text-left cursor-pointer"
+                        className="flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 hover:bg-emerald-50/70 dark:hover:bg-slate-800/80 transition-colors text-left cursor-pointer"
                       >
                         <div className="truncate mr-2">
-                          <p className="font-semibold text-slate-900 truncate">{acc.name}</p>
+                          <p className="font-semibold text-slate-900 dark:text-white truncate">{acc.name}</p>
                           <p className="text-[10px] text-slate-400">
                             {acc.broker} • {acc.currency}
                           </p>
@@ -119,15 +119,15 @@ export function Header({ onOpenMobileMenu }: { onOpenMobileMenu: () => void }) {
           {/* Quick Log Trade Button */}
           <button
             onClick={() => setIsTradeModalOpen(true)}
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 hover:shadow-xs shadow-2xs transition-all cursor-pointer"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-xl border border-emerald-600/30 dark:border-emerald-800/50 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 hover:shadow-xs shadow-2xs transition-all cursor-pointer"
           >
-            <PlusCircle className="h-3.5 w-3.5 text-emerald-700" />
+            <PlusCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
             <span>Log Trade</span>
           </button>
 
           {/* Notification Bell Pill with Red Badge */}
           <button
-            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-slate-200/80 shadow-2xs text-slate-600 hover:text-slate-900 hover:bg-slate-50 hover:shadow-xs transition-all cursor-pointer"
+            className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-xs transition-all cursor-pointer"
             title="Notifications"
           >
             <Bell className="h-4 w-4 stroke-[2]" />

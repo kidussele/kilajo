@@ -120,17 +120,17 @@ export default function AccountsPage() {
         {/* Accounts List Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {accounts.length === 0 ? (
-            <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 rounded-3xl bg-white shadow-xs">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 mb-3 text-slate-400">
+            <div className="col-span-full flex flex-col items-center justify-center p-12 text-center text-slate-400 border border-slate-100 dark:border-slate-800 rounded-3xl bg-white dark:bg-[#0c141c] shadow-xs">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-900 mb-3 text-slate-400">
                 <Wallet className="h-7 w-7 stroke-[2]" />
               </div>
-              <h3 className="text-base font-bold text-slate-800">No accounts connected yet</h3>
+              <h3 className="text-base font-bold text-slate-800 dark:text-white">No accounts connected yet</h3>
               <p className="text-xs mt-1 max-w-sm text-slate-400">
                 Add your live broker account or prop firm challenge to start tracking your performance.
               </p>
               <button
                 onClick={() => setIsAddAccountOpen(true)}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-5 py-2 text-xs font-semibold shadow-xs cursor-pointer"
               >
                 <PlusCircle className="h-3.5 w-3.5 stroke-[2.5]" />
                 <span>Add Your First Account</span>
@@ -145,8 +145,8 @@ export default function AccountsPage() {
               return (
                 <div
                   key={acc.id}
-                  className={`rounded-3xl border bg-white p-5 shadow-xs transition-all relative ${
-                    isSelected ? 'ring-2 ring-[#064e3b] border-[#064e3b]' : 'border-slate-100 hover:shadow-md'
+                  className={`rounded-3xl border bg-white dark:bg-[#0c141c] p-5 shadow-xs transition-all relative ${
+                    isSelected ? 'ring-2 ring-[#064e3b] border-[#064e3b]' : 'border-slate-100 dark:border-slate-800 hover:shadow-md'
                   }`}
                 >
                   {/* Top line badges */}

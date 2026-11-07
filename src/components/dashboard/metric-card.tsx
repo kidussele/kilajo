@@ -35,46 +35,46 @@ export function MetricCard({
 }: MetricCardProps) {
   const colorMap = {
     emerald: {
-      iconBg: 'bg-[#ecfdf5] text-[#059669] border border-[#a7f3d0]',
+      iconBg: 'bg-[#ecfdf5] dark:bg-emerald-950/60 text-[#059669] dark:text-emerald-400 border border-[#a7f3d0] dark:border-emerald-800/60',
       stroke: '#10b981',
       secondaryStroke: '#34d399',
-      textAccent: 'text-emerald-700',
+      textAccent: 'text-emerald-700 dark:text-emerald-400',
     },
     purple: {
-      iconBg: 'bg-[#f5f3ff] text-[#7c3aed] border border-[#ddd6fe]',
+      iconBg: 'bg-[#f5f3ff] dark:bg-purple-950/60 text-[#7c3aed] dark:text-purple-400 border border-[#ddd6fe] dark:border-purple-800/60',
       stroke: '#a855f7',
       secondaryStroke: '#c084fc',
-      textAccent: 'text-purple-700',
+      textAccent: 'text-purple-700 dark:text-purple-400',
     },
     amber: {
-      iconBg: 'bg-[#fffbeb] text-[#d97706] border border-[#fde68a]',
+      iconBg: 'bg-[#fffbeb] dark:bg-amber-950/60 text-[#d97706] dark:text-amber-400 border border-[#fde68a] dark:border-amber-800/60',
       stroke: '#f59e0b',
       secondaryStroke: '#fbbf24',
-      textAccent: 'text-amber-700',
+      textAccent: 'text-amber-700 dark:text-amber-400',
     },
     blue: {
-      iconBg: 'bg-[#eff6ff] text-[#2563eb] border border-[#bfdbfe]',
+      iconBg: 'bg-[#eff6ff] dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-400 border border-[#bfdbfe] dark:border-blue-800/60',
       stroke: '#3b82f6',
       secondaryStroke: '#60a5fa',
-      textAccent: 'text-blue-700',
+      textAccent: 'text-blue-700 dark:text-blue-400',
     },
     teal: {
-      iconBg: 'bg-[#f0fdfa] text-[#0d9488] border border-[#99f6e4]',
+      iconBg: 'bg-[#f0fdfa] dark:bg-teal-950/60 text-[#0d9488] dark:text-teal-400 border border-[#99f6e4] dark:border-teal-800/60',
       stroke: '#14b8a6',
       secondaryStroke: '#2dd4bf',
-      textAccent: 'text-teal-700',
+      textAccent: 'text-teal-700 dark:text-teal-400',
     },
     indigo: {
-      iconBg: 'bg-[#eef2ff] text-[#4f46e5] border border-[#c7d2fe]',
+      iconBg: 'bg-[#eef2ff] dark:bg-indigo-950/60 text-[#4f46e5] dark:text-indigo-400 border border-[#c7d2fe] dark:border-indigo-800/60',
       stroke: '#8b5cf6',
       secondaryStroke: '#a78bfa',
-      textAccent: 'text-indigo-700',
+      textAccent: 'text-indigo-700 dark:text-indigo-400',
     },
     rose: {
-      iconBg: 'bg-[#fff1f2] text-[#e11d48] border border-[#fecdd3]',
+      iconBg: 'bg-[#fff1f2] dark:bg-rose-950/60 text-[#e11d48] dark:text-rose-400 border border-[#fecdd3] dark:border-rose-800/60',
       stroke: '#f43f5e',
       secondaryStroke: '#fb7185',
-      textAccent: 'text-rose-700',
+      textAccent: 'text-rose-700 dark:text-rose-400',
     },
   }
 
@@ -84,7 +84,7 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        'relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-100/90 bg-white p-4 shadow-xs transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-slate-300/80 cursor-pointer select-none min-h-[120px] group',
+        'relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-100/90 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-4 shadow-xs transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-slate-300/80 dark:hover:border-slate-700 cursor-pointer select-none min-h-[120px] group',
         className
       )}
     >
@@ -97,9 +97,9 @@ export function MetricCard({
             </div>
           )}
           <div className="flex items-center gap-1 min-w-0">
-            <p className="text-xs font-semibold text-slate-600 group-hover:text-slate-900 transition-colors truncate">{title}</p>
+            <p className="text-xs font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors truncate">{title}</p>
             {infoTooltip && (
-              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-slate-400 hover:text-slate-600 border border-slate-300 cursor-pointer transition-colors">
+              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 border border-slate-300 dark:border-slate-700 cursor-pointer transition-colors">
                 i
               </span>
             )}
@@ -110,7 +110,7 @@ export function MetricCard({
           <button
             type="button"
             onClick={onActionClick}
-            className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 text-slate-400 group-hover:text-emerald-700 group-hover:border-emerald-300 group-hover:bg-emerald-50 transition-all shrink-0 cursor-pointer"
+            className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 dark:border-slate-800 text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:border-emerald-300 dark:group-hover:border-emerald-800 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/40 transition-all shrink-0 cursor-pointer"
           >
             <svg className="h-3 w-3 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -121,7 +121,7 @@ export function MetricCard({
 
       {/* Main Value */}
       <div className="mt-2 relative z-10">
-        <h3 className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-slate-900 tabular-nums">
+        <h3 className="text-xl sm:text-2xl font-bold font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
           {value}
         </h3>
 
@@ -133,16 +133,16 @@ export function MetricCard({
                 'inline-flex items-center gap-0.5 font-semibold',
                 trendPositive !== undefined
                   ? trendPositive
-                    ? 'text-emerald-600'
-                    : 'text-rose-600'
-                  : 'text-slate-600'
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-rose-600 dark:text-rose-400'
+                  : 'text-slate-600 dark:text-slate-400'
               )}
             >
               {trend}
             </span>
           ) : null}
           {subtitle && (
-            <span className="text-slate-400 truncate">{subtitle}</span>
+            <span className="text-slate-400 dark:text-slate-500 truncate">{subtitle}</span>
           )}
         </div>
       </div>

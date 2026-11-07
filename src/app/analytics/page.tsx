@@ -184,7 +184,7 @@ export default function AnalyticsPage() {
         {/* 3. Middle Section: Net Performance by Session & Trade Distribution (2/3 and 1/3) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {/* Left (2/3): Net Performance by Session */}
-          <div className="lg:col-span-2 rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden flex flex-col justify-between">
+          <div className="lg:col-span-2 rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] shadow-xs overflow-hidden flex flex-col justify-between transition-colors duration-200">
             {/* Dark green header bar */}
             <div className="flex items-center justify-between bg-[#064e3b] text-white px-5 py-3.5">
               <div className="flex items-center gap-2">
@@ -215,18 +215,18 @@ export default function AnalyticsPage() {
             {/* Chart Area */}
             <div className="relative p-6 flex flex-col items-center justify-center min-h-[220px]">
               {/* Soft background line and axes */}
-              <div className="absolute inset-0 flex flex-col justify-between p-6 pointer-events-none opacity-20">
+              <div className="absolute inset-0 flex flex-col justify-between p-6 pointer-events-none opacity-20 dark:opacity-10">
                 <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                   <span>$1.0k</span>
-                  <div className="border-b border-dashed border-slate-300 flex-1 mx-2 mt-2" />
+                  <div className="border-b border-dashed border-slate-300 dark:border-slate-700 flex-1 mx-2 mt-2" />
                 </div>
                 <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                   <span>$0.5k</span>
-                  <div className="border-b border-dashed border-slate-300 flex-1 mx-2 mt-2" />
+                  <div className="border-b border-dashed border-slate-300 dark:border-slate-700 flex-1 mx-2 mt-2" />
                 </div>
                 <div className="flex justify-between text-[10px] text-slate-400 font-mono">
                   <span>$0</span>
-                  <div className="border-b border-slate-300 flex-1 mx-2 mt-2" />
+                  <div className="border-b border-slate-300 dark:border-slate-700 flex-1 mx-2 mt-2" />
                 </div>
                 <div className="flex justify-between text-[10px] text-slate-400 font-mono pt-1">
                   <span className="pl-6">Week 1</span>
@@ -238,20 +238,20 @@ export default function AnalyticsPage() {
 
               {/* Center Empty State */}
               <div className="relative z-10 flex flex-col items-center text-center max-w-xs">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 shadow-inner mb-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 shadow-inner mb-3">
                   <BarChart3 className="h-6 w-6 stroke-[2.2]" />
                 </div>
-                <h4 className="text-sm font-bold text-slate-800">
+                <h4 className="text-sm font-bold text-slate-800 dark:text-white">
                   No performance data yet!
                 </h4>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed font-medium">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed font-medium">
                   Start trading to see your performance chart here.
                 </p>
               </div>
 
               {/* Bottom Subtle Wave */}
-              <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-30">
-                <svg className="w-full h-full text-emerald-200" viewBox="0 0 400 40" preserveAspectRatio="none">
+              <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-30 dark:opacity-10">
+                <svg className="w-full h-full text-emerald-200 dark:text-emerald-800" viewBox="0 0 400 40" preserveAspectRatio="none">
                   <path d="M0,20 C100,35 250,5 400,25 L400,40 L0,40 Z" fill="currentColor" />
                 </svg>
               </div>
@@ -259,7 +259,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Right (1/3): Trade Distribution */}
-          <div className="lg:col-span-1 rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden flex flex-col justify-between">
+          <div className="lg:col-span-1 rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] shadow-xs overflow-hidden flex flex-col justify-between transition-colors duration-200">
             {/* Dark green header bar */}
             <div className="flex items-center gap-2 bg-[#064e3b] text-white px-5 py-3.5">
               <PieIcon className="h-4 w-4 text-emerald-300 stroke-[2.2]" />
@@ -276,7 +276,7 @@ export default function AnalyticsPage() {
                   <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                     {/* Background circle */}
                     <path
-                      className="text-slate-100"
+                      className="text-slate-100 dark:text-slate-800"
                       strokeWidth="3.8"
                       stroke="currentColor"
                       fill="none"
@@ -294,7 +294,7 @@ export default function AnalyticsPage() {
                     )}
                   </svg>
                   <div className="absolute flex flex-col items-center justify-center">
-                    <span className="font-bold font-mono text-base text-slate-800">{totalClosed}</span>
+                    <span className="font-bold font-mono text-base text-slate-800 dark:text-white">{totalClosed}</span>
                     <span className="text-[10px] text-slate-400 font-semibold">Trades</span>
                   </div>
                 </div>
@@ -303,12 +303,12 @@ export default function AnalyticsPage() {
                 <div className="space-y-2 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                    <span className="font-semibold text-slate-700">Win ({winCount})</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">Win ({winCount})</span>
                     <span className="font-mono text-slate-400 text-[11px]">{winPct}%</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
-                    <span className="font-semibold text-slate-700">Loss ({lossCount})</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">Loss ({lossCount})</span>
                     <span className="font-mono text-slate-400 text-[11px]">{lossPct}%</span>
                   </div>
                 </div>
@@ -323,7 +323,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* 4. Detailed Breakdown by Symbol / Instrument */}
-        <div className="rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden">
+        <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] shadow-xs overflow-hidden transition-colors duration-200">
           {/* Dark green header bar */}
           <div className="flex items-center gap-2 bg-[#064e3b] text-white px-5 py-3.5">
             <BarChart3 className="h-4 w-4 text-emerald-300 stroke-[2.2]" />
@@ -333,7 +333,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Table Header (subtle gray bar) */}
-          <div className="grid grid-cols-6 border-b border-slate-100 bg-slate-50/80 px-5 py-3 text-xs font-bold text-slate-600">
+          <div className="grid grid-cols-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 px-5 py-3 text-xs font-bold text-slate-600 dark:text-slate-400">
             <span>Instrument</span>
             <span>Trades</span>
             <span>Win Rate</span>
@@ -345,27 +345,27 @@ export default function AnalyticsPage() {
           {/* Table Body / Empty State */}
           {instrumentBreakdown.length === 0 ? (
             <div className="relative p-12 flex flex-col items-center justify-center text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400 mb-2">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 mb-2">
                 <FileText className="h-6 w-6 stroke-[1.8]" />
               </div>
-              <h4 className="text-sm font-bold text-slate-800">No data available</h4>
+              <h4 className="text-sm font-bold text-slate-800 dark:text-white">No data available</h4>
               <p className="text-xs text-slate-400 mt-0.5">Trade some instruments to see the breakdown.</p>
 
               {/* Soft mint wave at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-25">
-                <svg className="w-full h-full text-emerald-300" viewBox="0 0 600 40" preserveAspectRatio="none">
+              <div className="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-25 dark:opacity-10">
+                <svg className="w-full h-full text-emerald-300 dark:text-emerald-800" viewBox="0 0 600 40" preserveAspectRatio="none">
                   <path d="M0,25 C150,35 350,10 600,30 L600,40 L0,40 Z" fill="currentColor" />
                 </svg>
               </div>
             </div>
           ) : (
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {instrumentBreakdown.map((row) => (
-                <div key={row.category} className="grid grid-cols-6 px-5 py-3.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
-                  <span className="font-bold font-mono text-slate-900">{row.category}</span>
+                <div key={row.category} className="grid grid-cols-6 px-5 py-3.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60">
+                  <span className="font-bold font-mono text-slate-900 dark:text-white">{row.category}</span>
                   <span className="font-mono">{row.tradesCount}</span>
                   <span className="font-mono">{row.winRate}%</span>
-                  <span className={`font-mono font-bold ${row.netPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  <span className={`font-mono font-bold ${row.netPnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                     {formatCurrency(row.netPnl, currency, true)}
                   </span>
                   <span className="font-mono">{row.profitFactor}</span>
@@ -379,44 +379,44 @@ export default function AnalyticsPage() {
         {/* 5. Bottom Row (2 Cards): Performance by Direction & Day of Week */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Left: Performance by Direction (Buy vs. Sell) */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 dark:hover:border-slate-700 transition-all duration-200 group">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-2xs group-hover:scale-110 transition-transform">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 shadow-2xs group-hover:scale-110 transition-transform">
                   <TrendingUp className="h-4 w-4 stroke-[2.2]" />
                 </div>
-                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                <h3 className="font-bold text-sm text-slate-800 dark:text-white font-sans">
                   Performance by Direction (Buy vs. Sell)
                 </h3>
               </div>
 
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:text-emerald-700 group-hover:bg-emerald-50 transition-all cursor-pointer group-hover:scale-110 shadow-2xs">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/60 transition-all cursor-pointer group-hover:scale-110 shadow-2xs">
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 py-4">
               {/* Buy Trades Box */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100/60 hover:shadow-2xs hover:bg-emerald-50/80 transition-all cursor-pointer">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/40 border border-emerald-100/60 dark:border-emerald-800/50 hover:shadow-2xs hover:bg-emerald-50/80 dark:hover:bg-emerald-900/40 transition-all cursor-pointer">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400">
                   <ShoppingCart className="h-5 w-5 stroke-[2.2]" />
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-slate-800">Buy Trades</span>
-                  <span className="font-mono text-xs text-slate-500 font-medium">
+                  <span className="block text-xs font-bold text-slate-800 dark:text-white">Buy Trades</span>
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400 font-medium">
                     {directionBreakdown.buyCount} Trades • {directionBreakdown.buyPct}%
                   </span>
                 </div>
               </div>
 
               {/* Sell Trades Box */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-rose-50/50 border border-rose-100/60 hover:shadow-2xs hover:bg-rose-50/80 transition-all cursor-pointer">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-rose-50/50 dark:bg-rose-950/40 border border-rose-100/60 dark:border-rose-800/50 hover:shadow-2xs hover:bg-rose-50/80 dark:hover:bg-rose-900/40 transition-all cursor-pointer">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-400">
                   <ShoppingCart className="h-5 w-5 stroke-[2.2]" />
                 </div>
                 <div>
-                  <span className="block text-xs font-bold text-slate-800">Sell Trades</span>
-                  <span className="font-mono text-xs text-slate-500 font-medium">
+                  <span className="block text-xs font-bold text-slate-800 dark:text-white">Sell Trades</span>
+                  <span className="font-mono text-xs text-slate-500 dark:text-slate-400 font-medium">
                     {directionBreakdown.sellCount} Trades • {directionBreakdown.sellPct}%
                   </span>
                 </div>
@@ -425,26 +425,26 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Right: Performance by Day of Week */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 dark:hover:border-slate-700 transition-all duration-200 group">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-2xs group-hover:scale-110 transition-transform">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 shadow-2xs group-hover:scale-110 transition-transform">
                   <Calendar className="h-4 w-4 stroke-[2.2]" />
                 </div>
-                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                <h3 className="font-bold text-sm text-slate-800 dark:text-white font-sans">
                   Performance by Day of Week
                 </h3>
               </div>
 
-              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 text-slate-400 group-hover:text-emerald-700 group-hover:bg-emerald-50 transition-all cursor-pointer group-hover:scale-110 shadow-2xs">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 text-slate-400 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/60 transition-all cursor-pointer group-hover:scale-110 shadow-2xs">
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </div>
             </div>
 
             <div className="grid grid-cols-7 gap-1.5 py-4 text-center">
               {weekdayStats.map((item) => (
-                <div key={item.day} className="rounded-xl bg-slate-50/80 p-2 border border-slate-100 hover:bg-emerald-50/60 transition-colors cursor-pointer">
-                  <span className="block text-[11px] font-bold text-slate-600">{item.day}</span>
+                <div key={item.day} className="rounded-xl bg-slate-50/80 dark:bg-slate-900/80 p-2 border border-slate-100 dark:border-slate-800 hover:bg-emerald-50/60 dark:hover:bg-slate-800/60 transition-colors cursor-pointer">
+                  <span className="block text-[11px] font-bold text-slate-600 dark:text-slate-300">{item.day}</span>
                   <span className="font-mono text-xs font-semibold text-slate-400">{item.pct}%</span>
                 </div>
               ))}

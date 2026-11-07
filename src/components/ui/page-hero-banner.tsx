@@ -28,7 +28,7 @@ export function PageHeroBanner({
   return (
     <div
       className={cn(
-        'relative overflow-hidden rounded-3xl border border-[#a7f3d0] bg-gradient-to-r from-[#dcfce7]/95 via-[#f0fdf4]/80 to-[#ecfdf5]/95 px-6 py-5 shadow-xs select-none',
+        'relative overflow-hidden rounded-3xl border border-[#a7f3d0] dark:border-emerald-800/40 bg-gradient-to-r from-[#dcfce7]/95 via-[#f0fdf4]/80 to-[#ecfdf5]/95 dark:from-[#06241b] dark:via-[#091b15] dark:to-[#07241c] px-6 py-5 shadow-xs select-none transition-colors duration-200',
         className
       )}
     >
@@ -164,10 +164,10 @@ export function PageHeroBanner({
           ) : null}
 
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 font-sans truncate">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white font-sans truncate">
               {title}
             </h1>
-            <p className="text-xs sm:text-[13px] text-slate-600 mt-0.5 max-w-xl font-medium leading-relaxed">
+            <p className="text-xs sm:text-[13px] text-slate-600 dark:text-emerald-200/70 mt-0.5 max-w-xl font-medium leading-relaxed">
               {subtitle}
             </p>
           </div>
@@ -186,9 +186,9 @@ export function PageHeroBanner({
 
           {quote && (
             <>
-              <div className="hidden lg:block h-10 w-[1px] bg-slate-300/60" />
+              <div className="hidden lg:block h-10 w-[1px] bg-slate-300/60 dark:bg-slate-700/60" />
               <div className="hidden lg:flex flex-col text-right">
-                <span className="text-sm sm:text-base font-serif italic text-slate-800 tracking-wide font-bold">
+                <span className="text-sm sm:text-base font-serif italic text-slate-800 dark:text-emerald-100 tracking-wide font-bold">
                   &ldquo;{quote}&rdquo;
                 </span>
               </div>

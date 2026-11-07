@@ -127,24 +127,24 @@ export default function ReportsPage() {
         </div>
 
         {/* 2. Official Statement Document Presentation Matching Screenshot 5 */}
-        <div className="relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-7 sm:p-9 shadow-xs print:shadow-none print:border-none print:p-0">
+        <div className="relative overflow-hidden rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-7 sm:p-9 shadow-xs print:shadow-none print:border-none print:p-0 transition-colors duration-200">
           {/* Document Header Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-6">
             <div>
               <div className="flex items-center gap-3">
-                <span className="font-extrabold text-2xl text-slate-900 font-sans tracking-tight">
+                <span className="font-extrabold text-2xl text-slate-900 dark:text-white font-sans tracking-tight">
                   KILAJO
                 </span>
                 <span className="rounded-full bg-[#064e3b] text-white font-bold text-[10px] px-3 py-0.5 tracking-wider uppercase">
                   OFFICIAL STATEMENT
                 </span>
               </div>
-              <p className="text-xs text-slate-500 font-medium mt-1">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
                 Universal Trading Performance Audit Report
               </p>
             </div>
 
-            <div className="flex flex-col sm:items-end text-xs text-slate-600 space-y-1 font-medium">
+            <div className="flex flex-col sm:items-end text-xs text-slate-600 dark:text-slate-300 space-y-1 font-medium">
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5 text-slate-400" />
                 <span>Generated: {currentDateFormatted}</span>
@@ -154,7 +154,7 @@ export default function ReportsPage() {
               </div>
               <div className="flex items-center gap-1">
                 <span>Currency:</span>
-                <span className="font-bold text-slate-800 font-mono">{selectedCurrency}</span>
+                <span className="font-bold text-slate-800 dark:text-white font-mono">{selectedCurrency}</span>
                 <ChevronDown className="h-3 w-3 text-slate-400 stroke-[2.5]" />
               </div>
             </div>
@@ -163,8 +163,8 @@ export default function ReportsPage() {
           {/* Section 1: Executive Performance Summary */}
           <div className="py-6">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="h-4 w-4 text-emerald-700 stroke-[2.5]" />
-              <h3 className="font-bold text-xs sm:text-sm text-slate-900 font-sans uppercase tracking-wider">
+              <TrendingUp className="h-4 w-4 text-emerald-700 dark:text-emerald-400 stroke-[2.5]" />
+              <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-sans uppercase tracking-wider">
                 1. EXECUTIVE PERFORMANCE SUMMARY
               </h3>
             </div>
@@ -237,14 +237,14 @@ export default function ReportsPage() {
           {/* Section 2: Executed Trades */}
           <div className="pt-2">
             <div className="flex items-center gap-2 mb-4">
-              <FileText className="h-4 w-4 text-emerald-700 stroke-[2.5]" />
-              <h3 className="font-bold text-xs sm:text-sm text-slate-900 font-sans uppercase tracking-wider">
+              <FileText className="h-4 w-4 text-emerald-700 dark:text-emerald-400 stroke-[2.5]" />
+              <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-sans uppercase tracking-wider">
                 2. EXECUTED TRADES ({filteredTrades.length} RECORDS)
               </h3>
             </div>
 
             {/* Table Header Bar */}
-            <div className="grid grid-cols-7 rounded-2xl bg-slate-50/90 border border-slate-100 px-5 py-3 text-xs font-bold text-slate-600">
+            <div className="grid grid-cols-7 rounded-2xl bg-slate-50/90 dark:bg-slate-900/90 border border-slate-100 dark:border-slate-800 px-5 py-3 text-xs font-bold text-slate-600 dark:text-slate-300">
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3.5 w-3.5 text-slate-400" />
                 <span>Date</span>
@@ -276,38 +276,38 @@ export default function ReportsPage() {
             {/* Table Body / Empty State Matching Screenshot 5 */}
             {filteredTrades.length === 0 ? (
               <div className="relative p-12 flex flex-col items-center justify-center text-center">
-                <div className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 shadow-inner">
-                  <FileText className="h-7 w-7 text-emerald-600 stroke-[2.2]" />
+                <div className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 shadow-inner">
+                  <FileText className="h-7 w-7 text-emerald-600 dark:text-emerald-400 stroke-[2.2]" />
                   <div className="absolute bottom-0 right-0 h-4 w-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px]">
                     ✓
                   </div>
                 </div>
 
-                <h4 className="text-sm font-bold text-slate-800">No trades found</h4>
-                <p className="text-xs text-slate-500 mt-1 font-medium">
+                <h4 className="text-sm font-bold text-slate-800 dark:text-white">No trades found</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
                   Your trading activity will appear here once you execute trades.
                 </p>
 
                 {/* Soft Mint Wave at bottom */}
-                <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none opacity-30">
-                  <svg className="w-full h-full text-emerald-300" viewBox="0 0 600 40" preserveAspectRatio="none">
+                <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none opacity-30 dark:opacity-10">
+                  <svg className="w-full h-full text-emerald-300 dark:text-emerald-700" viewBox="0 0 600 40" preserveAspectRatio="none">
                     <path d="M0,20 C150,40 350,5 600,25 L600,40 L0,40 Z" fill="currentColor" />
                   </svg>
                 </div>
               </div>
             ) : (
-              <div className="divide-y divide-slate-100 border-x border-b border-slate-100 rounded-b-2xl">
+              <div className="divide-y divide-slate-100 dark:divide-slate-800 border-x border-b border-slate-100 dark:border-slate-800 rounded-b-2xl">
                 {filteredTrades.slice(0, 30).map((t) => (
-                  <div key={t.id} className="grid grid-cols-7 px-5 py-3 text-xs font-medium text-slate-700 hover:bg-slate-50/70">
-                    <span className="font-mono text-slate-500">{formatDate(t.exit_time || t.entry_time)}</span>
-                    <span className="font-bold font-mono text-slate-900">{t.symbol}</span>
-                    <span className={`font-bold font-mono text-[11px] ${t.direction === 'BUY' ? 'text-emerald-700' : 'text-rose-700'}`}>
+                  <div key={t.id} className="grid grid-cols-7 px-5 py-3 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50/70 dark:hover:bg-slate-800/60">
+                    <span className="font-mono text-slate-500 dark:text-slate-400">{formatDate(t.exit_time || t.entry_time)}</span>
+                    <span className="font-bold font-mono text-slate-900 dark:text-white">{t.symbol}</span>
+                    <span className={`font-bold font-mono text-[11px] ${t.direction === 'BUY' ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`}>
                       {t.direction}
                     </span>
                     <span className="font-mono">{t.quantity}</span>
                     <span className="font-mono">{t.entry_price}</span>
                     <span className="font-mono">{t.exit_price ?? '—'}</span>
-                    <span className={`font-mono font-bold text-right ${Number(t.net_pnl) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    <span className={`font-mono font-bold text-right ${Number(t.net_pnl) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                       {formatCurrency(t.net_pnl, currency, true)}
                     </span>
                   </div>

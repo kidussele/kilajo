@@ -135,16 +135,16 @@ export default function CalendarPage() {
             </div>
           }
           middleContent={
-            <div className="flex items-center gap-2 rounded-full border border-slate-200/90 bg-white px-3.5 py-1.5 shadow-2xs">
-              <button onClick={prevMonth} className="text-slate-500 hover:text-slate-900 cursor-pointer p-0.5 rounded-full hover:bg-slate-100 transition-colors">
+            <div className="flex items-center gap-2 rounded-full border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1.5 shadow-2xs">
+              <button onClick={prevMonth} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer p-0.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                 <ChevronLeft className="h-4 w-4" />
               </button>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-                <Calendar className="h-3.5 w-3.5 text-emerald-700 stroke-[2.2]" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-white">
+                <Calendar className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 stroke-[2.2]" />
                 <span>{monthName}</span>
                 <ChevronDown className="h-3 w-3 text-slate-400 stroke-[2.5]" />
               </div>
-              <button onClick={nextMonth} className="text-slate-500 hover:text-slate-900 cursor-pointer p-0.5 rounded-full hover:bg-slate-100 transition-colors">
+              <button onClick={nextMonth} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer p-0.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -206,32 +206,32 @@ export default function CalendarPage() {
         </div>
 
         {/* 3. Main Calendar Card Matching Screenshot 4 */}
-        <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs overflow-hidden">
+        <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs overflow-hidden transition-colors duration-200">
           {/* Top Control Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
                 <button
                   onClick={prevMonth}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={nextMonth}
-                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
-              <h2 className="text-base font-bold text-slate-900 font-sans">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white font-sans">
                 {monthName}
               </h2>
             </div>
 
             <div className="flex items-center gap-3">
               {/* Legend */}
-              <div className="flex items-center gap-3 text-xs font-semibold text-slate-600">
+              <div className="flex items-center gap-3 text-xs font-semibold text-slate-600 dark:text-slate-400">
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
                   <span>Win</span>
@@ -258,7 +258,7 @@ export default function CalendarPage() {
           </div>
 
           {/* Weekday Labels (Soft mint background with dark green font) */}
-          <div className="grid grid-cols-7 rounded-t-2xl bg-emerald-50/80 text-center text-xs font-bold text-[#064e3b] py-2.5 border border-emerald-100/80">
+          <div className="grid grid-cols-7 rounded-t-2xl bg-emerald-50/80 dark:bg-emerald-950/60 text-center text-xs font-bold text-[#064e3b] dark:text-emerald-300 py-2.5 border border-emerald-100/80 dark:border-emerald-800/50">
             <span>SUN</span>
             <span>MON</span>
             <span>TUE</span>
@@ -269,10 +269,10 @@ export default function CalendarPage() {
           </div>
 
           {/* Days Grid */}
-          <div className="grid grid-cols-7 divide-x divide-y divide-slate-100 border-x border-b border-slate-100">
+          <div className="grid grid-cols-7 divide-x divide-y divide-slate-100 dark:divide-slate-800 border-x border-b border-slate-100 dark:border-slate-800">
             {calendarDays.map((item, idx) => {
               if (!item) {
-                return <div key={`empty-${idx}`} className="h-24 bg-slate-50/20 p-2" />
+                return <div key={`empty-${idx}`} className="h-24 bg-slate-50/20 dark:bg-slate-900/20 p-2" />
               }
 
               const dayData = dailyDataMap.get(item.dateStr)
@@ -289,12 +289,12 @@ export default function CalendarPage() {
                   } ${
                     hasTrades
                       ? isPositive
-                        ? 'bg-emerald-50/60 hover:bg-emerald-100/70'
-                        : 'bg-rose-50/60 hover:bg-rose-100/70'
-                      : 'hover:bg-slate-50/90'
+                        ? 'bg-emerald-50/60 dark:bg-emerald-950/50 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/50'
+                        : 'bg-rose-50/60 dark:bg-rose-950/50 hover:bg-rose-100/70 dark:hover:bg-rose-900/50'
+                      : 'hover:bg-slate-50/90 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <span className="font-mono text-xs font-bold text-slate-800">
+                  <span className="font-mono text-xs font-bold text-slate-800 dark:text-slate-200">
                     {item.day}
                   </span>
 
@@ -302,18 +302,18 @@ export default function CalendarPage() {
                     <div>
                       <div
                         className={`font-mono text-xs font-extrabold ${
-                          isPositive ? 'text-emerald-700' : isNegative ? 'text-rose-700' : 'text-slate-600'
+                          isPositive ? 'text-emerald-700 dark:text-emerald-400' : isNegative ? 'text-rose-700 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400'
                         }`}
                       >
                         {formatCurrency(dayData.netPnl, currency, true)}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-medium">
+                      <div className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
                         {dayData.count} {dayData.count === 1 ? 'trade' : 'trades'}
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1 text-[11px] text-slate-300 font-medium pb-1">
-                      <Calendar className="h-3 w-3 text-slate-300" />
+                    <div className="flex items-center gap-1 text-[11px] text-slate-300 dark:text-slate-600 font-medium pb-1">
+                      <Calendar className="h-3 w-3 text-slate-300 dark:text-slate-600" />
                       <span>No activity</span>
                     </div>
                   )}
@@ -324,9 +324,9 @@ export default function CalendarPage() {
         </div>
 
         {/* 4. Bottom Callout Banner Matching Screenshot 4 */}
-        <div className="relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-r from-emerald-50/90 via-teal-50/40 to-emerald-100/30 p-5 shadow-xs flex items-center justify-between gap-4">
+        <div className="relative overflow-hidden rounded-3xl border border-emerald-100 dark:border-emerald-900/50 bg-gradient-to-r from-emerald-50/90 via-teal-50/40 to-emerald-100/30 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-900 p-5 shadow-xs flex items-center justify-between gap-4">
           {/* Subtle Candlestick Background */}
-          <div className="absolute inset-0 pointer-events-none opacity-20 flex items-center justify-around px-24">
+          <div className="absolute inset-0 pointer-events-none opacity-20 dark:opacity-10 flex items-center justify-around px-24">
             <div className="h-8 w-2 bg-emerald-600 rounded-xs" />
             <div className="h-12 w-2 bg-emerald-600 rounded-xs" />
             <div className="h-10 w-2 bg-emerald-600 rounded-xs" />
@@ -335,16 +335,16 @@ export default function CalendarPage() {
           </div>
 
           <div className="relative z-10 flex items-center gap-3.5">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white border-2 border-emerald-800/80 shadow-xs">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800">
-                <Target className="h-5 w-5 text-emerald-800 stroke-[2.5]" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white dark:bg-slate-800 border-2 border-emerald-800/80 dark:border-emerald-500 shadow-xs">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400">
+                <Target className="h-5 w-5 text-emerald-800 dark:text-emerald-400 stroke-[2.5]" />
               </div>
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900 font-sans">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white font-sans">
                 Stay Consistent!
               </h4>
-              <p className="text-xs text-slate-600 mt-0.5 font-medium">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
                 Log your trades daily to unlock deeper insights and achieve your goals.
               </p>
             </div>

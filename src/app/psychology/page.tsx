@@ -130,21 +130,21 @@ export default function PsychologyPage() {
         </div>
 
         {/* Mind & Discipline Overview Main Section */}
-        <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-7 shadow-xs space-y-6">
+        <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-6 sm:p-7 shadow-xs space-y-6">
           {/* Header Strip: Title + Timeframe Pills */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-5">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-5">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-[#064e3b]">
-                <svg className="h-4 w-4 fill-[#064e3b]" viewBox="0 0 24 24">
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-[#064e3b] dark:text-emerald-400">
+                <svg className="h-4 w-4 fill-[#064e3b] dark:fill-emerald-400" viewBox="0 0 24 24">
                   <path d="M12 2C11 6 7 10 3 11C7 12 11 16 12 20C13 16 17 12 21 11C17 10 13 6 12 2Z" />
                 </svg>
               </div>
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                 Mind & Discipline Overview
               </h2>
             </div>
 
-            <div className="flex items-center gap-1.5 p-1 rounded-full bg-slate-50 border border-slate-100 text-xs">
+            <div className="flex items-center gap-1.5 p-1 rounded-full bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-xs">
               <button
                 type="button"
                 className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] px-3.5 py-1.5 font-semibold text-white shadow-2xs cursor-pointer"
@@ -154,19 +154,19 @@ export default function PsychologyPage() {
               </button>
               <button
                 type="button"
-                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-colors cursor-pointer"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 Last 90 Days
               </button>
               <button
                 type="button"
-                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-colors hidden sm:inline-block cursor-pointer"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors hidden sm:inline-block cursor-pointer"
               >
                 Last 6 Months
               </button>
               <button
                 type="button"
-                className="rounded-full px-3 py-1.5 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-colors cursor-pointer"
+                className="rounded-full px-3 py-1.5 font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 All Time
               </button>
@@ -180,8 +180,8 @@ export default function PsychologyPage() {
               <div className="relative flex items-center justify-center py-2">
                 <svg className="w-56 h-56" viewBox="0 0 240 240" fill="none">
                   {/* Soft aura background */}
-                  <circle cx="120" cy="120" r="85" fill="#ecfdf5" />
-                  <circle cx="120" cy="120" r="70" stroke="#a7f3d0" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <circle cx="120" cy="120" r="85" fill="#ecfdf5" className="dark:fill-emerald-950/40" />
+                  <circle cx="120" cy="120" r="70" stroke="#a7f3d0" strokeWidth="1.5" strokeDasharray="3 3" className="dark:stroke-emerald-800/40" />
 
                   {/* Green Foliage Leaves behind trader */}
                   <g fill="#10b981" opacity="0.9">
@@ -221,18 +221,18 @@ export default function PsychologyPage() {
             </div>
 
             {/* Middle 5 Cols: Dashed Reflection Box */}
-            <div className="lg:col-span-5 rounded-3xl border-2 border-dashed border-emerald-300/80 bg-gradient-to-b from-emerald-50/50 via-teal-50/30 to-emerald-50/50 p-6 sm:p-8 flex flex-col items-center justify-center text-center">
-              <div className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100/90 text-emerald-700">
+            <div className="lg:col-span-5 rounded-3xl border-2 border-dashed border-emerald-300/80 dark:border-slate-800 bg-gradient-to-b from-emerald-50/50 via-teal-50/30 to-emerald-50/50 dark:bg-none dark:bg-slate-900/60 p-6 sm:p-8 flex flex-col items-center justify-center text-center">
+              <div className="relative mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100/90 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">
                 <Brain className="h-7 w-7 stroke-[2]" />
                 <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px]">
                   ♥
                 </span>
               </div>
 
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 No psychology reflections logged yet!
               </h3>
-              <p className="mt-1 text-xs text-slate-500 max-w-xs font-medium leading-relaxed">
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-xs font-medium leading-relaxed">
                 Take a moment to reflect on your trading journey, mindset, and emotional state.
               </p>
 
@@ -247,37 +247,37 @@ export default function PsychologyPage() {
             </div>
 
             {/* Right 3 Cols: Mindset Tips Card */}
-            <div className="lg:col-span-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-5 space-y-3">
-              <div className="flex items-center gap-2 text-slate-900">
-                <Lightbulb className="h-4 w-4 text-emerald-600" />
+            <div className="lg:col-span-3 rounded-2xl border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 p-5 space-y-3">
+              <div className="flex items-center gap-2 text-slate-900 dark:text-white">
+                <Lightbulb className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 <h4 className="text-xs font-bold uppercase tracking-wider">Mindset Tips</h4>
               </div>
 
-              <ul className="space-y-2.5 text-xs text-slate-600 font-medium">
+              <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 font-medium">
                 <li className="flex items-start gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 stroke-[2.5]" />
                   <span>Stay calm during drawdowns.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 stroke-[2.5]" />
                   <span>Follow your trading plan.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 stroke-[2.5]" />
                   <span>Control emotions, avoid revenge trading.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 stroke-[2.5]" />
                   <span>Focus on progress, not perfection.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5 stroke-[2.5]" />
+                  <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5 stroke-[2.5]" />
                   <span>Take breaks and enjoy life.</span>
                 </li>
               </ul>
 
-              <div className="pt-2 border-t border-slate-200/60 text-center">
-                <span className="text-xs font-serif italic font-bold text-emerald-700">
+              <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 text-center">
+                <span className="text-xs font-serif italic font-bold text-emerald-700 dark:text-emerald-400">
                   Discipline = Success
                 </span>
               </div>
@@ -287,56 +287,56 @@ export default function PsychologyPage() {
 
         {/* Bottom Navigation Ribbon (4 cards) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-4 shadow-xs hover:border-emerald-200 dark:hover:border-slate-700 transition-all cursor-pointer group">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
                 <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Build Discipline</p>
-                <p className="text-[11px] text-slate-500">Stick to your plan consistently.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">Build Discipline</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Stick to your plan consistently.</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-700 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors" />
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-4 shadow-xs hover:border-emerald-200 dark:hover:border-slate-700 transition-all cursor-pointer group">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white">
                 <Smile className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Manage Emotions</p>
-                <p className="text-[11px] text-slate-500">Trade with a calm mind.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">Manage Emotions</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">Trade with a calm mind.</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-700 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors" />
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-4 shadow-xs hover:border-emerald-200 dark:hover:border-slate-700 transition-all cursor-pointer group">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white">
                 <TrendingUp className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Track Progress</p>
-                <p className="text-[11px] text-slate-500">See your improvement.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">Track Progress</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">See your improvement.</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-emerald-700 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors" />
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-4 shadow-xs hover:border-emerald-200 transition-all cursor-pointer group">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-4 shadow-xs hover:border-emerald-200 dark:hover:border-slate-700 transition-all cursor-pointer group">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white">
                 <Trophy className="h-4 w-4 stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-800">Achieve Your Goals</p>
-                <p className="text-[11px] text-slate-500">With discipline and focus.</p>
+                <p className="text-xs font-bold text-slate-800 dark:text-white">Achieve Your Goals</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">With discipline and focus.</p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-amber-700 transition-colors" />
+            <ChevronRight className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors" />
           </div>
         </div>
 

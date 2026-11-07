@@ -155,19 +155,19 @@ export default function DashboardPage() {
         {/* 4. Main Interactive Charts Area (2/3 and 1/3) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {/* Left: Cumulative Equity & Balance Curve */}
-          <div className="lg:col-span-2 rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100/80">
+          <div className="lg:col-span-2 rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs flex flex-col justify-between transition-colors duration-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100/80 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">
                   <Scale className="h-4 w-4 stroke-[2.2]" />
                 </div>
-                <h3 className="font-bold text-sm font-sans text-slate-800">
+                <h3 className="font-bold text-sm font-sans text-slate-800 dark:text-white">
                   Cumulative Equity & Balance Curve
                 </h3>
               </div>
 
               {/* Timeframe Filter Pills */}
-              <div className="flex items-center gap-1 rounded-xl bg-slate-50 p-1 border border-slate-100 text-[11px] font-semibold text-slate-500">
+              <div className="flex items-center gap-1 rounded-xl bg-slate-50 dark:bg-slate-900 p-1 border border-slate-100 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                 {['1D', '1W', '1M', '3M', '6M', '1Y', 'ALL'].map((tf) => (
                   <button
                     key={tf}
@@ -175,7 +175,7 @@ export default function DashboardPage() {
                     className={`rounded-lg px-2.5 py-1 transition-all cursor-pointer ${
                       activeTimeframe === tf
                         ? 'bg-[#064e3b] text-white shadow-xs font-bold'
-                        : 'hover:text-slate-900 hover:bg-slate-200/60'
+                        : 'hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800'
                     }`}
                   >
                     {tf}
@@ -198,20 +198,20 @@ export default function DashboardPage() {
         {/* 5. Bottom Summary Cards Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Top Traded Instruments */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 dark:hover:border-slate-700 transition-all duration-200 group">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 shadow-2xs group-hover:scale-110 transition-transform">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 shadow-2xs group-hover:scale-110 transition-transform">
                   <TrendingUp className="h-4 w-4 stroke-[2.2]" />
                 </div>
-                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                <h3 className="font-bold text-sm text-slate-800 dark:text-white font-sans">
                   Top Traded Instruments
                 </h3>
               </div>
 
               <Link
                 href="/analytics"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-emerald-700 transition-all cursor-pointer hover:scale-110 shadow-2xs"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 transition-all cursor-pointer hover:scale-110 shadow-2xs"
               >
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </Link>
@@ -232,24 +232,24 @@ export default function DashboardPage() {
                       <line x1="30.75" y1="4" x2="30.75" y2="20" stroke="currentColor" strokeWidth="1.2" />
                     </svg>
                   </div>
-                  <span className="font-medium text-slate-500">No trades yet. Start trading to see your most traded pairs.</span>
+                  <span className="font-medium text-slate-500 dark:text-slate-400">No trades yet. Start trading to see your most traded pairs.</span>
                 </div>
               ) : (
                 <div className="w-full space-y-2.5">
                   {symbolBreakdown.map((item) => (
                     <div
                       key={item.category}
-                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70 hover:bg-emerald-50/50 transition-colors cursor-pointer"
+                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70 dark:bg-slate-900/60 hover:bg-emerald-50/50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-800 font-mono">{item.category}</span>
+                        <span className="font-bold text-slate-800 dark:text-white font-mono">{item.category}</span>
                         <span className="text-[10px] text-slate-400 font-semibold">
                           ({item.tradesCount} trades)
                         </span>
                       </div>
                       <span
                         className={`font-mono font-bold ${
-                          item.netPnl >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                          item.netPnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                         }`}
                       >
                         {formatCurrency(item.netPnl, currency, true)}
@@ -262,20 +262,20 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Executed Trades */}
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 transition-all duration-200 group">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800/90 bg-white dark:bg-[#0c141c] p-5 shadow-xs flex flex-col justify-between hover:shadow-md hover:border-slate-200/80 dark:hover:border-slate-700 transition-all duration-200 group">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 text-purple-700 shadow-2xs group-hover:scale-110 transition-transform">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400 shadow-2xs group-hover:scale-110 transition-transform">
                   <Clock className="h-4 w-4 stroke-[2.2]" />
                 </div>
-                <h3 className="font-bold text-sm text-slate-800 font-sans">
+                <h3 className="font-bold text-sm text-slate-800 dark:text-white font-sans">
                   Recent Executed Trades
                 </h3>
               </div>
 
               <Link
                 href="/journal"
-                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 hover:bg-purple-50 text-slate-500 hover:text-purple-700 transition-all cursor-pointer hover:scale-110 shadow-2xs"
+                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-900 hover:bg-purple-50 dark:hover:bg-purple-950/60 text-slate-500 dark:text-slate-400 hover:text-purple-700 dark:hover:text-purple-400 transition-all cursor-pointer hover:scale-110 shadow-2xs"
               >
                 <ArrowUpRight className="h-4 w-4 stroke-[2.5]" />
               </Link>
@@ -284,33 +284,33 @@ export default function DashboardPage() {
             <div className="py-5 min-h-[120px] flex items-center justify-center">
               {filteredTrades.length === 0 ? (
                 <div className="flex items-center gap-3 text-slate-400 text-xs">
-                  <div className="flex h-10 w-8 items-center justify-center rounded-lg bg-purple-50 text-purple-400 border border-purple-200/60 shadow-2xs">
+                  <div className="flex h-10 w-8 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-400 border border-purple-200/60 dark:border-purple-800/60 shadow-2xs">
                     <FileText className="h-5 w-5 text-purple-400 stroke-[1.8]" />
                   </div>
-                  <span className="font-medium text-slate-500">Your latest trades will appear here once you start trading.</span>
+                  <span className="font-medium text-slate-500 dark:text-slate-400">Your latest trades will appear here once you start trading.</span>
                 </div>
               ) : (
                 <div className="w-full space-y-2">
                   {filteredTrades.slice(0, 3).map((t) => (
                     <div
                       key={t.id}
-                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70"
+                      className="flex items-center justify-between text-xs p-2 rounded-xl bg-slate-50/70 dark:bg-slate-900/60"
                     >
                       <div className="flex items-center gap-2">
                         <span
                           className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                             t.direction === 'BUY'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-rose-100 text-rose-800'
+                              ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300'
+                              : 'bg-rose-100 dark:bg-rose-950/70 text-rose-800 dark:text-rose-300'
                           }`}
                         >
                           {t.direction}
                         </span>
-                        <span className="font-bold text-slate-800 font-mono">{t.symbol}</span>
+                        <span className="font-bold text-slate-800 dark:text-white font-mono">{t.symbol}</span>
                       </div>
                       <span
                         className={`font-mono font-bold ${
-                          Number(t.net_pnl || 0) >= 0 ? 'text-emerald-600' : 'text-rose-600'
+                          Number(t.net_pnl || 0) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                         }`}
                       >
                         {formatCurrency(Number(t.net_pnl || 0), currency, true)}

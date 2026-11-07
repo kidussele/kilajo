@@ -199,9 +199,9 @@ export default function ImportPage() {
             <button
               type="button"
               onClick={handleDownloadSample}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/95 px-5 py-2.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-white transition-all hover:border-slate-300 cursor-pointer hover:shadow-xs"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 px-5 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 shadow-2xs hover:bg-white dark:hover:bg-slate-800 transition-all hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer hover:shadow-xs"
             >
-              <Download className="h-4 w-4 text-emerald-800" />
+              <Download className="h-4 w-4 text-emerald-800 dark:text-emerald-400" />
               <span>Download Sample CSV</span>
               <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
             </button>
@@ -209,17 +209,17 @@ export default function ImportPage() {
         />
 
         {/* Step Indicator */}
-        <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-3 rounded-full sm:rounded-2xl border border-slate-100 bg-white shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-3 rounded-full sm:rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] shadow-xs">
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 1 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+              step === 1 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 1 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+                step === 1 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
               )}
             >
               1
@@ -228,18 +228,18 @@ export default function ImportPage() {
             <span>Upload File</span>
           </div>
 
-          <span className="text-slate-300 font-bold">&gt;</span>
+          <span className="text-slate-300 dark:text-slate-600 font-bold">&gt;</span>
 
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 2 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+              step === 2 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 2 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+                step === 2 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
               )}
             >
               2
@@ -248,18 +248,18 @@ export default function ImportPage() {
             <span>Map Columns</span>
           </div>
 
-          <span className="text-slate-300 font-bold">&gt;</span>
+          <span className="text-slate-300 dark:text-slate-600 font-bold">&gt;</span>
 
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 3 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+              step === 3 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 3 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+                step === 3 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
               )}
             >
               3
@@ -268,18 +268,18 @@ export default function ImportPage() {
             <span>Validate & Preview</span>
           </div>
 
-          <span className="text-slate-300 font-bold">&gt;</span>
+          <span className="text-slate-300 dark:text-slate-600 font-bold">&gt;</span>
 
           <div
             className={cn(
               'flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors',
-              step === 4 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600'
+              step === 4 ? 'bg-[#064e3b] text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'
             )}
           >
             <span
               className={cn(
                 'flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold',
-                step === 4 ? 'bg-white/20 text-white' : 'border border-slate-300 text-slate-500'
+                step === 4 ? 'bg-white/20 text-white' : 'border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400'
               )}
             >
               4
@@ -300,23 +300,23 @@ export default function ImportPage() {
             )}
 
             {/* Main Upload Card */}
-            <div className="rounded-3xl border border-slate-100 bg-white p-6 sm:p-8 shadow-xs space-y-5">
+            <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-6 sm:p-8 shadow-xs space-y-5">
               {/* Target Account Selector */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Database className="h-4 w-4 text-[#064e3b] fill-[#064e3b]" />
-                  <label className="text-xs sm:text-sm font-bold text-slate-900">
+                  <Database className="h-4 w-4 text-[#064e3b] dark:text-emerald-400 fill-[#064e3b] dark:fill-emerald-400" />
+                  <label className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
                     Select Target Trading Account *
                   </label>
                 </div>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-700">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-700 dark:text-slate-400">
                     <Briefcase className="h-4 w-4" />
                   </div>
                   <select
                     value={selectedAccountId}
                     onChange={(e) => setSelectedAccountId(e.target.value)}
-                    className="w-full appearance-none rounded-xl border border-slate-200/90 bg-white py-3 pl-11 pr-10 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs hover:border-slate-300 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 cursor-pointer"
+                    className="w-full appearance-none rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 py-3 pl-11 pr-10 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 cursor-pointer"
                   >
                     {accounts.length === 0 ? (
                       <option value="">No accounts available. Create an account first.</option>
@@ -339,10 +339,10 @@ export default function ImportPage() {
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className="relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-300/80 bg-gradient-to-b from-emerald-50/50 via-teal-50/30 to-emerald-50/50 p-10 sm:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:border-emerald-500 hover:shadow-xs group"
+                className="relative overflow-hidden rounded-3xl border-2 border-dashed border-emerald-300/80 dark:border-emerald-700/60 bg-gradient-to-b from-emerald-50/50 via-teal-50/30 to-emerald-50/50 dark:from-emerald-950/20 dark:via-slate-900/40 dark:to-emerald-950/20 p-10 sm:p-14 flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:border-emerald-500 hover:shadow-xs group"
               >
                 {/* Soft wave decorations at the bottom */}
-                <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40">
+                <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40 dark:opacity-10">
                   <svg className="w-full h-full" viewBox="0 0 600 60" preserveAspectRatio="none">
                     <path d="M0,40 C150,15 350,60 600,30 L600,60 L0,60 Z" fill="#10b981" fillOpacity="0.12" />
                     <path d="M0,50 C200,30 400,65 600,45 L600,60 L0,60 Z" fill="#059669" fillOpacity="0.18" />
@@ -374,10 +374,10 @@ export default function ImportPage() {
                   </svg>
                 </div>
 
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-emerald-800 transition-colors">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-800 dark:group-hover:text-emerald-400 transition-colors">
                   Click to upload or drag & drop statement
                 </h3>
-                <p className="mt-1 text-xs text-slate-500 max-w-md font-medium leading-relaxed">
+                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 max-w-md font-medium leading-relaxed">
                   Supports MetaTrader 4/5 reports, cTrader statements, TradingView export, and broker CSV files.
                 </p>
 
@@ -386,9 +386,9 @@ export default function ImportPage() {
                   {['CSV', 'TXT', 'XLSX', 'PDF'].map((fmt) => (
                     <span
                       key={fmt}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200/70 bg-emerald-50/80 px-3 py-1.5 text-xs font-semibold text-emerald-800 shadow-2xs"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200/70 dark:border-emerald-800/60 bg-emerald-50/80 dark:bg-emerald-950/60 px-3 py-1.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300 shadow-2xs"
                     >
-                      <FileText className="h-3.5 w-3.5 text-emerald-600" />
+                      <FileText className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                       {fmt}
                     </span>
                   ))}
@@ -397,10 +397,10 @@ export default function ImportPage() {
             </div>
 
             {/* Bottom Feature Strip */}
-            <div className="relative overflow-hidden rounded-2xl border border-emerald-100 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 p-4 shadow-xs select-none">
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-100 dark:border-emerald-900/50 bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-emerald-50/70 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-900 p-4 shadow-xs select-none">
               {/* Ascending Bar Chart Watermark on Right */}
               <svg
-                className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 text-emerald-600"
+                className="absolute right-4 bottom-0 h-14 w-28 pointer-events-none opacity-20 dark:opacity-5 text-emerald-600"
                 viewBox="0 0 120 60"
                 fill="currentColor"
               >
@@ -411,14 +411,14 @@ export default function ImportPage() {
                 <rect x="90" y="0" width="12" height="60" rx="2" />
               </svg>
 
-              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 gap-3 sm:gap-0">
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200/70 dark:divide-slate-800 gap-3 sm:gap-0">
                 <div className="flex items-center gap-3 sm:px-4">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs">
                     <CheckCircle2 className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Supported Formats</p>
-                    <p className="text-[11px] text-slate-500 font-medium">CSV, XLSX, TXT, PDF files</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Supported Formats</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">CSV, XLSX, TXT, PDF files</p>
                   </div>
                 </div>
 
@@ -427,8 +427,8 @@ export default function ImportPage() {
                     <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Secure & Private</p>
-                    <p className="text-[11px] text-slate-500 font-medium">Your data is safe with us</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Secure & Private</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Your data is safe with us</p>
                   </div>
                 </div>
 
@@ -437,8 +437,8 @@ export default function ImportPage() {
                     <Zap className="h-4 w-4 stroke-[2.5] fill-white" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-slate-800">Fast Processing</p>
-                    <p className="text-[11px] text-slate-500 font-medium">Get insights in seconds</p>
+                    <p className="text-xs font-bold text-slate-800 dark:text-white">Fast Processing</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Get insights in seconds</p>
                   </div>
                 </div>
               </div>

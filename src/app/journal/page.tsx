@@ -183,15 +183,15 @@ export default function JournalPage() {
             </div>
           }
           middleContent={
-            <div className="flex items-center gap-2 rounded-full bg-white/60 p-1 border border-slate-200/80 shadow-2xs">
+            <div className="flex items-center gap-2 rounded-full bg-white/60 dark:bg-slate-900/80 p-1 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
               <button
                 onClick={handleExportCsv}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
-                <Download className="h-3.5 w-3.5 text-slate-600" />
+                <Download className="h-3.5 w-3.5 text-slate-600 dark:text-slate-300" />
                 <span>Export CSV</span>
               </button>
-              <div className="h-4 w-[1px] bg-slate-300" />
+              <div className="h-4 w-[1px] bg-slate-300 dark:bg-slate-700" />
               <button
                 onClick={() => router.push('/import')}
                 className="inline-flex items-center gap-1.5 rounded-full bg-[#064e3b] hover:bg-[#043c2e] text-white px-4 py-1.5 text-xs font-semibold shadow-xs transition-all hover:scale-105 cursor-pointer"
@@ -257,8 +257,8 @@ export default function JournalPage() {
           />
         </div>
 
-        {/* 3. Filter Bar (Single White Row Matching Screenshot) */}
-        <div className="flex flex-wrap items-center gap-2.5 bg-white p-3 rounded-2xl border border-slate-100 shadow-xs">
+        {/* 3. Filter Bar (Single Row Matching Screenshot) */}
+        <div className="flex flex-wrap items-center gap-2.5 bg-white dark:bg-[#0c141c] p-3 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-xs transition-colors duration-200">
           {/* Search Pill */}
           <div className="relative flex-1 min-w-[220px]">
             <Search className="absolute left-3.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
@@ -270,7 +270,7 @@ export default function JournalPage() {
                 setSearchQuery(e.target.value)
                 setCurrentPage(1)
               }}
-              className="w-full rounded-xl border border-slate-200/80 bg-slate-50/40 pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-emerald-700 focus:bg-white transition-all font-medium"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900 pl-9 pr-3 py-1.5 text-xs text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-700 focus:bg-white dark:focus:bg-slate-900 transition-all font-medium"
             />
           </div>
 
@@ -282,13 +282,13 @@ export default function JournalPage() {
                 setSelectedDirection(e.target.value as any)
                 setCurrentPage(1)
               }}
-              className="appearance-none rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 cursor-pointer"
+              className="appearance-none rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 pl-8 pr-7 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
             >
               <option value="ALL">Direction: All</option>
               <option value="BUY">BUY / LONG</option>
               <option value="SELL">SELL / SHORT</option>
             </select>
-            <ListFilter className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-700 stroke-[2.2] pointer-events-none" />
+            <ListFilter className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 stroke-[2.2] pointer-events-none" />
             <ChevronDown className="absolute right-2.5 top-2.5 h-3 w-3 text-slate-400 pointer-events-none" />
           </div>
 
@@ -300,13 +300,13 @@ export default function JournalPage() {
                 setSelectedStatus(e.target.value as any)
                 setCurrentPage(1)
               }}
-              className="appearance-none rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 cursor-pointer"
+              className="appearance-none rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 pl-8 pr-7 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
             >
               <option value="ALL">Status: All</option>
               <option value="CLOSED">CLOSED</option>
               <option value="OPEN">OPEN</option>
             </select>
-            <Layers className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-700 stroke-[2.2] pointer-events-none" />
+            <Layers className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 stroke-[2.2] pointer-events-none" />
             <ChevronDown className="absolute right-2.5 top-2.5 h-3 w-3 text-slate-400 pointer-events-none" />
           </div>
 
@@ -318,7 +318,7 @@ export default function JournalPage() {
                 setSelectedSession(e.target.value)
                 setCurrentPage(1)
               }}
-              className="appearance-none rounded-xl border border-slate-200/80 bg-white pl-8 pr-7 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 cursor-pointer"
+              className="appearance-none rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 pl-8 pr-7 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
             >
               <option value="ALL">Session: All</option>
               <option value="London">London</option>
@@ -326,13 +326,13 @@ export default function JournalPage() {
               <option value="London/NY Overlap">London/NY Overlap</option>
               <option value="Asian">Asian</option>
             </select>
-            <Calendar className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-700 stroke-[2.2] pointer-events-none" />
+            <Calendar className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 stroke-[2.2] pointer-events-none" />
             <ChevronDown className="absolute right-2.5 top-2.5 h-3 w-3 text-slate-400 pointer-events-none" />
           </div>
 
           {/* Date Picker Button */}
-          <div className="relative flex items-center rounded-xl border border-slate-200/80 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs gap-2">
-            <Calendar className="h-3.5 w-3.5 text-emerald-700 stroke-[2.2]" />
+          <div className="relative flex items-center rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs gap-2">
+            <Calendar className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 stroke-[2.2]" />
             <span>Date</span>
             <Calendar className="h-3.5 w-3.5 text-slate-400 ml-1" />
           </div>
@@ -341,7 +341,7 @@ export default function JournalPage() {
         {/* 4. Main Trades Container */}
         {processedTrades.length === 0 ? (
           /* Empty State Matching Screenshot 2 */
-          <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-200 bg-white p-12 text-center shadow-xs select-none">
+          <div className="relative overflow-hidden rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c141c] p-12 text-center shadow-xs select-none">
             {/* Center Notebook Illustration */}
             <div className="relative z-10 flex flex-col items-center max-w-sm mx-auto">
               <div className="relative mb-4 flex h-24 w-24 items-center justify-center">
@@ -364,10 +364,10 @@ export default function JournalPage() {
                 </svg>
               </div>
 
-              <h3 className="text-base font-bold text-slate-900 font-sans">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white font-sans">
                 No trades match your criteria
               </h3>
-              <p className="text-xs text-slate-500 mt-1 mb-5 leading-relaxed font-medium">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-5 leading-relaxed font-medium">
                 Try resetting your filters or log a new trade using the button below.
               </p>
 
@@ -384,18 +384,18 @@ export default function JournalPage() {
             </div>
 
             {/* Subtle Bottom Mint Wave Decoration */}
-            <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40">
-              <svg className="w-full h-full text-emerald-200" viewBox="0 0 600 60" preserveAspectRatio="none">
+            <div className="absolute -bottom-2 -left-2 -right-2 h-16 pointer-events-none opacity-40 dark:opacity-10">
+              <svg className="w-full h-full text-emerald-200 dark:text-emerald-800" viewBox="0 0 600 60" preserveAspectRatio="none">
                 <path d="M0,35 C150,55 350,10 600,45 L600,60 L0,60 Z" fill="currentColor" />
               </svg>
             </div>
           </div>
         ) : (
           /* Populated Table matching the light-first theme */
-          <div className="rounded-3xl border border-slate-100 bg-white shadow-xs overflow-hidden">
+          <div className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-[#0c141c] shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-slate-100 bg-slate-50/80 text-slate-500 font-bold">
+                <thead className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 text-slate-500 dark:text-slate-400 font-bold">
                   <tr>
                     <th className="py-3.5 px-4">Direction</th>
                     <th className="py-3.5 px-4">Symbol</th>
@@ -410,7 +410,7 @@ export default function JournalPage() {
                     <th className="py-3.5 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100/90">
+                <tbody className="divide-y divide-slate-100/90 dark:divide-slate-800">
                   {paginatedTrades.map((trade) => {
                     const isBuy = trade.direction === 'BUY'
                     const net = Number(trade.net_pnl || 0)
@@ -418,13 +418,13 @@ export default function JournalPage() {
                     const isLoss = net < 0
 
                     return (
-                      <tr key={trade.id} className="hover:bg-slate-50/70 transition-colors group">
+                      <tr key={trade.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors group">
                         <td className="py-3 px-4">
                           <span
                             className={`inline-flex items-center gap-1 font-bold text-[10px] px-2 py-0.5 rounded-full ${
                               isBuy
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/50'
-                                : 'bg-rose-50 text-rose-700 border border-rose-200/50'
+                                ? 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-800/50'
+                                : 'bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200/50 dark:border-rose-800/50'
                             }`}
                           >
                             {isBuy ? (
@@ -435,28 +435,28 @@ export default function JournalPage() {
                             {trade.direction}
                           </span>
                         </td>
-                        <td className="py-3 px-4 font-bold font-mono text-slate-900">
+                        <td className="py-3 px-4 font-bold font-mono text-slate-900 dark:text-white">
                           {trade.symbol}
                         </td>
-                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 font-medium">
+                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 dark:text-slate-300 font-medium">
                           {trade.quantity}
                         </td>
-                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 font-medium">
+                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 dark:text-slate-300 font-medium">
                           {trade.entry_price}
                         </td>
-                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 font-medium">
+                        <td className="py-3 px-4 font-mono tabular-nums text-slate-600 dark:text-slate-300 font-medium">
                           {trade.exit_price ?? '—'}
                         </td>
                         <td className="py-3 px-4 font-mono font-bold tabular-nums">
                           <span
                             className={
                               trade.status === 'OPEN'
-                                ? 'text-amber-600 font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-[11px]'
+                                ? 'text-amber-600 dark:text-amber-400 font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-[11px]'
                                 : isWin
-                                ? 'text-emerald-600'
+                                ? 'text-emerald-600 dark:text-emerald-400'
                                 : isLoss
-                                ? 'text-rose-600'
-                                : 'text-slate-400'
+                                ? 'text-rose-600 dark:text-rose-400'
+                                : 'text-slate-400 dark:text-slate-500'
                             }
                           >
                             {trade.status === 'OPEN'
@@ -468,7 +468,7 @@ export default function JournalPage() {
                           {trade.r_multiple !== null && trade.r_multiple !== undefined ? (
                             <span
                               className={`font-semibold ${
-                                trade.r_multiple >= 0 ? 'text-emerald-600' : 'text-rose-500'
+                                trade.r_multiple >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500 dark:text-rose-400'
                               }`}
                             >
                               {trade.r_multiple > 0 ? `+${trade.r_multiple}R` : `${trade.r_multiple}R`}
@@ -477,12 +477,12 @@ export default function JournalPage() {
                             '—'
                           )}
                         </td>
-                        <td className="py-3 px-4 text-slate-500">{trade.session || '—'}</td>
+                        <td className="py-3 px-4 text-slate-500 dark:text-slate-400">{trade.session || '—'}</td>
                         <td className="py-3 px-4">
                           {trade.discipline_rating ? (
                             <span className="font-mono text-xs text-amber-500">
                               {'★'.repeat(trade.discipline_rating)}
-                              <span className="text-slate-200">
+                              <span className="text-slate-200 dark:text-slate-700">
                                 {'★'.repeat(5 - trade.discipline_rating)}
                               </span>
                             </span>
@@ -490,14 +490,14 @@ export default function JournalPage() {
                             '—'
                           )}
                         </td>
-                        <td className="py-3 px-4 text-slate-500 font-medium">
+                        <td className="py-3 px-4 text-slate-500 dark:text-slate-400 font-medium">
                           {formatDateTime(trade.exit_time || trade.entry_time)}
                         </td>
                         <td className="py-3 px-4 text-right">
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => setTradeToView(trade)}
-                              className="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors"
+                              className="rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
                               title="View trade breakdown"
                             >
                               <Eye className="h-3.5 w-3.5" />
@@ -507,14 +507,14 @@ export default function JournalPage() {
                                 setTradeToEdit(trade)
                                 setIsTradeModalOpen(true)
                               }}
-                              className="rounded-lg p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors"
+                              className="rounded-lg p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
                               title="Edit trade"
                             >
                               <Edit2 className="h-3.5 w-3.5" />
                             </button>
                             <button
                               onClick={() => setTradeToDelete(trade)}
-                              className="rounded-lg p-1.5 hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors"
+                              className="rounded-lg p-1.5 hover:bg-rose-50 dark:hover:bg-rose-950/50 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                               title="Delete trade"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -530,7 +530,7 @@ export default function JournalPage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-xs text-slate-500">
+              <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 px-4 py-3 text-xs text-slate-500 dark:text-slate-400">
                 <span>
                   Showing {(currentPage - 1) * pageSize + 1} to{' '}
                   {Math.min(currentPage * pageSize, processedTrades.length)} of{' '}
@@ -542,11 +542,11 @@ export default function JournalPage() {
                     size="sm"
                     onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
                     disabled={currentPage === 1}
-                    className="h-7 w-7 p-0 rounded-lg"
+                    className="h-7 w-7 p-0 rounded-lg cursor-pointer"
                   >
                     <ChevronLeft className="h-3.5 w-3.5" />
                   </Button>
-                  <span className="px-2 font-mono font-bold text-slate-800">
+                  <span className="px-2 font-mono font-bold text-slate-800 dark:text-white">
                     {currentPage} / {totalPages}
                   </span>
                   <Button
